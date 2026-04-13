@@ -15,7 +15,15 @@ def sign_in(client, role: str):
 
 
 def sign_in_as_user(client, user_id: str):
-    client.cookies.set(dependencies.settings.session_cookie_name, user_id)
+    client.cookies.clear()
+    host = client.base_url.host
+    domain = host if "." in host else f"{host}.local"
+    client.cookies.set(
+        dependencies.settings.session_cookie_name,
+        user_id,
+        domain=domain,
+        path="/",
+    )
 
 
 def create_legacy_support_requests_table(database_path: Path) -> None:
@@ -232,7 +240,7 @@ def test_unrelated_staff_cannot_assign_support_request(client):
 
 
 
-def test_destination_staff_can_list_and_assign_support_request(client):
+def test_destination_staff_cannot_assign_support_request_before_handoff(client):
     sign_in(client, "passenger")
     create_response = client.post(
         "/support-requests",
@@ -247,18 +255,95 @@ def test_destination_staff_can_list_and_assign_support_request(client):
     request_id = create_response.json()["data"]["id"]
 
     client.post("/auth/sign-out")
+    create_staff_user("USR-STAFF-DEST-ASSIGN", "STN-CP")
+    sign_in_as_user(client, "USR-STAFF-DEST-ASSIGN")
+
+    assign_response = client.post(f"/support-requests/{request_id}/assign")
+    assert assign_response.status_code == 403
+
+
+
+def test_destination_staff_only_sees_handoff_queue_after_boarded(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    assign_response = client.post(f"/support-requests/{request_id}/assign")
+    assert assign_response.status_code == 200
+    assert assign_response.json()["data"]["status"] == SupportRequestStatus.ASSIGNED
+
+    in_progress_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
+    )
+    assert in_progress_response.status_code == 200
+    assert in_progress_response.json()["data"]["status"] == SupportRequestStatus.IN_PROGRESS
+
     create_staff_user("USR-STAFF-DEST", "STN-CP")
     sign_in_as_user(client, "USR-STAFF-DEST")
 
     list_response = client.get("/support-requests")
     assert list_response.status_code == 200
     items = list_response.json()["data"]
-    assert len(items) == 1
-    assert items[0]["id"] == request_id
+    assert items == []
 
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    boarded_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
+    )
+    assert boarded_response.status_code == 200
+    assert boarded_response.json()["data"]["status"] == SupportRequestStatus.BOARDED
+
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-STAFF-DEST")
+
+    handoff_response = client.get("/support-requests")
+    assert handoff_response.status_code == 200
+    handoff_items = handoff_response.json()["data"]
+    assert len(handoff_items) == 1
+    assert handoff_items[0]["id"] == request_id
+    assert handoff_items[0]["status"] == SupportRequestStatus.BOARDED
+    assert handoff_items[0]["destination_station_id"] == "STN-CP"
+
+
+
+def test_destination_staff_cannot_view_detail_before_boarded(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
     assign_response = client.post(f"/support-requests/{request_id}/assign")
     assert assign_response.status_code == 200
-    assert assign_response.json()["data"]["assigned_staff_id"] == "USR-STAFF-DEST"
+
+    create_staff_user("USR-STAFF-DEST-DETAIL", "STN-CP")
+    sign_in_as_user(client, "USR-STAFF-DEST-DETAIL")
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+    assert detail_response.status_code == 403
 
 
 

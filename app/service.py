@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session, joinedload
 
-from app.enums import MeetingPoint, Role, SupportRequestStatus, SupportType
+from app.enums import Role, SupportRequestStatus
 from app.models import (
     Station,
     SupportRequest,
@@ -19,7 +18,6 @@ from app.schemas import (
     CreateSupportRequestRequest,
     SupportRequestDetailResponse,
     SupportRequestEventResponse,
-    SupportRequestListItem,
 )
 
 
@@ -135,10 +133,28 @@ class AppService:
         if actor.role == Role.PASSENGER:
             stmt = stmt.where(SupportRequest.passenger_user_id == actor.id)
         elif actor.role == Role.STAFF:
+            visible_statuses = {
+                SupportRequestStatus.SUBMITTED,
+                SupportRequestStatus.ASSIGNED,
+                SupportRequestStatus.IN_PROGRESS,
+                SupportRequestStatus.BOARDED,
+                SupportRequestStatus.AWAITING_DROPOFF,
+            }
             stmt = stmt.where(
-                (SupportRequest.origin_station_id == actor.station_id)
-                | (SupportRequest.destination_station_id == actor.station_id)
-                | (SupportRequest.assigned_staff_user_id == actor.id)
+                (SupportRequest.assigned_staff_user_id == actor.id)
+                | (
+                    (SupportRequest.origin_station_id == actor.station_id)
+                    & SupportRequest.status.in_(visible_statuses)
+                )
+                | (
+                    (SupportRequest.destination_station_id == actor.station_id)
+                    & SupportRequest.status.in_(
+                        [
+                            SupportRequestStatus.BOARDED,
+                            SupportRequestStatus.AWAITING_DROPOFF,
+                        ]
+                    )
+                )
             )
         else:
             raise HTTPException(status_code=403, detail="Unsupported role")
@@ -209,10 +225,7 @@ class AppService:
     def assign_support_request(self, db: Session, actor: User, request_id: str) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
         self._assert_staff(actor)
-        if actor.station_id not in {
-            support_request.origin_station_id,
-            support_request.destination_station_id,
-        }:
+        if actor.station_id != support_request.origin_station_id:
             raise HTTPException(status_code=403, detail="Forbidden")
         support_request.assigned_staff_user_id = actor.id
         self._transition_request(
@@ -350,7 +363,9 @@ class AppService:
         return SupportRequestDetailResponse(
             id=support_request.id,
             status=support_request.status,
+            origin_station_id=support_request.origin_station_id,
             origin_station_name=support_request.origin_station.name,
+            destination_station_id=support_request.destination_station_id,
             destination_station_name=support_request.destination_station.name,
             support_types=[item.support_type for item in support_request.support_types],
             meeting_point=support_request.meeting_point,
@@ -387,10 +402,22 @@ class AppService:
     def _assert_can_view(self, actor: User, support_request: SupportRequest) -> None:
         if actor.role == Role.PASSENGER and support_request.passenger_user_id != actor.id:
             raise HTTPException(status_code=403, detail="Forbidden")
-        if actor.role == Role.STAFF and actor.station_id not in {
-            support_request.origin_station_id,
-            support_request.destination_station_id,
-        } and support_request.assigned_staff_user_id != actor.id:
+        if actor.role == Role.STAFF:
+            if support_request.assigned_staff_user_id == actor.id:
+                return
+            if actor.station_id == support_request.origin_station_id and support_request.status in {
+                SupportRequestStatus.SUBMITTED,
+                SupportRequestStatus.ASSIGNED,
+                SupportRequestStatus.IN_PROGRESS,
+                SupportRequestStatus.BOARDED,
+                SupportRequestStatus.AWAITING_DROPOFF,
+            }:
+                return
+            if actor.station_id == support_request.destination_station_id and support_request.status in {
+                SupportRequestStatus.BOARDED,
+                SupportRequestStatus.AWAITING_DROPOFF,
+            }:
+                return
             raise HTTPException(status_code=403, detail="Forbidden")
         if actor.role not in {Role.PASSENGER, Role.STAFF}:
             raise HTTPException(status_code=403, detail="Unsupported role")

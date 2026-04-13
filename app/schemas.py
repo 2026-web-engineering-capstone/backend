@@ -49,7 +49,9 @@ class SupportRequestEventResponse(BaseModel):
 class SupportRequestListItem(BaseModel):
     id: str
     status: SupportRequestStatus
+    origin_station_id: str
     origin_station_name: str
+    destination_station_id: str
     destination_station_name: str
     support_types: list[SupportType]
     meeting_point: MeetingPoint
