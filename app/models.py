@@ -69,7 +69,9 @@ class SupportRequest(Base):
         back_populates="support_request", cascade="all, delete-orphan"
     )
     events: Mapped[list[SupportRequestEvent]] = relationship(
-        back_populates="support_request", cascade="all, delete-orphan", order_by="SupportRequestEvent.created_at"
+        back_populates="support_request",
+        cascade="all, delete-orphan",
+        order_by=lambda: (SupportRequestEvent.created_at.asc(), SupportRequestEvent.id.asc()),
     )
 
 

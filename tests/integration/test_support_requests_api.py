@@ -468,19 +468,58 @@ def test_staff_must_provide_completion_note_when_completing_request(client):
 
     client.post("/auth/sign-out")
     sign_in(client, "staff")
-    client.post(f"/support-requests/{request_id}/assign")
-    client.post(
+    assign_response = client.post(f"/support-requests/{request_id}/assign")
+    assert assign_response.status_code == 200
+    in_progress_response = client.post(
         f"/support-requests/{request_id}/status",
         json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
     )
-    client.post(
+    assert in_progress_response.status_code == 200
+    boarded_response = client.post(
         f"/support-requests/{request_id}/status",
         json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
     )
-    client.post(
+    assert boarded_response.status_code == 200
+    boarded = boarded_response.json()["data"]
+
+    create_staff_user("USR-STAFF-DEST-COMPLETE", "STN-CP")
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+
+    blocked_handoff_response = client.post(
         f"/support-requests/{request_id}/status",
         json={"status": SupportRequestStatus.AWAITING_DROPOFF, "train_car_number": None},
     )
+    assert blocked_handoff_response.status_code == 403
+
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-STAFF-DEST-COMPLETE")
+
+    awaiting_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.AWAITING_DROPOFF, "train_car_number": None},
+    )
+    assert awaiting_response.status_code == 200
+    awaiting = awaiting_response.json()["data"]
+    assert awaiting["status"] == SupportRequestStatus.AWAITING_DROPOFF
+    assert len(awaiting["events"]) == len(boarded["events"]) + 1
+    assert awaiting["events"][-1]["to_status"] == SupportRequestStatus.AWAITING_DROPOFF
+    assert awaiting["events"][-1]["actor_name"] == "테스트 역무원 STN-CP"
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    blocked_complete_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={
+            "status": SupportRequestStatus.COMPLETED,
+            "train_car_number": None,
+            "completion_note": "원 배정 역무원은 완료할 수 없어야 합니다.",
+        },
+    )
+    assert blocked_complete_response.status_code == 403
+
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-STAFF-DEST-COMPLETE")
 
     invalid_response = client.post(
         f"/support-requests/{request_id}/status",
@@ -500,3 +539,6 @@ def test_staff_must_provide_completion_note_when_completing_request(client):
     completed = completed_response.json()["data"]
     assert completed["status"] == SupportRequestStatus.COMPLETED
     assert completed["completion_note"] == "하차 지원을 마치고 이동을 도왔습니다."
+    assert len(completed["events"]) == len(awaiting["events"]) + 1
+    assert completed["events"][-1]["to_status"] == SupportRequestStatus.COMPLETED
+    assert completed["events"][-1]["message"] == "하차 지원을 마치고 이동을 도왔습니다."

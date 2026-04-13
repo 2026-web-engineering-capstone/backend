@@ -248,9 +248,7 @@ class AppService:
         completion_note: str | None,
     ) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
-        self._assert_staff(actor)
-        if support_request.assigned_staff_user_id != actor.id:
-            raise HTTPException(status_code=403, detail="Request must be assigned to current staff")
+        self._assert_status_actor(actor, support_request)
         if next_status == SupportRequestStatus.BOARDED and not train_car_number:
             raise HTTPException(status_code=422, detail="Train car number is required")
         if (
@@ -270,13 +268,11 @@ class AppService:
             completion_note=completion_note,
         )
         db.commit()
-        return self.get_support_request(db, actor, request_id)
+        return self._reload_request_detail(db, request_id)
 
     def mark_unavailable(self, db: Session, actor: User, request_id: str, reason: str) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
-        self._assert_staff(actor)
-        if support_request.assigned_staff_user_id != actor.id:
-            raise HTTPException(status_code=403, detail="Request must be assigned to current staff")
+        self._assert_status_actor(actor, support_request)
         self._transition_request(
             db,
             support_request=support_request,
@@ -286,7 +282,7 @@ class AppService:
             unavailable_reason=reason,
         )
         db.commit()
-        return self.get_support_request(db, actor, request_id)
+        return self._reload_request_detail(db, request_id)
 
     def _base_request_query(self) -> Select[tuple[SupportRequest]]:
         return (
@@ -306,6 +302,17 @@ class AppService:
         if not support_request:
             raise HTTPException(status_code=404, detail="Support request not found")
         return support_request
+
+    def _reload_request_detail(self, db: Session, request_id: str) -> SupportRequestDetailResponse:
+        db.expire_all()
+        support_request = db.scalar(
+            self._base_request_query()
+            .execution_options(populate_existing=True)
+            .where(SupportRequest.id == request_id)
+        )
+        if not support_request:
+            raise HTTPException(status_code=404, detail="Support request not found")
+        return self._to_detail_response(support_request)
 
     def _transition_request(
         self,
@@ -425,6 +432,19 @@ class AppService:
     def _assert_staff(self, actor: User) -> None:
         if actor.role != Role.STAFF:
             raise HTTPException(status_code=403, detail="Only staff can perform this action")
+
+    def _assert_status_actor(self, actor: User, support_request: SupportRequest) -> None:
+        self._assert_staff(actor)
+        if support_request.status in {
+            SupportRequestStatus.BOARDED,
+            SupportRequestStatus.AWAITING_DROPOFF,
+        }:
+            if actor.station_id == support_request.destination_station_id:
+                return
+            raise HTTPException(status_code=403, detail="Request must be handled by destination staff")
+        if support_request.assigned_staff_user_id == actor.id:
+            return
+        raise HTTPException(status_code=403, detail="Request must be assigned to current staff")
 
     def _status_message(self, status_value: SupportRequestStatus) -> str:
         messages = {
