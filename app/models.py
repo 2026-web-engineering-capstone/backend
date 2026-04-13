@@ -1,0 +1,103 @@
+from __future__ import annotations
+
+from datetime import datetime
+from uuid import uuid4
+
+from sqlalchemy import DateTime, Enum, ForeignKey, String, Text, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
+from app.enums import MeetingPoint, Role, SupportRequestStatus, SupportType
+
+
+class Station(Base):
+    __tablename__ = "stations"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    line: Mapped[str] = mapped_column(String(128))
+    line_color: Mapped[str] = mapped_column(String(16))
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[str] = mapped_column(
+        String(64), primary_key=True, default=lambda: f"USR-{uuid4().hex[:12]}"
+    )
+    name: Mapped[str] = mapped_column(String(255))
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    role: Mapped[Role] = mapped_column(Enum(Role), index=True)
+    station_id: Mapped[str | None] = mapped_column(ForeignKey("stations.id"), nullable=True)
+
+    station: Mapped[Station | None] = relationship()
+
+
+class SupportRequest(Base):
+    __tablename__ = "support_requests"
+
+    id: Mapped[str] = mapped_column(
+        String(64), primary_key=True, default=lambda: f"REQ-{uuid4().hex[:12].upper()}"
+    )
+    passenger_user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    assigned_staff_user_id: Mapped[str | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True, index=True
+    )
+    origin_station_id: Mapped[str] = mapped_column(ForeignKey("stations.id"))
+    destination_station_id: Mapped[str] = mapped_column(ForeignKey("stations.id"))
+    meeting_point: Mapped[MeetingPoint] = mapped_column(Enum(MeetingPoint))
+    notes: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[SupportRequestStatus] = mapped_column(
+        Enum(SupportRequestStatus),
+        default=SupportRequestStatus.SUBMITTED,
+        index=True,
+    )
+    train_car_number: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    cancel_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    unavailable_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    completion_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    passenger: Mapped[User] = relationship(foreign_keys=[passenger_user_id])
+    assigned_staff: Mapped[User | None] = relationship(foreign_keys=[assigned_staff_user_id])
+    origin_station: Mapped[Station] = relationship(foreign_keys=[origin_station_id])
+    destination_station: Mapped[Station] = relationship(foreign_keys=[destination_station_id])
+    support_types: Mapped[list[SupportRequestSupportType]] = relationship(
+        back_populates="support_request", cascade="all, delete-orphan"
+    )
+    events: Mapped[list[SupportRequestEvent]] = relationship(
+        back_populates="support_request", cascade="all, delete-orphan", order_by="SupportRequestEvent.created_at"
+    )
+
+
+class SupportRequestSupportType(Base):
+    __tablename__ = "support_request_support_types"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    request_id: Mapped[str] = mapped_column(ForeignKey("support_requests.id"), index=True)
+    support_type: Mapped[SupportType] = mapped_column(Enum(SupportType))
+
+    support_request: Mapped[SupportRequest] = relationship(back_populates="support_types")
+
+
+class SupportRequestEvent(Base):
+    __tablename__ = "support_request_events"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    request_id: Mapped[str] = mapped_column(ForeignKey("support_requests.id"), index=True)
+    actor_user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    type: Mapped[str] = mapped_column(String(64), index=True)
+    from_status: Mapped[SupportRequestStatus | None] = mapped_column(
+        Enum(SupportRequestStatus), nullable=True
+    )
+    to_status: Mapped[SupportRequestStatus | None] = mapped_column(
+        Enum(SupportRequestStatus), nullable=True
+    )
+    message: Mapped[str] = mapped_column(String(255), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    support_request: Mapped[SupportRequest] = relationship(back_populates="events")
+    actor: Mapped[User] = relationship()
