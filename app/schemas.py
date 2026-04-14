@@ -36,6 +36,19 @@ class StationResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class SupportRequestChecklistItemRequest(BaseModel):
+    code: str = Field(min_length=1)
+    label: str = Field(min_length=1)
+    checked: bool = False
+
+
+class SupportRequestChecklistItemResponse(BaseModel):
+    id: int
+    code: str
+    label: str
+    checked: bool
+
+
 class SupportRequestEventResponse(BaseModel):
     id: int
     type: str
@@ -68,6 +81,7 @@ class SupportRequestDetailResponse(SupportRequestListItem):
     cancel_reason: str | None
     unavailable_reason: str | None
     completion_note: str | None
+    checklist_items: list[SupportRequestChecklistItemResponse]
     events: list[SupportRequestEventResponse]
 
 
@@ -83,6 +97,10 @@ class UpdateSupportRequestStatusRequest(BaseModel):
     status: SupportRequestStatus
     train_car_number: str | None = None
     completion_note: str | None = Field(default=None, min_length=1)
+
+
+class UpdateSupportRequestChecklistRequest(BaseModel):
+    items: list[SupportRequestChecklistItemRequest]
 
 
 class CancelSupportRequestRequest(BaseModel):

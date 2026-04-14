@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import DateTime, Enum, ForeignKey, String, Text, func
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -68,6 +68,11 @@ class SupportRequest(Base):
     support_types: Mapped[list[SupportRequestSupportType]] = relationship(
         back_populates="support_request", cascade="all, delete-orphan"
     )
+    checklist_items: Mapped[list[SupportRequestChecklistItem]] = relationship(
+        back_populates="support_request",
+        cascade="all, delete-orphan",
+        order_by=lambda: SupportRequestChecklistItem.id.asc(),
+    )
     events: Mapped[list[SupportRequestEvent]] = relationship(
         back_populates="support_request",
         cascade="all, delete-orphan",
@@ -83,6 +88,18 @@ class SupportRequestSupportType(Base):
     support_type: Mapped[SupportType] = mapped_column(Enum(SupportType))
 
     support_request: Mapped[SupportRequest] = relationship(back_populates="support_types")
+
+
+class SupportRequestChecklistItem(Base):
+    __tablename__ = "support_request_checklist_items"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    request_id: Mapped[str] = mapped_column(ForeignKey("support_requests.id"), index=True)
+    code: Mapped[str] = mapped_column(String(64))
+    label: Mapped[str] = mapped_column(String(255))
+    checked: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    support_request: Mapped[SupportRequest] = relationship(back_populates="checklist_items")
 
 
 class SupportRequestEvent(Base):

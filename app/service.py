@@ -4,18 +4,21 @@ from dataclasses import dataclass
 
 from fastapi import HTTPException
 from sqlalchemy import Select, select
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, selectinload
 
-from app.enums import Role, SupportRequestStatus
+from app.enums import Role, SupportRequestStatus, SupportType
 from app.models import (
     Station,
     SupportRequest,
+    SupportRequestChecklistItem,
     SupportRequestEvent,
     SupportRequestSupportType,
     User,
 )
 from app.schemas import (
     CreateSupportRequestRequest,
+    SupportRequestChecklistItemRequest,
+    SupportRequestChecklistItemResponse,
     SupportRequestDetailResponse,
     SupportRequestEventResponse,
 )
@@ -93,6 +96,21 @@ USER_SEED = [
         "station_id": None,
     },
 ]
+
+CHECKLIST_TEMPLATES: dict[SupportType, list[tuple[str, str]]] = {
+    SupportType.WHEELCHAIR: [
+        ("prepare-wheelchair-ramp", "휠체어 승하차 발판을 준비했어요."),
+        ("check-wheelchair-route", "엘리베이터와 이동 동선을 확인했어요."),
+    ],
+    SupportType.VISUAL_GUIDE: [
+        ("greet-passenger", "만남 위치에서 승객을 확인했어요."),
+        ("guide-to-platform", "승강장과 하차 동선을 안내할 준비를 마쳤어요."),
+    ],
+    SupportType.BOARDING_RAMP: [
+        ("prepare-boarding-support", "승하차 보조 장비와 위치를 확인했어요."),
+        ("share-boarding-position", "탑승 위치와 열차 칸 정보를 확인했어요."),
+    ],
+}
 
 
 @dataclass
@@ -193,6 +211,7 @@ class AppService:
             SupportRequestSupportType(support_type=support_type)
             for support_type in payload.support_types
         ]
+        support_request.checklist_items = self._build_default_checklist_items(payload.support_types)
         db.add(support_request)
         db.flush()
         self._append_event(
@@ -237,6 +256,36 @@ class AppService:
         )
         db.commit()
         return self.get_support_request(db, actor, request_id)
+
+    def update_support_request_checklist(
+        self,
+        db: Session,
+        actor: User,
+        request_id: str,
+        items: list[SupportRequestChecklistItemRequest],
+    ) -> SupportRequestDetailResponse:
+        support_request = self._get_request_entity(db, request_id)
+        self._assert_status_actor(actor, support_request)
+        if support_request.status in TERMINAL_STATUSES:
+            raise HTTPException(status_code=409, detail="Checklist cannot be updated")
+        existing_items_by_code = {
+            item.code: item for item in support_request.checklist_items
+        }
+        submitted_codes = [item.code for item in items]
+
+        if len(items) != len(existing_items_by_code) or set(submitted_codes) != set(
+            existing_items_by_code
+        ):
+            raise HTTPException(status_code=422, detail="Invalid checklist items")
+
+        for item in items:
+            existing_item = existing_items_by_code[item.code]
+            if item.label != existing_item.label:
+                raise HTTPException(status_code=422, detail="Invalid checklist items")
+            existing_item.checked = item.checked
+
+        db.commit()
+        return self._reload_request_detail(db, request_id)
 
     def update_support_request_status(
         self,
@@ -292,8 +341,9 @@ class AppService:
                 joinedload(SupportRequest.assigned_staff),
                 joinedload(SupportRequest.origin_station),
                 joinedload(SupportRequest.destination_station),
-                joinedload(SupportRequest.support_types),
-                joinedload(SupportRequest.events).joinedload(SupportRequestEvent.actor),
+                selectinload(SupportRequest.support_types),
+                selectinload(SupportRequest.checklist_items),
+                selectinload(SupportRequest.events).joinedload(SupportRequestEvent.actor),
             )
         )
 
@@ -346,6 +396,25 @@ class AppService:
             message=message,
         )
 
+    def _build_default_checklist_items(
+        self, support_types: list[SupportType]
+    ) -> list[SupportRequestChecklistItem]:
+        seen_codes: set[str] = set()
+        items: list[SupportRequestChecklistItem] = []
+        for support_type in support_types:
+            for code, label in CHECKLIST_TEMPLATES.get(support_type, []):
+                if code in seen_codes:
+                    continue
+                seen_codes.add(code)
+                items.append(
+                    SupportRequestChecklistItem(
+                        code=code,
+                        label=label,
+                        checked=False,
+                    )
+                )
+        return items
+
     def _append_event(
         self,
         db: Session,
@@ -386,6 +455,15 @@ class AppService:
             cancel_reason=support_request.cancel_reason,
             unavailable_reason=support_request.unavailable_reason,
             completion_note=support_request.completion_note,
+            checklist_items=[
+                SupportRequestChecklistItemResponse(
+                    id=item.id,
+                    code=item.code,
+                    label=item.label,
+                    checked=item.checked,
+                )
+                for item in support_request.checklist_items
+            ],
             events=[
                 SupportRequestEventResponse(
                     id=event.id,

@@ -452,6 +452,260 @@ def test_staff_cannot_mark_request_unavailable_before_assignment(client):
     assert unavailable_response.status_code == 403
 
 
+def test_create_support_request_auto_generates_checklist_items_from_support_types(client):
+    sign_in(client, "passenger")
+
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "자동 체크리스트 테스트",
+            "support_types": [SupportType.WHEELCHAIR, SupportType.BOARDING_RAMP],
+        },
+    )
+
+    assert create_response.status_code == 201
+    created = create_response.json()["data"]
+    checklist_items = created["checklist_items"]
+    assert [item["code"] for item in checklist_items] == [
+        "prepare-wheelchair-ramp",
+        "check-wheelchair-route",
+        "prepare-boarding-support",
+        "share-boarding-position",
+    ]
+    assert all(item["checked"] is False for item in checklist_items)
+    assert checklist_items[0]["label"] == "휠체어 승하차 발판을 준비했어요."
+    assert checklist_items[2]["label"] == "승하차 보조 장비와 위치를 확인했어요."
+
+
+def test_staff_can_save_and_read_request_checklist(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "체크리스트 저장 테스트",
+            "support_types": [SupportType.WHEELCHAIR, SupportType.BOARDING_RAMP],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    assign_response = client.post(f"/support-requests/{request_id}/assign")
+    assert assign_response.status_code == 200
+
+    checklist_response = client.post(
+        f"/support-requests/{request_id}/checklist",
+        json={
+            "items": [
+                {
+                    "code": "prepare-wheelchair-ramp",
+                    "label": "휠체어 승하차 발판을 준비했어요.",
+                    "checked": True,
+                },
+                {
+                    "code": "check-wheelchair-route",
+                    "label": "엘리베이터와 이동 동선을 확인했어요.",
+                    "checked": False,
+                },
+                {
+                    "code": "prepare-boarding-support",
+                    "label": "승하차 보조 장비와 위치를 확인했어요.",
+                    "checked": True,
+                },
+                {
+                    "code": "share-boarding-position",
+                    "label": "탑승 위치와 열차 칸 정보를 확인했어요.",
+                    "checked": False,
+                },
+            ]
+        },
+    )
+
+    assert checklist_response.status_code == 200
+    checklist_items = checklist_response.json()["data"]["checklist_items"]
+    assert len(checklist_items) == 4
+    assert checklist_items[0]["code"] == "prepare-wheelchair-ramp"
+    assert checklist_items[0]["checked"] is True
+    assert checklist_items[2]["code"] == "prepare-boarding-support"
+    assert checklist_items[2]["checked"] is True
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert [item["code"] for item in detail["checklist_items"]] == [
+        "prepare-wheelchair-ramp",
+        "check-wheelchair-route",
+        "prepare-boarding-support",
+        "share-boarding-position",
+    ]
+    assert detail["checklist_items"][0]["label"] == "휠체어 승하차 발판을 준비했어요."
+
+
+
+def test_passenger_cannot_update_request_checklist(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "권한 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    checklist_response = client.post(
+        f"/support-requests/{request_id}/checklist",
+        json={
+            "items": [
+                {
+                    "code": "prepare-wheelchair-ramp",
+                    "label": "휠체어 승하차 발판을 준비했어요.",
+                    "checked": True,
+                }
+            ]
+        },
+    )
+
+    assert checklist_response.status_code == 403
+
+
+
+def test_staff_cannot_submit_invalid_request_checklist_items(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "체크리스트 검증 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    assign_response = client.post(f"/support-requests/{request_id}/assign")
+    assert assign_response.status_code == 200
+
+    invalid_code_response = client.post(
+        f"/support-requests/{request_id}/checklist",
+        json={
+            "items": [
+                {
+                    "code": "unexpected-item",
+                    "label": "임의 항목",
+                    "checked": True,
+                },
+                {
+                    "code": "check-wheelchair-route",
+                    "label": "엘리베이터와 이동 동선을 확인했어요.",
+                    "checked": False,
+                },
+            ]
+        },
+    )
+    assert invalid_code_response.status_code == 422
+
+    invalid_label_response = client.post(
+        f"/support-requests/{request_id}/checklist",
+        json={
+            "items": [
+                {
+                    "code": "prepare-wheelchair-ramp",
+                    "label": "라벨 변조",
+                    "checked": True,
+                },
+                {
+                    "code": "check-wheelchair-route",
+                    "label": "엘리베이터와 이동 동선을 확인했어요.",
+                    "checked": False,
+                },
+            ]
+        },
+    )
+    assert invalid_label_response.status_code == 422
+
+
+
+def test_assigned_staff_cannot_update_request_checklist_after_completion(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "완료 후 체크리스트 수정 금지 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    client.post(f"/support-requests/{request_id}/assign")
+    client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
+    )
+    client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
+    )
+
+    create_staff_user("USR-STAFF-DEST-CHECKLIST", "STN-CP")
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-STAFF-DEST-CHECKLIST")
+
+    client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.AWAITING_DROPOFF, "train_car_number": None},
+    )
+    completed_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={
+            "status": SupportRequestStatus.COMPLETED,
+            "train_car_number": None,
+            "completion_note": "하차 지원을 완료했습니다.",
+        },
+    )
+    assert completed_response.status_code == 200
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+
+    checklist_response = client.post(
+        f"/support-requests/{request_id}/checklist",
+        json={
+            "items": [
+                {
+                    "code": "prepare-wheelchair-ramp",
+                    "label": "휠체어 승하차 발판을 준비했어요.",
+                    "checked": True,
+                },
+                {
+                    "code": "check-wheelchair-route",
+                    "label": "엘리베이터와 이동 동선을 확인했어요.",
+                    "checked": True,
+                },
+            ]
+        },
+    )
+    assert checklist_response.status_code == 409
+
+
+
 def test_staff_must_provide_completion_note_when_completing_request(client):
     sign_in(client, "passenger")
     create_response = client.post(

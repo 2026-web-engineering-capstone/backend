@@ -8,6 +8,7 @@ from app.schemas import (
     CancelSupportRequestRequest,
     CreateSupportRequestRequest,
     UnavailableSupportRequestRequest,
+    UpdateSupportRequestChecklistRequest,
     UpdateSupportRequestStatusRequest,
 )
 from app.service import AppService
@@ -81,6 +82,24 @@ def update_support_request_status(
             payload.status,
             payload.train_car_number,
             payload.completion_note,
+        )
+    )
+
+
+@router.post("/{request_id}/checklist", response_model=ApiResponse)
+def update_support_request_checklist(
+    request_id: str,
+    payload: UpdateSupportRequestChecklistRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    service: AppService = Depends(get_service),
+):
+    return ApiResponse(
+        data=service.update_support_request_checklist(
+            db,
+            user,
+            request_id,
+            payload.items,
         )
     )
 
