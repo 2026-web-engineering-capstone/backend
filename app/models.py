@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, String, Text, func
@@ -31,6 +31,23 @@ class User(Base):
     station_id: Mapped[str | None] = mapped_column(ForeignKey("stations.id"), nullable=True)
 
     station: Mapped[Station | None] = relationship()
+
+
+class UserSession(Base):
+    __tablename__ = "user_sessions"
+
+    id: Mapped[str] = mapped_column(
+        String(64), primary_key=True, default=lambda: f"SES-{uuid4().hex}"
+    )
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc) + timedelta(days=7),
+        index=True,
+    )
+
+    user: Mapped[User] = relationship()
 
 
 class SupportRequest(Base):

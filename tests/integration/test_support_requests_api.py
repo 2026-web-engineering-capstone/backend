@@ -2,10 +2,13 @@ import sqlite3
 from pathlib import Path
 
 import app.dependencies as dependencies
+import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import select
+from starlette.websockets import WebSocketDisconnect
 
 from app.enums import MeetingPoint, Role, SupportRequestStatus, SupportType
-from app.models import User
+from app.models import User, UserSession
 
 
 def sign_in(client, role: str):
@@ -16,11 +19,21 @@ def sign_in(client, role: str):
 
 def sign_in_as_user(client, user_id: str):
     client.cookies.clear()
+    session = dependencies.database.session_factory()
+    try:
+        user_session = UserSession(user_id=user_id)
+        session.add(user_session)
+        session.commit()
+        session.refresh(user_session)
+        session_id = user_session.id
+    finally:
+        session.close()
+
     host = client.base_url.host
     domain = host if "." in host else f"{host}.local"
     client.cookies.set(
         dependencies.settings.session_cookie_name,
-        user_id,
+        session_id,
         domain=domain,
         path="/",
     )
@@ -239,7 +252,6 @@ def test_unrelated_staff_cannot_assign_support_request(client):
     assert assign_response.status_code == 403
 
 
-
 def test_destination_staff_cannot_assign_support_request_before_handoff(client):
     sign_in(client, "passenger")
     create_response = client.post(
@@ -260,7 +272,6 @@ def test_destination_staff_cannot_assign_support_request_before_handoff(client):
 
     assign_response = client.post(f"/support-requests/{request_id}/assign")
     assert assign_response.status_code == 403
-
 
 
 def test_destination_staff_only_sees_handoff_queue_after_boarded(client):
@@ -319,7 +330,6 @@ def test_destination_staff_only_sees_handoff_queue_after_boarded(client):
     assert handoff_items[0]["destination_station_id"] == "STN-CP"
 
 
-
 def test_destination_staff_cannot_view_detail_before_boarded(client):
     sign_in(client, "passenger")
     create_response = client.post(
@@ -344,7 +354,6 @@ def test_destination_staff_cannot_view_detail_before_boarded(client):
 
     detail_response = client.get(f"/support-requests/{request_id}")
     assert detail_response.status_code == 403
-
 
 
 def test_cannot_skip_directly_to_completed(client):
@@ -547,7 +556,6 @@ def test_staff_can_save_and_read_request_checklist(client):
     assert detail["checklist_items"][0]["label"] == "휠체어 승하차 발판을 준비했어요."
 
 
-
 def test_passenger_cannot_update_request_checklist(client):
     sign_in(client, "passenger")
     create_response = client.post(
@@ -576,7 +584,6 @@ def test_passenger_cannot_update_request_checklist(client):
     )
 
     assert checklist_response.status_code == 403
-
 
 
 def test_staff_cannot_submit_invalid_request_checklist_items(client):
@@ -635,7 +642,6 @@ def test_staff_cannot_submit_invalid_request_checklist_items(client):
         },
     )
     assert invalid_label_response.status_code == 422
-
 
 
 def test_assigned_staff_cannot_update_request_checklist_after_completion(client):
@@ -703,7 +709,6 @@ def test_assigned_staff_cannot_update_request_checklist_after_completion(client)
         },
     )
     assert checklist_response.status_code == 409
-
 
 
 def test_staff_must_provide_completion_note_when_completing_request(client):
@@ -796,3 +801,211 @@ def test_staff_must_provide_completion_note_when_completing_request(client):
     assert len(completed["events"]) == len(awaiting["events"]) + 1
     assert completed["events"][-1]["to_status"] == SupportRequestStatus.COMPLETED
     assert completed["events"][-1]["message"] == "하차 지원을 마치고 이동을 도왔습니다."
+
+
+def test_authenticated_websocket_can_connect(client):
+    sign_in(client, "passenger")
+
+    with client.websocket_connect(
+        "/support-requests/ws",
+        headers={"origin": "http://localhost:8081"},
+    ) as websocket:
+        assert websocket is not None
+
+
+def test_websocket_requires_authenticated_session(client):
+    with pytest.raises(WebSocketDisconnect):
+        with client.websocket_connect(
+            "/support-requests/ws",
+            headers={"origin": "http://localhost:8081"},
+        ):
+            pass
+
+
+def test_websocket_requires_allowed_origin(client):
+    sign_in(client, "passenger")
+
+    with pytest.raises(WebSocketDisconnect):
+        with client.websocket_connect(
+            "/support-requests/ws",
+            headers={"origin": "https://evil.example.com"},
+        ):
+            pass
+
+
+def test_websocket_rejects_missing_origin(client):
+    sign_in(client, "passenger")
+
+    with pytest.raises(WebSocketDisconnect):
+        with client.websocket_connect("/support-requests/ws"):
+            pass
+
+
+def test_websocket_allows_regex_origin(client):
+    sign_in(client, "passenger")
+
+    with client.websocket_connect(
+        "/support-requests/ws",
+        headers={"origin": "http://127.0.0.1:19007"},
+    ) as websocket:
+        assert websocket is not None
+
+
+def test_support_request_status_change_broadcasts_websocket_event(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "실시간 이벤트 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+
+    with client.websocket_connect(
+        "/support-requests/ws",
+        headers={"origin": "http://localhost:8081"},
+    ) as websocket:
+        assign_response = client.post(f"/support-requests/{request_id}/assign")
+        assert assign_response.status_code == 200
+
+        payload = websocket.receive_json()
+
+    assert payload == {
+        "type": "support_request.updated",
+        "requestId": request_id,
+    }
+
+
+def test_unrelated_passenger_does_not_receive_other_request_events(client):
+    sign_in(client, "passenger")
+    passenger_response = client.get("/auth/session")
+    passenger_user_id = passenger_response.json()["data"]["user"]["id"]
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "다른 승객 이벤트 차단 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    session = dependencies.database.session_factory()
+    try:
+        other_passenger = User(
+            id="USR-PASSENGER-OTHER",
+            name="다른 승객",
+            email="other-passenger@gyoum.kr",
+            role=Role.PASSENGER,
+            station_id=None,
+        )
+        session.add(other_passenger)
+        session.commit()
+    finally:
+        session.close()
+
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-PASSENGER-OTHER")
+
+    with client.websocket_connect(
+        "/support-requests/ws",
+        headers={"origin": "http://localhost:8081"},
+    ) as websocket:
+        with TestClient(client.app) as actor_client:
+            sign_in_as_user(actor_client, "USR-STAFF-DEMO")
+            assign_response = actor_client.post(f"/support-requests/{request_id}/assign")
+            assert assign_response.status_code == 200
+
+        with pytest.raises(Exception):
+            websocket._send_rx.receive_nowait()
+
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, passenger_user_id)
+
+
+def test_destination_staff_does_not_receive_pre_boarded_events(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "하차역 실시간 범위 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    create_staff_user("USR-STAFF-DEST-WS", "STN-CP")
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-STAFF-DEST-WS")
+
+    with client.websocket_connect(
+        "/support-requests/ws",
+        headers={"origin": "http://localhost:8081"},
+    ) as websocket:
+        with TestClient(client.app) as actor_client:
+            sign_in(actor_client, "staff")
+            assign_response = actor_client.post(f"/support-requests/{request_id}/assign")
+            assert assign_response.status_code == 200
+
+        with pytest.raises(Exception):
+            websocket._send_rx.receive_nowait()
+
+
+def test_destination_staff_receives_boarded_events(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "하차역 보딩 이벤트 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    assign_response = client.post(f"/support-requests/{request_id}/assign")
+    assert assign_response.status_code == 200
+    progress_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
+    )
+    assert progress_response.status_code == 200
+
+    create_staff_user("USR-STAFF-DEST-WS-BOARDED", "STN-CP")
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-STAFF-DEST-WS-BOARDED")
+
+    with client.websocket_connect(
+        "/support-requests/ws",
+        headers={"origin": "http://localhost:8081"},
+    ) as websocket:
+        with TestClient(client.app) as actor_client:
+            sign_in(actor_client, "staff")
+            boarded_response = actor_client.post(
+                f"/support-requests/{request_id}/status",
+                json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
+            )
+            assert boarded_response.status_code == 200
+
+        payload = websocket.receive_json()
+
+    assert payload == {
+        "type": "support_request.updated",
+        "requestId": request_id,
+    }

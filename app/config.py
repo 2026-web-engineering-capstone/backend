@@ -15,7 +15,14 @@ class Settings(BaseSettings):
         "http://localhost:19006",
         "http://localhost:3000",
     ]
-    allowed_origin_regex: str = r"https?://(localhost|127\.0\.0\.1)(:\d+)?$"
+    allowed_origin_regex: str = (
+        r"https?://("
+        r"localhost|127\.0\.0\.1|"
+        r"10(?:\.\d{1,3}){3}|"
+        r"192\.168(?:\.\d{1,3}){2}|"
+        r"172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2}"
+        r")(?:\:\d+)?$"
+    )
     session_cookie_name: str = "gyoum_session"
     cookie_secure: bool = False
 

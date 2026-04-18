@@ -533,3 +533,4 @@ class AppService:
             SupportRequestStatus.COMPLETED: "지원이 완료되었습니다.",
         }
         return messages.get(status_value, status_value.value)
+
