@@ -4,7 +4,7 @@ from pathlib import Path
 import app.dependencies as dependencies
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import select, text
 from starlette.websockets import WebSocketDisconnect
 
 from app.enums import MeetingPoint, Role, SupportRequestStatus, SupportType
@@ -58,6 +58,26 @@ def create_legacy_support_requests_table(database_path: Path) -> None:
                 unavailable_reason VARCHAR(255),
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+        connection.commit()
+    finally:
+        connection.close()
+
+
+def create_legacy_location_table(database_path: Path) -> None:
+    connection = sqlite3.connect(database_path)
+    try:
+        connection.execute(
+            """
+            CREATE TABLE support_request_current_locations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                request_id VARCHAR(64) NOT NULL,
+                passenger_user_id VARCHAR(64) NOT NULL,
+                latitude FLOAT NOT NULL,
+                longitude FLOAT NOT NULL,
+                accuracy_meters FLOAT
             )
             """
         )
@@ -137,6 +157,56 @@ def test_startup_schema_reconcile_is_idempotent(app_settings):
 
     with TestClient(create_app(app_settings)):
         pass
+
+
+def test_startup_migrates_existing_location_schema(app_settings):
+    database_path = Path(app_settings.database_url.removeprefix("sqlite:///"))
+    create_legacy_support_requests_table(database_path)
+    create_legacy_location_table(database_path)
+
+    from app.main import create_app
+
+    with TestClient(create_app(app_settings)):
+        pass
+
+    connection = sqlite3.connect(database_path)
+    try:
+        columns = {
+            row[1]: row
+            for row in connection.execute(
+                "PRAGMA table_info('support_request_current_locations')"
+            )
+        }
+    finally:
+        connection.close()
+
+    assert "recorded_at" in columns
+    assert columns["recorded_at"][3] == 0
+
+
+
+def test_startup_migrates_location_recorded_at_with_default_timestamp(app_settings):
+    database_path = Path(app_settings.database_url.removeprefix("sqlite:///"))
+    create_legacy_support_requests_table(database_path)
+    create_legacy_location_table(database_path)
+
+    from app.main import create_app
+
+    with TestClient(create_app(app_settings)):
+        pass
+
+    connection = sqlite3.connect(database_path)
+    try:
+        columns = {
+            row[1]: row
+            for row in connection.execute(
+                "PRAGMA table_info('support_request_current_locations')"
+            )
+        }
+    finally:
+        connection.close()
+
+    assert columns["recorded_at"][4] == "CURRENT_TIMESTAMP"
 
     connection = sqlite3.connect(database_path)
     try:
@@ -419,6 +489,376 @@ def test_destination_staff_cannot_view_detail_before_boarded(client):
 
     detail_response = client.get(f"/support-requests/{request_id}")
     assert detail_response.status_code == 403
+
+
+def insert_current_location(
+    request_id: str,
+    passenger_user_id: str,
+    latitude: float,
+    longitude: float,
+    accuracy_meters: float | None,
+    recorded_at: str | None = None,
+) -> None:
+    session = dependencies.database.session_factory()
+    try:
+        session.execute(
+            text(
+                """
+                INSERT INTO support_request_current_locations (
+                    request_id,
+                    passenger_user_id,
+                    latitude,
+                    longitude,
+                    accuracy_meters,
+                    recorded_at
+                ) VALUES (
+                    :request_id,
+                    :passenger_user_id,
+                    :latitude,
+                    :longitude,
+                    :accuracy_meters,
+                    :recorded_at
+                )
+                """
+            ),
+            {
+                "request_id": request_id,
+                "passenger_user_id": passenger_user_id,
+                "latitude": latitude,
+                "longitude": longitude,
+                "accuracy_meters": accuracy_meters,
+                "recorded_at": recorded_at,
+            },
+        )
+        session.commit()
+    finally:
+        session.close()
+
+
+def test_get_latest_current_location_returns_latest_matching_passenger_row(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "최신 현위치 조회 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    payload = create_response.json()["data"]
+
+    insert_current_location(
+        request_id=payload["id"],
+        passenger_user_id=payload["passenger_id"],
+        latitude=37.386,
+        longitude=126.641,
+        accuracy_meters=12.0,
+        recorded_at="2026-04-20 21:10:00",
+    )
+    insert_current_location(
+        request_id=payload["id"],
+        passenger_user_id="USR-PASSENGER-OTHER",
+        latitude=37.401,
+        longitude=126.701,
+        accuracy_meters=3.0,
+        recorded_at="2026-04-20 21:40:00",
+    )
+    insert_current_location(
+        request_id=payload["id"],
+        passenger_user_id=payload["passenger_id"],
+        latitude=37.3881,
+        longitude=126.6434,
+        accuracy_meters=8.5,
+        recorded_at="2026-04-20 21:30:00",
+    )
+
+    session = dependencies.database.session_factory()
+    try:
+        latest_location = dependencies.service._get_latest_current_location(
+            session,
+            request_id=payload["id"],
+            passenger_user_id=payload["passenger_id"],
+        )
+    finally:
+        session.close()
+
+    assert latest_location is not None
+    assert latest_location.latitude == 37.3881
+    assert latest_location.longitude == 126.6434
+    assert latest_location.accuracy_meters == 8.5
+
+
+def test_origin_staff_detail_includes_current_location_when_latest_location_exists(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "현위치 조회 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    payload = create_response.json()["data"]
+    request_id = payload["id"]
+    passenger_id = payload["passenger_id"]
+
+    insert_current_location(
+        request_id=request_id,
+        passenger_user_id=passenger_id,
+        latitude=37.3881,
+        longitude=126.6434,
+        accuracy_meters=8.5,
+        recorded_at="2026-04-20 21:20:00",
+    )
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert detail["status"] == SupportRequestStatus.SUBMITTED
+    assert detail["current_location"] == {
+        "latitude": 37.3881,
+        "longitude": 126.6434,
+        "accuracy_meters": 8.5,
+        "recorded_at": "2026-04-20T21:20:00",
+    }
+
+
+
+def test_origin_staff_list_does_not_include_current_location(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "목록 현위치 비노출 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    payload = create_response.json()["data"]
+
+    insert_current_location(
+        request_id=payload["id"],
+        passenger_user_id=payload["passenger_id"],
+        latitude=37.3881,
+        longitude=126.6434,
+        accuracy_meters=8.5,
+        recorded_at="2026-04-20 21:20:00",
+    )
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+
+    list_response = client.get("/support-requests")
+
+    assert list_response.status_code == 200
+    item = list_response.json()["data"][0]
+    assert "current_location" not in item
+
+
+
+def test_destination_staff_detail_does_not_include_current_location_after_boarded(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "하차역 현위치 비노출 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    payload = create_response.json()["data"]
+    request_id = payload["id"]
+
+    insert_current_location(
+        request_id=request_id,
+        passenger_user_id=payload["passenger_id"],
+        latitude=37.3881,
+        longitude=126.6434,
+        accuracy_meters=8.5,
+        recorded_at="2026-04-20 21:20:00",
+    )
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    assign_response = client.post(f"/support-requests/{request_id}/assign")
+    assert assign_response.status_code == 200
+
+    in_progress_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
+    )
+    assert in_progress_response.status_code == 200
+
+    boarded_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
+    )
+    assert boarded_response.status_code == 200
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert detail["current_location"] is None
+
+    client.post("/auth/sign-out")
+    create_staff_user("USR-STAFF-DEST-LOCATION", "STN-CP")
+    sign_in_as_user(client, "USR-STAFF-DEST-LOCATION")
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert detail["current_location"] is None
+
+
+
+def test_origin_staff_detail_ignores_location_rows_for_other_passenger(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "다른 승객 위치 무시 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    payload = create_response.json()["data"]
+
+    insert_current_location(
+        request_id=payload["id"],
+        passenger_user_id="USR-PASSENGER-OTHER",
+        latitude=37.401,
+        longitude=126.701,
+        accuracy_meters=3.0,
+        recorded_at="2026-04-20 21:20:00",
+    )
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+
+    detail_response = client.get(f"/support-requests/{payload['id']}")
+
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert detail["current_location"] is None
+
+
+
+def test_origin_staff_detail_prefers_latest_current_location_when_multiple_rows_exist(app_settings):
+    database_path = Path(app_settings.database_url.removeprefix("sqlite:///"))
+    create_legacy_support_requests_table(database_path)
+    create_legacy_location_table(database_path)
+
+    from app.main import create_app
+
+    with TestClient(create_app(app_settings)) as client:
+        sign_in(client, "passenger")
+        create_response = client.post(
+            "/support-requests",
+            json={
+                "origin_station_id": "STN-ICU",
+                "destination_station_id": "STN-CP",
+                "meeting_point": MeetingPoint.ELEVATOR,
+                "notes": "현위치 최신값 테스트",
+                "support_types": [SupportType.WHEELCHAIR],
+            },
+        )
+        payload = create_response.json()["data"]
+        request_id = payload["id"]
+        passenger_id = payload["passenger_id"]
+
+        session = dependencies.database.session_factory()
+        try:
+            session.execute(
+                text(
+                    """
+                    INSERT INTO support_request_current_locations (
+                        request_id,
+                        passenger_user_id,
+                        latitude,
+                        longitude,
+                        accuracy_meters,
+                        recorded_at
+                    ) VALUES (
+                        :request_id,
+                        :passenger_user_id,
+                        :latitude,
+                        :longitude,
+                        :accuracy_meters,
+                        :recorded_at
+                    )
+                    """
+                ),
+                {
+                    "request_id": request_id,
+                    "passenger_user_id": passenger_id,
+                    "latitude": 37.386,
+                    "longitude": 126.641,
+                    "accuracy_meters": 12.0,
+                    "recorded_at": None,
+                },
+            )
+            session.execute(
+                text(
+                    """
+                    INSERT INTO support_request_current_locations (
+                        request_id,
+                        passenger_user_id,
+                        latitude,
+                        longitude,
+                        accuracy_meters,
+                        recorded_at
+                    ) VALUES (
+                        :request_id,
+                        :passenger_user_id,
+                        :latitude,
+                        :longitude,
+                        :accuracy_meters,
+                        :recorded_at
+                    )
+                    """
+                ),
+                {
+                    "request_id": request_id,
+                    "passenger_user_id": passenger_id,
+                    "latitude": 37.3881,
+                    "longitude": 126.6434,
+                    "accuracy_meters": 8.5,
+                    "recorded_at": "2026-04-20 21:30:00",
+                },
+            )
+            session.commit()
+        finally:
+            session.close()
+
+        client.post("/auth/sign-out")
+        sign_in(client, "staff")
+
+        detail_response = client.get(f"/support-requests/{request_id}")
+
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert detail["current_location"] == {
+        "latitude": 37.3881,
+        "longitude": 126.6434,
+        "accuracy_meters": 8.5,
+        "recorded_at": "2026-04-20T21:30:00",
+    }
 
 
 def test_cannot_skip_directly_to_completed(client):

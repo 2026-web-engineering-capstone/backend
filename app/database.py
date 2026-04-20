@@ -7,6 +7,10 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 SQLITE_STARTUP_MIGRATIONS = {
     ("support_requests", "completion_note"): "TEXT",
     ("user_push_tokens", "installation_id"): "TEXT",
+    (
+        "support_request_current_locations",
+        "recorded_at",
+    ): "DATETIME DEFAULT CURRENT_TIMESTAMP",
 }
 
 SQLITE_STARTUP_INDEXES = {

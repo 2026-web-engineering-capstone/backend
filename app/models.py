@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, String, Text, func
+from sqlalchemy import Boolean, DateTime, Enum, Float, ForeignKey, String, Text, desc, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -117,6 +117,31 @@ class SupportRequest(Base):
         cascade="all, delete-orphan",
         order_by=lambda: (SupportRequestEvent.created_at.asc(), SupportRequestEvent.id.asc()),
     )
+    current_locations: Mapped[list[SupportRequestCurrentLocation]] = relationship(
+        back_populates="support_request",
+        cascade="all, delete-orphan",
+        order_by=lambda: (
+            desc(SupportRequestCurrentLocation.recorded_at).nulls_last(),
+            SupportRequestCurrentLocation.id.desc(),
+        ),
+    )
+
+
+class SupportRequestCurrentLocation(Base):
+    __tablename__ = "support_request_current_locations"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    request_id: Mapped[str] = mapped_column(ForeignKey("support_requests.id"), index=True)
+    passenger_user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    latitude: Mapped[float] = mapped_column(Float)
+    longitude: Mapped[float] = mapped_column(Float)
+    accuracy_meters: Mapped[float | None] = mapped_column(Float, nullable=True)
+    recorded_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=True
+    )
+
+    support_request: Mapped[SupportRequest] = relationship(back_populates="current_locations")
+    passenger: Mapped[User] = relationship()
 
 
 class SupportRequestSupportType(Base):

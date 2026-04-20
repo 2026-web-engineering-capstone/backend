@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from fastapi import HTTPException
@@ -18,6 +19,7 @@ from app.models import (
     Station,
     SupportRequest,
     SupportRequestChecklistItem,
+    SupportRequestCurrentLocation,
     SupportRequestEvent,
     SupportRequestSupportType,
     User,
@@ -27,8 +29,10 @@ from app.schemas import (
     CreateSupportRequestRequest,
     SupportRequestChecklistItemRequest,
     SupportRequestChecklistItemResponse,
+    SupportRequestCurrentLocationResponse,
     SupportRequestDetailResponse,
     SupportRequestEventResponse,
+    SupportRequestListItem,
 )
 
 CANCEL_REASON_ALIASES: dict[str, tuple[CancelReason, str]] = {
@@ -141,7 +145,7 @@ CHECKLIST_TEMPLATES: dict[SupportType, list[tuple[str, str]]] = {
 
 @dataclass
 class AppService:
-    db_factory: callable
+    db_factory: Callable[[], Session]
 
     def seed(self) -> None:
         session = self.db_factory()
@@ -267,8 +271,8 @@ class AppService:
         db.delete(push_token)
         db.commit()
 
-    def list_support_requests(self, db: Session, actor: User) -> list[SupportRequestDetailResponse]:
-        stmt = self._base_request_query()
+    def list_support_requests(self, db: Session, actor: User) -> list[SupportRequestListItem]:
+        stmt = self._base_request_query(include_current_locations=False)
         if actor.role == Role.PASSENGER:
             stmt = stmt.where(SupportRequest.passenger_user_id == actor.id)
         elif actor.role == Role.STAFF:
@@ -298,14 +302,16 @@ class AppService:
         else:
             raise HTTPException(status_code=403, detail="Unsupported role")
         requests = list(db.scalars(stmt.order_by(SupportRequest.created_at.desc())).unique())
-        return [self._to_detail_response(item) for item in requests]
+        return [self._to_list_response(item) for item in requests]
 
     def get_support_request(self, db: Session, actor: User, request_id: str) -> SupportRequestDetailResponse:
-        support_request = db.scalar(self._base_request_query().where(SupportRequest.id == request_id))
+        support_request = db.scalar(
+            self._base_request_query(include_current_locations=True).where(SupportRequest.id == request_id)
+        )
         if not support_request:
             raise HTTPException(status_code=404, detail="Support request not found")
         self._assert_can_view(actor, support_request)
-        return self._to_detail_response(support_request)
+        return self._to_detail_response(db, actor, support_request)
 
     def create_support_request(
         self,
@@ -367,7 +373,7 @@ class AppService:
             cancel_reason=cancel_reason,
         )
         db.commit()
-        return self._reload_request_detail(db, request_id)
+        return self._reload_request_detail(db, actor, request_id)
 
     def assign_support_request(self, db: Session, actor: User, request_id: str) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
@@ -413,7 +419,7 @@ class AppService:
             existing_item.checked = item.checked
 
         db.commit()
-        return self._reload_request_detail(db, request_id)
+        return self._reload_request_detail(db, actor, request_id)
 
     def update_support_request_status(
         self,
@@ -457,7 +463,7 @@ class AppService:
             completion_note=normalized_completion_note,
         )
         db.commit()
-        return self._reload_request_detail(db, request_id)
+        return self._reload_request_detail(db, actor, request_id)
 
     def mark_unavailable(
         self,
@@ -478,38 +484,42 @@ class AppService:
             unavailable_reason=unavailable_reason,
         )
         db.commit()
-        return self._reload_request_detail(db, request_id)
+        return self._reload_request_detail(db, actor, request_id)
 
-    def _base_request_query(self) -> Select[tuple[SupportRequest]]:
-        return (
-            select(SupportRequest)
-            .options(
-                joinedload(SupportRequest.passenger),
-                joinedload(SupportRequest.assigned_staff),
-                joinedload(SupportRequest.origin_station),
-                joinedload(SupportRequest.destination_station),
-                selectinload(SupportRequest.support_types),
-                selectinload(SupportRequest.checklist_items),
-                selectinload(SupportRequest.events).joinedload(SupportRequestEvent.actor),
-            )
-        )
+    def _base_request_query(
+        self, include_current_locations: bool
+    ) -> Select[tuple[SupportRequest]]:
+        options = [
+            joinedload(SupportRequest.passenger),
+            joinedload(SupportRequest.assigned_staff),
+            joinedload(SupportRequest.origin_station),
+            joinedload(SupportRequest.destination_station),
+            selectinload(SupportRequest.support_types),
+            selectinload(SupportRequest.checklist_items),
+            selectinload(SupportRequest.events).joinedload(SupportRequestEvent.actor),
+        ]
+        return select(SupportRequest).options(*options)
 
     def _get_request_entity(self, db: Session, request_id: str) -> SupportRequest:
-        support_request = db.scalar(self._base_request_query().where(SupportRequest.id == request_id))
+        support_request = db.scalar(
+            self._base_request_query(include_current_locations=False).where(SupportRequest.id == request_id)
+        )
         if not support_request:
             raise HTTPException(status_code=404, detail="Support request not found")
         return support_request
 
-    def _reload_request_detail(self, db: Session, request_id: str) -> SupportRequestDetailResponse:
+    def _reload_request_detail(
+        self, db: Session, actor: User, request_id: str
+    ) -> SupportRequestDetailResponse:
         db.expire_all()
         support_request = db.scalar(
-            self._base_request_query()
+            self._base_request_query(include_current_locations=True)
             .execution_options(populate_existing=True)
             .where(SupportRequest.id == request_id)
         )
         if not support_request:
             raise HTTPException(status_code=404, detail="Support request not found")
-        return self._to_detail_response(support_request)
+        return self._to_detail_response(db, actor, support_request)
 
     def _transition_request(
         self,
@@ -624,8 +634,53 @@ class AppService:
         except ValueError:
             return None
 
-    def _to_detail_response(self, support_request: SupportRequest) -> SupportRequestDetailResponse:
-        return SupportRequestDetailResponse(
+    def _get_latest_current_location(
+        self, db: Session, request_id: str, passenger_user_id: str
+    ) -> SupportRequestCurrentLocation | None:
+        return db.scalar(
+            select(SupportRequestCurrentLocation)
+            .where(SupportRequestCurrentLocation.request_id == request_id)
+            .where(SupportRequestCurrentLocation.passenger_user_id == passenger_user_id)
+            .order_by(
+                SupportRequestCurrentLocation.recorded_at.desc().nulls_last(),
+                SupportRequestCurrentLocation.id.desc(),
+            )
+        )
+
+    def _to_current_location_response(
+        self, db: Session, support_request: SupportRequest
+    ) -> SupportRequestCurrentLocationResponse | None:
+        latest_location = self._get_latest_current_location(
+            db,
+            request_id=support_request.id,
+            passenger_user_id=support_request.passenger_user_id,
+        )
+        if latest_location is None:
+            return None
+
+        return SupportRequestCurrentLocationResponse(
+            latitude=latest_location.latitude,
+            longitude=latest_location.longitude,
+            accuracy_meters=latest_location.accuracy_meters,
+            recorded_at=latest_location.recorded_at,
+        )
+
+    def _should_include_current_location(
+        self, actor: User, support_request: SupportRequest
+    ) -> bool:
+        return (
+            actor.role == Role.STAFF
+            and actor.station_id == support_request.origin_station_id
+            and support_request.status
+            in {
+                SupportRequestStatus.SUBMITTED,
+                SupportRequestStatus.ASSIGNED,
+                SupportRequestStatus.IN_PROGRESS,
+            }
+        )
+
+    def _to_list_response(self, support_request: SupportRequest) -> SupportRequestListItem:
+        return SupportRequestListItem(
             id=support_request.id,
             status=support_request.status,
             origin_station_id=support_request.origin_station_id,
@@ -639,13 +694,26 @@ class AppService:
             assigned_staff_name=support_request.assigned_staff.name if support_request.assigned_staff else None,
             train_car_number=support_request.train_car_number,
             created_at=support_request.created_at,
-            passenger_id=support_request.passenger_user_id,
-            assigned_staff_id=support_request.assigned_staff_user_id,
             cancel_reason=self._normalize_cancel_reason(support_request.cancel_reason),
             unavailable_reason=self._normalize_unavailable_reason(
                 support_request.unavailable_reason
             ),
             completion_note=support_request.completion_note,
+        )
+
+    def _to_detail_response(
+        self, db: Session, actor: User, support_request: SupportRequest
+    ) -> SupportRequestDetailResponse:
+        list_response = self._to_list_response(support_request)
+        current_location = None
+        if self._should_include_current_location(actor, support_request):
+            current_location = self._to_current_location_response(db, support_request)
+
+        return SupportRequestDetailResponse(
+            **list_response.model_dump(),
+            passenger_id=support_request.passenger_user_id,
+            assigned_staff_id=support_request.assigned_staff_user_id,
+            current_location=current_location,
             checklist_items=[
                 SupportRequestChecklistItemResponse(
                     id=item.id,

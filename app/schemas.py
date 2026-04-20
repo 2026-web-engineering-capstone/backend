@@ -86,6 +86,13 @@ class SupportRequestEventResponse(BaseModel):
     created_at: datetime
 
 
+class SupportRequestCurrentLocationResponse(BaseModel):
+    latitude: float
+    longitude: float
+    accuracy_meters: float | None
+    recorded_at: datetime | None
+
+
 class SupportRequestListItem(BaseModel):
     id: str
     status: SupportRequestStatus
@@ -100,14 +107,15 @@ class SupportRequestListItem(BaseModel):
     assigned_staff_name: str | None
     train_car_number: str | None
     created_at: datetime
+    cancel_reason: CancelReason | None
+    unavailable_reason: UnavailableReason | None
+    completion_note: str | None
 
 
 class SupportRequestDetailResponse(SupportRequestListItem):
     passenger_id: str
     assigned_staff_id: str | None
-    cancel_reason: CancelReason | None
-    unavailable_reason: UnavailableReason | None
-    completion_note: str | None
+    current_location: SupportRequestCurrentLocationResponse | None = None
     checklist_items: list[SupportRequestChecklistItemResponse]
     events: list[SupportRequestEventResponse]
 
