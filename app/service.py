@@ -7,7 +7,13 @@ from sqlalchemy import Select, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload, selectinload
 
-from app.enums import Role, SupportRequestStatus, SupportType
+from app.enums import (
+    CancelReason,
+    Role,
+    SupportRequestStatus,
+    SupportType,
+    UnavailableReason,
+)
 from app.models import (
     Station,
     SupportRequest,
@@ -24,6 +30,24 @@ from app.schemas import (
     SupportRequestDetailResponse,
     SupportRequestEventResponse,
 )
+
+CANCEL_REASON_ALIASES: dict[str, tuple[CancelReason, str]] = {
+    "change_of_plans": (CancelReason.CHANGE_OF_PLANS, "일정 변경"),
+    "일정 변경": (CancelReason.CHANGE_OF_PLANS, "일정 변경"),
+    "duplicate_request": (CancelReason.DUPLICATE_REQUEST, "중복 요청"),
+    "중복 요청": (CancelReason.DUPLICATE_REQUEST, "중복 요청"),
+    "no_longer_needed": (CancelReason.NO_LONGER_NEEDED, "도움이 더 이상 필요하지 않음"),
+    "도움이 더 이상 필요하지 않음": (CancelReason.NO_LONGER_NEEDED, "도움이 더 이상 필요하지 않음"),
+}
+
+UNAVAILABLE_REASON_ALIASES: dict[str, tuple[UnavailableReason, str]] = {
+    "no_show": (UnavailableReason.NO_SHOW, "승객이 나타나지 않음"),
+    "승객이 나타나지 않음": (UnavailableReason.NO_SHOW, "승객이 나타나지 않음"),
+    "urgent_duty": (UnavailableReason.URGENT_DUTY, "긴급 업무 대응"),
+    "긴급 업무 대응": (UnavailableReason.URGENT_DUTY, "긴급 업무 대응"),
+    "support_unavailable": (UnavailableReason.SUPPORT_UNAVAILABLE, "현장 인력 부족"),
+    "현장 인력 부족": (UnavailableReason.SUPPORT_UNAVAILABLE, "현장 인력 부족"),
+}
 
 
 TERMINAL_STATUSES = {
@@ -323,20 +347,27 @@ class AppService:
         db.refresh(support_request)
         return self.get_support_request(db, actor, support_request.id)
 
-    def cancel_support_request(self, db: Session, actor: User, request_id: str, reason: str) -> SupportRequestDetailResponse:
+    def cancel_support_request(
+        self,
+        db: Session,
+        actor: User,
+        request_id: str,
+        reason: str,
+    ) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
         if actor.role != Role.PASSENGER or support_request.passenger_user_id != actor.id:
             raise HTTPException(status_code=403, detail="Only the passenger can cancel this request")
+        cancel_reason, message = self._parse_cancel_reason(reason)
         self._transition_request(
             db,
             support_request=support_request,
             actor=actor,
             next_status=SupportRequestStatus.CANCELLED,
-            message=reason,
-            cancel_reason=reason,
+            message=message,
+            cancel_reason=cancel_reason,
         )
         db.commit()
-        return self.get_support_request(db, actor, request_id)
+        return self._reload_request_detail(db, request_id)
 
     def assign_support_request(self, db: Session, actor: User, request_id: str) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
@@ -395,37 +426,56 @@ class AppService:
     ) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
         self._assert_status_actor(actor, support_request)
-        if next_status == SupportRequestStatus.BOARDED and not train_car_number:
-            raise HTTPException(status_code=422, detail="Train car number is required")
-        if (
-            next_status == SupportRequestStatus.COMPLETED
-            and next_status in ALLOWED_TRANSITIONS[support_request.status]
-            and not completion_note
-        ):
-            raise HTTPException(status_code=422, detail="Completion note is required")
-        if train_car_number:
-            support_request.train_car_number = train_car_number
+
+        normalized_train_car_number = train_car_number.strip() if train_car_number else None
+        normalized_completion_note = completion_note.strip() if completion_note else None
+
+        if next_status == SupportRequestStatus.BOARDED:
+            if not normalized_train_car_number:
+                raise HTTPException(status_code=422, detail="Train car number is required")
+        elif normalized_train_car_number is not None:
+            raise HTTPException(status_code=422, detail="Train car number is only allowed for boarded status")
+
+        if next_status == SupportRequestStatus.COMPLETED:
+            if next_status in ALLOWED_TRANSITIONS[support_request.status] and not normalized_completion_note:
+                raise HTTPException(status_code=422, detail="Completion note is required")
+        elif normalized_completion_note is not None:
+            raise HTTPException(status_code=422, detail="Completion note is only allowed for completed status")
+
+        if normalized_train_car_number:
+            support_request.train_car_number = normalized_train_car_number
         self._transition_request(
             db,
             support_request=support_request,
             actor=actor,
             next_status=next_status,
-            message=completion_note if next_status == SupportRequestStatus.COMPLETED else self._status_message(next_status),
-            completion_note=completion_note,
+            message=(
+                normalized_completion_note
+                if next_status == SupportRequestStatus.COMPLETED
+                else self._status_message(next_status)
+            ),
+            completion_note=normalized_completion_note,
         )
         db.commit()
         return self._reload_request_detail(db, request_id)
 
-    def mark_unavailable(self, db: Session, actor: User, request_id: str, reason: str) -> SupportRequestDetailResponse:
+    def mark_unavailable(
+        self,
+        db: Session,
+        actor: User,
+        request_id: str,
+        reason: str,
+    ) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
         self._assert_status_actor(actor, support_request)
+        unavailable_reason, message = self._parse_unavailable_reason(reason)
         self._transition_request(
             db,
             support_request=support_request,
             actor=actor,
             next_status=SupportRequestStatus.UNAVAILABLE,
-            message=reason,
-            unavailable_reason=reason,
+            message=message,
+            unavailable_reason=unavailable_reason,
         )
         db.commit()
         return self._reload_request_detail(db, request_id)
@@ -468,8 +518,8 @@ class AppService:
         actor: User,
         next_status: SupportRequestStatus,
         message: str,
-        cancel_reason: str | None = None,
-        unavailable_reason: str | None = None,
+        cancel_reason: CancelReason | None = None,
+        unavailable_reason: UnavailableReason | None = None,
         completion_note: str | None = None,
     ) -> None:
         current_status = support_request.status
@@ -532,6 +582,48 @@ class AppService:
         )
         db.add(event)
 
+    def _parse_cancel_reason(self, reason: str) -> tuple[CancelReason, str]:
+        normalized_reason = reason.strip()
+        matched = CANCEL_REASON_ALIASES.get(normalized_reason)
+        if matched:
+            return matched
+        raise HTTPException(status_code=422, detail="Invalid cancel reason")
+
+    def _parse_unavailable_reason(self, reason: str) -> tuple[UnavailableReason, str]:
+        normalized_reason = reason.strip()
+        matched = UNAVAILABLE_REASON_ALIASES.get(normalized_reason)
+        if matched:
+            return matched
+        raise HTTPException(status_code=422, detail="Invalid unavailable reason")
+
+    def _normalize_cancel_reason(self, cancel_reason: str | None) -> CancelReason | None:
+        if not cancel_reason:
+            return None
+
+        matched = CANCEL_REASON_ALIASES.get(cancel_reason)
+        if matched:
+            return matched[0]
+
+        try:
+            return CancelReason(cancel_reason)
+        except ValueError:
+            return None
+
+    def _normalize_unavailable_reason(
+        self, unavailable_reason: str | None
+    ) -> UnavailableReason | None:
+        if not unavailable_reason:
+            return None
+
+        matched = UNAVAILABLE_REASON_ALIASES.get(unavailable_reason)
+        if matched:
+            return matched[0]
+
+        try:
+            return UnavailableReason(unavailable_reason)
+        except ValueError:
+            return None
+
     def _to_detail_response(self, support_request: SupportRequest) -> SupportRequestDetailResponse:
         return SupportRequestDetailResponse(
             id=support_request.id,
@@ -549,8 +641,10 @@ class AppService:
             created_at=support_request.created_at,
             passenger_id=support_request.passenger_user_id,
             assigned_staff_id=support_request.assigned_staff_user_id,
-            cancel_reason=support_request.cancel_reason,
-            unavailable_reason=support_request.unavailable_reason,
+            cancel_reason=self._normalize_cancel_reason(support_request.cancel_reason),
+            unavailable_reason=self._normalize_unavailable_reason(
+                support_request.unavailable_reason
+            ),
             completion_note=support_request.completion_note,
             checklist_items=[
                 SupportRequestChecklistItemResponse(

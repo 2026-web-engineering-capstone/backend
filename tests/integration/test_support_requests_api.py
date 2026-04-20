@@ -8,7 +8,7 @@ from sqlalchemy import select
 from starlette.websockets import WebSocketDisconnect
 
 from app.enums import MeetingPoint, Role, SupportRequestStatus, SupportType
-from app.models import User, UserSession
+from app.models import SupportRequest, User, UserSession
 
 
 def sign_in(client, role: str):
@@ -174,6 +174,71 @@ def test_passenger_can_create_and_list_support_request(client):
     items = list_response.json()["data"]
     assert len(items) == 1
     assert items[0]["id"] == created["id"]
+
+
+def test_passenger_list_ignores_legacy_invalid_cancel_reason(client):
+    sign_in(client, "passenger")
+
+    session = dependencies.database.session_factory()
+    try:
+        passenger = session.scalar(select(User).where(User.role == Role.PASSENGER))
+        assert passenger is not None
+        support_request = SupportRequest(
+            passenger_user_id=passenger.id,
+            origin_station_id="STN-ICU",
+            destination_station_id="STN-CP",
+            meeting_point=MeetingPoint.ELEVATOR,
+            notes="레거시 취소 사유 검증",
+            status=SupportRequestStatus.CANCELLED,
+            cancel_reason="smoke cancel",
+        )
+        session.add(support_request)
+        session.commit()
+        session.refresh(support_request)
+        request_id = support_request.id
+    finally:
+        session.close()
+
+    list_response = client.get("/support-requests")
+
+    assert list_response.status_code == 200
+    items = list_response.json()["data"]
+    legacy_item = next(item for item in items if item["id"] == request_id)
+    assert legacy_item["status"] == SupportRequestStatus.CANCELLED
+    assert legacy_item["cancel_reason"] is None
+
+
+
+def test_passenger_list_ignores_legacy_invalid_unavailable_reason(client):
+    sign_in(client, "passenger")
+
+    session = dependencies.database.session_factory()
+    try:
+        passenger = session.scalar(select(User).where(User.role == Role.PASSENGER))
+        assert passenger is not None
+        support_request = SupportRequest(
+            passenger_user_id=passenger.id,
+            origin_station_id="STN-ICU",
+            destination_station_id="STN-CP",
+            meeting_point=MeetingPoint.ELEVATOR,
+            notes="레거시 지원 불가 사유 검증",
+            status=SupportRequestStatus.UNAVAILABLE,
+            unavailable_reason="field shortage",
+        )
+        session.add(support_request)
+        session.commit()
+        session.refresh(support_request)
+        request_id = support_request.id
+    finally:
+        session.close()
+
+    list_response = client.get("/support-requests")
+
+    assert list_response.status_code == 200
+    items = list_response.json()["data"]
+    legacy_item = next(item for item in items if item["id"] == request_id)
+    assert legacy_item["status"] == SupportRequestStatus.UNAVAILABLE
+    assert legacy_item["unavailable_reason"] is None
 
 
 def test_staff_can_assign_and_progress_support_request(client):
@@ -381,7 +446,147 @@ def test_cannot_skip_directly_to_completed(client):
     assert invalid_response.status_code == 409
 
 
-def test_passenger_can_cancel_before_in_progress(client):
+def test_staff_cannot_send_train_car_number_before_boarded(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    client.post(f"/support-requests/{request_id}/assign")
+
+    invalid_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": "4"},
+    )
+
+    assert invalid_response.status_code == 422
+    assert invalid_response.json()["detail"] == "Train car number is only allowed for boarded status"
+
+
+
+def test_staff_must_provide_non_blank_train_car_number_when_boarding(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    client.post(f"/support-requests/{request_id}/assign")
+    client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
+    )
+
+    invalid_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.BOARDED, "train_car_number": "   "},
+    )
+
+    assert invalid_response.status_code == 422
+    assert invalid_response.json()["detail"] == "Train car number is required"
+
+
+
+def test_staff_cannot_send_completion_note_before_completed(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    client.post(f"/support-requests/{request_id}/assign")
+
+    invalid_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={
+            "status": SupportRequestStatus.IN_PROGRESS,
+            "train_car_number": None,
+            "completion_note": "미리 완료 메모를 넣으면 안 됩니다.",
+        },
+    )
+
+    assert invalid_response.status_code == 422
+    assert invalid_response.json()["detail"] == "Completion note is only allowed for completed status"
+
+
+
+def test_staff_must_provide_non_blank_completion_note_when_completing_request(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    client.post(f"/support-requests/{request_id}/assign")
+    client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
+    )
+    client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
+    )
+
+    create_staff_user("USR-STAFF-DEST-BLANK-COMPLETE", "STN-CP")
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-STAFF-DEST-BLANK-COMPLETE")
+    client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.AWAITING_DROPOFF, "train_car_number": None},
+    )
+
+    invalid_response = client.post(
+        f"/support-requests/{request_id}/status",
+        json={
+            "status": SupportRequestStatus.COMPLETED,
+            "train_car_number": None,
+            "completion_note": "   ",
+        },
+    )
+
+    assert invalid_response.status_code == 422
+    assert invalid_response.json()["detail"] == "Completion note is required"
+
+
+
+def test_passenger_can_cancel_with_human_readable_reason(client):
     sign_in(client, "passenger")
     create_response = client.post(
         "/support-requests",
@@ -399,10 +604,35 @@ def test_passenger_can_cancel_before_in_progress(client):
         f"/support-requests/{request_id}/cancel",
         json={"reason": "일정 변경"},
     )
+
+    assert cancel_response.status_code == 200
+    cancelled = cancel_response.json()["data"]
+    assert cancelled["cancel_reason"] == "change_of_plans"
+    assert cancelled["events"][-1]["message"] == "일정 변경"
+
+
+def test_passenger_can_cancel_before_in_progress(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    cancel_response = client.post(
+        f"/support-requests/{request_id}/cancel",
+        json={"reason": "change_of_plans"},
+    )
     assert cancel_response.status_code == 200
     cancelled = cancel_response.json()["data"]
     assert cancelled["status"] == SupportRequestStatus.CANCELLED
-    assert cancelled["cancel_reason"] == "일정 변경"
+    assert cancelled["cancel_reason"] == "change_of_plans"
 
 
 def test_passenger_cannot_cancel_after_support_in_progress(client):
@@ -431,7 +661,7 @@ def test_passenger_cannot_cancel_after_support_in_progress(client):
     sign_in(client, "passenger")
     cancel_response = client.post(
         f"/support-requests/{request_id}/cancel",
-        json={"reason": "취소 요청"},
+        json={"reason": "change_of_plans"},
     )
 
     assert cancel_response.status_code == 409
@@ -455,10 +685,66 @@ def test_staff_cannot_mark_request_unavailable_before_assignment(client):
     sign_in(client, "staff")
     unavailable_response = client.post(
         f"/support-requests/{request_id}/unavailable",
-        json={"reason": "현장 인력 부족"},
+        json={"reason": "support_unavailable"},
     )
 
     assert unavailable_response.status_code == 403
+
+
+def test_staff_can_mark_request_unavailable_with_human_readable_reason(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    client.post(f"/support-requests/{request_id}/assign")
+    unavailable_response = client.post(
+        f"/support-requests/{request_id}/unavailable",
+        json={"reason": "현장 인력 부족"},
+    )
+
+    assert unavailable_response.status_code == 200
+    unavailable = unavailable_response.json()["data"]
+    assert unavailable["unavailable_reason"] == "support_unavailable"
+    assert unavailable["events"][-1]["message"] == "현장 인력 부족"
+
+
+def test_staff_can_mark_request_unavailable_with_reason_code(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    client.post(f"/support-requests/{request_id}/assign")
+    unavailable_response = client.post(
+        f"/support-requests/{request_id}/unavailable",
+        json={"reason": "no_show"},
+    )
+
+    assert unavailable_response.status_code == 200
+    unavailable = unavailable_response.json()["data"]
+    assert unavailable["status"] == SupportRequestStatus.UNAVAILABLE
+    assert unavailable["unavailable_reason"] == "no_show"
 
 
 def test_create_support_request_auto_generates_checklist_items_from_support_types(client):

@@ -31,3 +31,15 @@ class MeetingPoint(StrEnum):
     INFO_CENTER = "info-center"
     PLATFORM = "platform"
     OTHER = "other"
+
+
+class CancelReason(StrEnum):
+    CHANGE_OF_PLANS = "change_of_plans"
+    DUPLICATE_REQUEST = "duplicate_request"
+    NO_LONGER_NEEDED = "no_longer_needed"
+
+
+class UnavailableReason(StrEnum):
+    NO_SHOW = "no_show"
+    URGENT_DUTY = "urgent_duty"
+    SUPPORT_UNAVAILABLE = "support_unavailable"

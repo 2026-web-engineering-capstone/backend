@@ -4,7 +4,14 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.enums import MeetingPoint, Role, SupportRequestStatus, SupportType
+from app.enums import (
+    CancelReason,
+    MeetingPoint,
+    Role,
+    SupportRequestStatus,
+    SupportType,
+    UnavailableReason,
+)
 
 
 class ApiResponse(BaseModel):
@@ -98,8 +105,8 @@ class SupportRequestListItem(BaseModel):
 class SupportRequestDetailResponse(SupportRequestListItem):
     passenger_id: str
     assigned_staff_id: str | None
-    cancel_reason: str | None
-    unavailable_reason: str | None
+    cancel_reason: CancelReason | None
+    unavailable_reason: UnavailableReason | None
     completion_note: str | None
     checklist_items: list[SupportRequestChecklistItemResponse]
     events: list[SupportRequestEventResponse]
