@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from fastapi import HTTPException
 from sqlalchemy import Select, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.enums import Role, SupportRequestStatus, SupportType
@@ -14,6 +15,7 @@ from app.models import (
     SupportRequestEvent,
     SupportRequestSupportType,
     User,
+    UserPushToken,
 )
 from app.schemas import (
     CreateSupportRequestRequest,
@@ -145,6 +147,101 @@ class AppService:
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         return user
+
+    def register_push_token(
+        self,
+        db: Session,
+        actor: User,
+        token: str,
+        platform: str,
+        installation_id: str,
+    ) -> None:
+        existing_installation = db.scalar(
+            select(UserPushToken).where(UserPushToken.installation_id == installation_id)
+        )
+        existing_token = db.scalar(
+            select(UserPushToken).where(UserPushToken.token == token)
+        )
+
+        if existing_token and existing_token.installation_id is None:
+            existing_token.installation_id = installation_id
+            existing_installation = existing_token
+
+        if existing_installation:
+            if existing_installation.user_id != actor.id and existing_installation.token != token:
+                raise HTTPException(status_code=409, detail="Push token already registered")
+        elif existing_token:
+            raise HTTPException(status_code=409, detail="Push token already registered")
+
+        try:
+            if existing_installation:
+                existing_installation.user_id = actor.id
+                existing_installation.token = token
+                existing_installation.platform = platform
+            else:
+                db.add(
+                    UserPushToken(
+                        user_id=actor.id,
+                        installation_id=installation_id,
+                        token=token,
+                        platform=platform,
+                    )
+                )
+            db.commit()
+        except IntegrityError as error:
+            db.rollback()
+            raise HTTPException(status_code=409, detail="Push token already registered") from error
+
+    def unregister_push_token(
+        self,
+        db: Session,
+        actor: User,
+        installation_id: str,
+        token: str | None = None,
+    ) -> None:
+        self.unregister_push_token_for_user(db, actor.id, installation_id, token)
+
+    def unregister_push_token_for_user(
+        self,
+        db: Session,
+        user_id: str,
+        installation_id: str,
+        token: str | None = None,
+    ) -> None:
+        conditions = [
+            UserPushToken.user_id == user_id,
+            UserPushToken.installation_id == installation_id,
+        ]
+        if token:
+            conditions.append(UserPushToken.token == token)
+
+        push_token = db.scalar(select(UserPushToken).where(*conditions))
+        if not push_token:
+            db.commit()
+            return
+
+        db.delete(push_token)
+        db.commit()
+
+    def unregister_push_token_for_installation(
+        self,
+        db: Session,
+        installation_id: str,
+        token: str,
+    ) -> None:
+        push_token = db.scalar(
+            select(UserPushToken).where(
+                UserPushToken.installation_id == installation_id,
+                UserPushToken.token == token,
+            )
+        )
+
+        if not push_token:
+            db.commit()
+            return
+
+        db.delete(push_token)
+        db.commit()
 
     def list_support_requests(self, db: Session, actor: User) -> list[SupportRequestDetailResponse]:
         stmt = self._base_request_query()

@@ -50,6 +50,28 @@ class UserSession(Base):
     user: Mapped[User] = relationship()
 
 
+class UserPushToken(Base):
+    __tablename__ = "user_push_tokens"
+
+    id: Mapped[str] = mapped_column(
+        String(64), primary_key=True, default=lambda: f"PUSH-{uuid4().hex[:16]}"
+    )
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    installation_id: Mapped[str] = mapped_column(String(128), unique=True, index=True)
+    token: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    platform: Mapped[str] = mapped_column(String(32))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
+
+    user: Mapped[User] = relationship()
+
+
 class SupportRequest(Base):
     __tablename__ = "support_requests"
 

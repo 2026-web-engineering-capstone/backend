@@ -6,6 +6,11 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 SQLITE_STARTUP_MIGRATIONS = {
     ("support_requests", "completion_note"): "TEXT",
+    ("user_push_tokens", "installation_id"): "TEXT",
+}
+
+SQLITE_STARTUP_INDEXES = {
+    "CREATE UNIQUE INDEX IF NOT EXISTS ix_user_push_tokens_installation_id ON user_push_tokens (installation_id)",
 }
 
 
@@ -56,6 +61,9 @@ class Database:
                         f'ALTER TABLE "{table_name}" ADD COLUMN "{column_name}" {column_type}'
                     )
                 )
+
+            for index_statement in SQLITE_STARTUP_INDEXES:
+                connection.execute(text(index_statement))
 
     def session(self) -> Generator[Session, None, None]:
         session = self.session_factory()

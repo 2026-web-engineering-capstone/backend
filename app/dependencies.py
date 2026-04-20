@@ -51,6 +51,7 @@ def delete_user_session(db: Session, session_id: str | None) -> None:
     db.commit()
 
 
+
 def _get_user_from_session_id(db: Session, session_id: str | None) -> User:
     if not session_id:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")

@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.enums import MeetingPoint, Role, SupportRequestStatus, SupportType
@@ -25,6 +27,24 @@ class SessionResponse(BaseModel):
 
 class SignInRequest(BaseModel):
     role: Role
+    installation_id: str | None = Field(default=None, min_length=1, max_length=128)
+    push_token: str | None = Field(default=None, min_length=1, max_length=255)
+    push_platform: Literal["ios", "android"] | None = None
+
+
+class SignOutRequest(BaseModel):
+    installation_id: str = Field(min_length=1, max_length=128)
+    push_token: str | None = Field(default=None, min_length=1, max_length=255)
+
+
+class RegisterPushTokenRequest(BaseModel):
+    token: str = Field(min_length=1, max_length=255)
+    platform: Literal["ios", "android"]
+    installation_id: str = Field(min_length=1, max_length=128)
+
+
+class UnregisterPushTokenRequest(BaseModel):
+    installation_id: str = Field(min_length=1, max_length=128)
 
 
 class StationResponse(BaseModel):
