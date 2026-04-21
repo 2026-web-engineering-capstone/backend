@@ -861,6 +861,173 @@ def test_origin_staff_detail_prefers_latest_current_location_when_multiple_rows_
     }
 
 
+def test_passenger_can_upload_current_location_for_active_request(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "현위치 업로드 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    upload_response = client.post(
+        f"/support-requests/{request_id}/current-location",
+        json={
+            "latitude": 37.3881,
+            "longitude": 126.6434,
+            "accuracy_meters": 8.5,
+        },
+    )
+
+    assert upload_response.status_code == 200
+    detail = upload_response.json()["data"]
+    assert detail["id"] == request_id
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+
+    assert detail_response.status_code == 200
+    current_location = detail_response.json()["data"]["current_location"]
+    assert current_location is not None
+    assert current_location["latitude"] == 37.3881
+    assert current_location["longitude"] == 126.6434
+    assert current_location["accuracy_meters"] == 8.5
+    assert current_location["recorded_at"] is not None
+
+
+def test_staff_cannot_upload_current_location_for_request(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "현위치 업로드 권한 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+
+    upload_response = client.post(
+        f"/support-requests/{request_id}/current-location",
+        json={
+            "latitude": 37.3881,
+            "longitude": 126.6434,
+            "accuracy_meters": 8.5,
+        },
+    )
+
+    assert upload_response.status_code == 403
+
+
+
+def test_passenger_cannot_upload_current_location_after_boarded(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "보딩 후 현위치 업로드 차단 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    assert client.post(f"/support-requests/{request_id}/assign").status_code == 200
+    assert client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
+    ).status_code == 200
+    assert client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
+    ).status_code == 200
+
+    client.post("/auth/sign-out")
+    sign_in(client, "passenger")
+
+    upload_response = client.post(
+        f"/support-requests/{request_id}/current-location",
+        json={
+            "latitude": 37.3881,
+            "longitude": 126.6434,
+            "accuracy_meters": 8.5,
+        },
+    )
+
+    assert upload_response.status_code == 409
+
+
+
+def test_passenger_cannot_upload_current_location_after_completion(client):
+    sign_in(client, "passenger")
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "완료 후 현위치 업로드 차단 테스트",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    request_id = create_response.json()["data"]["id"]
+
+    client.post("/auth/sign-out")
+    sign_in(client, "staff")
+    assert client.post(f"/support-requests/{request_id}/assign").status_code == 200
+    assert client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.IN_PROGRESS, "train_car_number": None},
+    ).status_code == 200
+    assert client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
+    ).status_code == 200
+
+    create_staff_user("USR-STAFF-DEST-COMPLETE", "STN-CP")
+    client.post("/auth/sign-out")
+    sign_in_as_user(client, "USR-STAFF-DEST-COMPLETE")
+    assert client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.AWAITING_DROPOFF, "train_car_number": None},
+    ).status_code == 200
+    assert client.post(
+        f"/support-requests/{request_id}/status",
+        json={"status": SupportRequestStatus.COMPLETED, "completion_note": "하차 지원 완료"},
+    ).status_code == 200
+
+    client.post("/auth/sign-out")
+    sign_in(client, "passenger")
+
+    upload_response = client.post(
+        f"/support-requests/{request_id}/current-location",
+        json={
+            "latitude": 37.3881,
+            "longitude": 126.6434,
+            "accuracy_meters": 8.5,
+        },
+    )
+
+    assert upload_response.status_code == 409
+
+
+
 def test_cannot_skip_directly_to_completed(client):
     sign_in(client, "passenger")
     create_response = client.post(

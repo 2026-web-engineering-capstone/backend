@@ -22,6 +22,7 @@ from app.schemas import (
     UnavailableSupportRequestRequest,
     UpdateSupportRequestChecklistRequest,
     UpdateSupportRequestStatusRequest,
+    UploadSupportRequestCurrentLocationRequest,
 )
 from app.service import AppService
 
@@ -178,6 +179,20 @@ async def update_support_request_checklist(
         request_id,
         payload.items,
     )
+    await _broadcast_support_request_update(updates_hub, response)
+    return ApiResponse(data=response)
+
+
+@router.post("/{request_id}/current-location", response_model=ApiResponse)
+async def upload_support_request_current_location(
+    request_id: str,
+    payload: UploadSupportRequestCurrentLocationRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    service: AppService = Depends(get_service),
+    updates_hub: SupportRequestUpdatesHub = Depends(get_updates_hub),
+):
+    response = service.upload_current_location(db, user, request_id, payload)
     await _broadcast_support_request_update(updates_hub, response)
     return ApiResponse(data=response)
 

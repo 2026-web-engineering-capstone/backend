@@ -33,6 +33,7 @@ from app.schemas import (
     SupportRequestDetailResponse,
     SupportRequestEventResponse,
     SupportRequestListItem,
+    UploadSupportRequestCurrentLocationRequest,
 )
 
 CANCEL_REASON_ALIASES: dict[str, tuple[CancelReason, str]] = {
@@ -58,6 +59,12 @@ TERMINAL_STATUSES = {
     SupportRequestStatus.CANCELLED,
     SupportRequestStatus.UNAVAILABLE,
     SupportRequestStatus.COMPLETED,
+}
+
+LOCATION_UPLOAD_ALLOWED_STATUSES = {
+    SupportRequestStatus.SUBMITTED,
+    SupportRequestStatus.ASSIGNED,
+    SupportRequestStatus.IN_PROGRESS,
 }
 
 ALLOWED_TRANSITIONS: dict[SupportRequestStatus, set[SupportRequestStatus]] = {
@@ -482,6 +489,31 @@ class AppService:
             next_status=SupportRequestStatus.UNAVAILABLE,
             message=message,
             unavailable_reason=unavailable_reason,
+        )
+        db.commit()
+        return self._reload_request_detail(db, actor, request_id)
+
+    def upload_current_location(
+        self,
+        db: Session,
+        actor: User,
+        request_id: str,
+        payload: UploadSupportRequestCurrentLocationRequest,
+    ) -> SupportRequestDetailResponse:
+        support_request = self._get_request_entity(db, request_id)
+        if actor.role != Role.PASSENGER or support_request.passenger_user_id != actor.id:
+            raise HTTPException(status_code=403, detail="Only the passenger can update current location")
+        if support_request.status not in LOCATION_UPLOAD_ALLOWED_STATUSES:
+            raise HTTPException(status_code=409, detail="Current location cannot be updated")
+
+        db.add(
+            SupportRequestCurrentLocation(
+                request_id=support_request.id,
+                passenger_user_id=actor.id,
+                latitude=payload.latitude,
+                longitude=payload.longitude,
+                accuracy_meters=payload.accuracy_meters,
+            )
         )
         db.commit()
         return self._reload_request_detail(db, actor, request_id)
