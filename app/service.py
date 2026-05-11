@@ -617,6 +617,7 @@ class AppService:
         event = SupportRequestEvent(
             request_id=support_request.id,
             actor_user_id=actor.id,
+            actor_role=actor.role,
             type=event_type,
             from_status=from_status,
             to_status=to_status,
@@ -721,16 +722,10 @@ class AppService:
             destination_station_name=support_request.destination_station.name,
             support_types=[item.support_type for item in support_request.support_types],
             meeting_point=support_request.meeting_point,
-            notes=support_request.notes,
             passenger_name=support_request.passenger.name,
             assigned_staff_name=support_request.assigned_staff.name if support_request.assigned_staff else None,
             train_car_number=support_request.train_car_number,
             created_at=support_request.created_at,
-            cancel_reason=self._normalize_cancel_reason(support_request.cancel_reason),
-            unavailable_reason=self._normalize_unavailable_reason(
-                support_request.unavailable_reason
-            ),
-            completion_note=support_request.completion_note,
         )
 
     def _to_detail_response(
@@ -743,6 +738,12 @@ class AppService:
 
         return SupportRequestDetailResponse(
             **list_response.model_dump(),
+            notes=support_request.notes,
+            cancel_reason=self._normalize_cancel_reason(support_request.cancel_reason),
+            unavailable_reason=self._normalize_unavailable_reason(
+                support_request.unavailable_reason
+            ),
+            completion_note=support_request.completion_note,
             passenger_id=support_request.passenger_user_id,
             assigned_staff_id=support_request.assigned_staff_user_id,
             current_location=current_location,
@@ -760,6 +761,7 @@ class AppService:
                     id=event.id,
                     type=event.type,
                     actor_name=event.actor.name,
+                    actor_role=event.actor_role or event.actor.role,
                     from_status=event.from_status,
                     to_status=event.to_status,
                     message=event.message,
@@ -824,4 +826,3 @@ class AppService:
             SupportRequestStatus.COMPLETED: "지원이 완료되었습니다.",
         }
         return messages.get(status_value, status_value.value)
-

@@ -238,12 +238,49 @@ def test_passenger_can_create_and_list_support_request(client):
     assert created["status"] == SupportRequestStatus.SUBMITTED
     assert created["origin_station_name"] == "인천대입구역"
     assert len(created["events"]) == 1
+    assert created["events"][0]["actor_role"] == Role.PASSENGER
 
     list_response = client.get("/support-requests")
     assert list_response.status_code == 200
     items = list_response.json()["data"]
     assert len(items) == 1
     assert items[0]["id"] == created["id"]
+
+
+def test_passenger_list_omits_detail_only_fields_while_detail_includes_them(client):
+    sign_in(client, "passenger")
+
+    create_response = client.post(
+        "/support-requests",
+        json={
+            "origin_station_id": "STN-ICU",
+            "destination_station_id": "STN-CP",
+            "meeting_point": MeetingPoint.ELEVATOR,
+            "notes": "목록에는 노출하지 않는 상세 메모",
+            "support_types": [SupportType.WHEELCHAIR],
+        },
+    )
+    assert create_response.status_code == 201
+    request_id = create_response.json()["data"]["id"]
+
+    list_response = client.get("/support-requests")
+    assert list_response.status_code == 200
+    item = list_response.json()["data"][0]
+    for field in (
+        "notes",
+        "cancel_reason",
+        "unavailable_reason",
+        "completion_note",
+    ):
+        assert field not in item
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert detail["notes"] == "목록에는 노출하지 않는 상세 메모"
+    assert detail["cancel_reason"] is None
+    assert detail["unavailable_reason"] is None
+    assert detail["completion_note"] is None
 
 
 def test_passenger_list_ignores_legacy_invalid_cancel_reason(client):
@@ -275,7 +312,11 @@ def test_passenger_list_ignores_legacy_invalid_cancel_reason(client):
     items = list_response.json()["data"]
     legacy_item = next(item for item in items if item["id"] == request_id)
     assert legacy_item["status"] == SupportRequestStatus.CANCELLED
-    assert legacy_item["cancel_reason"] is None
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert detail["cancel_reason"] is None
 
 
 
@@ -308,7 +349,11 @@ def test_passenger_list_ignores_legacy_invalid_unavailable_reason(client):
     items = list_response.json()["data"]
     legacy_item = next(item for item in items if item["id"] == request_id)
     assert legacy_item["status"] == SupportRequestStatus.UNAVAILABLE
-    assert legacy_item["unavailable_reason"] is None
+
+    detail_response = client.get(f"/support-requests/{request_id}")
+    assert detail_response.status_code == 200
+    detail = detail_response.json()["data"]
+    assert detail["unavailable_reason"] is None
 
 
 def test_staff_can_assign_and_progress_support_request(client):
@@ -1657,6 +1702,7 @@ def test_staff_must_provide_completion_note_when_completing_request(client):
     assert len(awaiting["events"]) == len(boarded["events"]) + 1
     assert awaiting["events"][-1]["to_status"] == SupportRequestStatus.AWAITING_DROPOFF
     assert awaiting["events"][-1]["actor_name"] == "테스트 역무원 STN-CP"
+    assert awaiting["events"][-1]["actor_role"] == Role.STAFF
 
     client.post("/auth/sign-out")
     sign_in(client, "staff")

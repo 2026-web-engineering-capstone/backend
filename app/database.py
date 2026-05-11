@@ -6,6 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 SQLITE_STARTUP_MIGRATIONS = {
     ("support_requests", "completion_note"): "TEXT",
+    ("support_request_events", "actor_role"): "VARCHAR(32)",
     ("user_push_tokens", "installation_id"): "TEXT",
     (
         "support_request_current_locations",

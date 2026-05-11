@@ -172,6 +172,7 @@ class SupportRequestEvent(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     request_id: Mapped[str] = mapped_column(ForeignKey("support_requests.id"), index=True)
     actor_user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    actor_role: Mapped[Role | None] = mapped_column(Enum(Role), nullable=True)
     type: Mapped[str] = mapped_column(String(64), index=True)
     from_status: Mapped[SupportRequestStatus | None] = mapped_column(
         Enum(SupportRequestStatus), nullable=True

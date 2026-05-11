@@ -80,6 +80,7 @@ class SupportRequestEventResponse(BaseModel):
     id: int
     type: str
     actor_name: str
+    actor_role: Role
     from_status: SupportRequestStatus | None
     to_status: SupportRequestStatus | None
     message: str
@@ -102,17 +103,17 @@ class SupportRequestListItem(BaseModel):
     destination_station_name: str
     support_types: list[SupportType]
     meeting_point: MeetingPoint
-    notes: str
     passenger_name: str
     assigned_staff_name: str | None
     train_car_number: str | None
     created_at: datetime
-    cancel_reason: CancelReason | None
-    unavailable_reason: UnavailableReason | None
-    completion_note: str | None
 
 
 class SupportRequestDetailResponse(SupportRequestListItem):
+    notes: str
+    cancel_reason: CancelReason | None
+    unavailable_reason: UnavailableReason | None
+    completion_note: str | None
     passenger_id: str
     assigned_staff_id: str | None
     current_location: SupportRequestCurrentLocationResponse | None = None
