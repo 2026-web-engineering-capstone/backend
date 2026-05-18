@@ -91,6 +91,7 @@ class SupportRequest(Base):
         default=SupportRequestStatus.SUBMITTED,
         index=True,
     )
+    train_number: Mapped[str | None] = mapped_column(String(32), nullable=True)
     train_car_number: Mapped[str | None] = mapped_column(String(32), nullable=True)
     cancel_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
     unavailable_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)

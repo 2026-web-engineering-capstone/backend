@@ -157,6 +157,7 @@ async def update_support_request_status(
         user,
         request_id,
         payload.status,
+        payload.train_number,
         payload.train_car_number,
         payload.completion_note,
     )

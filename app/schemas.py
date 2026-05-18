@@ -105,6 +105,7 @@ class SupportRequestListItem(BaseModel):
     meeting_point: MeetingPoint
     passenger_name: str
     assigned_staff_name: str | None
+    train_number: str | None
     train_car_number: str | None
     created_at: datetime
 
@@ -131,6 +132,7 @@ class CreateSupportRequestRequest(BaseModel):
 
 class UpdateSupportRequestStatusRequest(BaseModel):
     status: SupportRequestStatus
+    train_number: str | None = None
     train_car_number: str | None = None
     completion_note: str | None = Field(default=None, min_length=1)
 

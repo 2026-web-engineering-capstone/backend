@@ -434,20 +434,27 @@ class AppService:
         actor: User,
         request_id: str,
         next_status: SupportRequestStatus,
+        train_number: str | None,
         train_car_number: str | None,
         completion_note: str | None,
     ) -> SupportRequestDetailResponse:
         support_request = self._get_request_entity(db, request_id)
         self._assert_status_actor(actor, support_request)
 
+        normalized_train_number = train_number.strip() if train_number else None
         normalized_train_car_number = train_car_number.strip() if train_car_number else None
         normalized_completion_note = completion_note.strip() if completion_note else None
 
         if next_status == SupportRequestStatus.BOARDED:
             if not normalized_train_car_number:
                 raise HTTPException(status_code=422, detail="Train car number is required")
-        elif normalized_train_car_number is not None:
-            raise HTTPException(status_code=422, detail="Train car number is only allowed for boarded status")
+            if not normalized_train_number:
+                raise HTTPException(status_code=422, detail="Train number is required")
+        else:
+            if normalized_train_car_number is not None:
+                raise HTTPException(status_code=422, detail="Train car number is only allowed for boarded status")
+            if normalized_train_number is not None:
+                raise HTTPException(status_code=422, detail="Train number is only allowed for boarded status")
 
         if next_status == SupportRequestStatus.COMPLETED:
             if next_status in ALLOWED_TRANSITIONS[support_request.status] and not normalized_completion_note:
@@ -455,6 +462,8 @@ class AppService:
         elif normalized_completion_note is not None:
             raise HTTPException(status_code=422, detail="Completion note is only allowed for completed status")
 
+        if normalized_train_number:
+            support_request.train_number = normalized_train_number
         if normalized_train_car_number:
             support_request.train_car_number = normalized_train_car_number
         self._transition_request(
@@ -724,6 +733,7 @@ class AppService:
             meeting_point=support_request.meeting_point,
             passenger_name=support_request.passenger.name,
             assigned_staff_name=support_request.assigned_staff.name if support_request.assigned_staff else None,
+            train_number=support_request.train_number,
             train_car_number=support_request.train_car_number,
             created_at=support_request.created_at,
         )
