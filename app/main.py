@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.auth import router as auth_router
 from app.api.stations import router as stations_router
 from app.api.support_requests import router as support_requests_router
+from app.api.transit import router as transit_router
 from app.config import Settings
 from app import dependencies
 
@@ -26,6 +27,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(auth_router)
     app.include_router(stations_router)
     app.include_router(support_requests_router)
+    app.include_router(transit_router)
 
     @app.get("/health")
     def health_check():

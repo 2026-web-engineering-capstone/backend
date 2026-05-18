@@ -5,6 +5,7 @@ description = "Gyoum backend API"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.128.0",
+    "httpx>=0.28.1",
     "pydantic-settings>=2.11.0",
     "sqlalchemy>=2.0.44",
     "uvicorn>=0.38.0",
@@ -12,7 +13,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "httpx>=0.28.1",
     "pytest>=8.4.2",
 ]
 
