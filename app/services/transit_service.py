@@ -35,6 +35,8 @@ class StationArrivals:
     station_name: str
     fetched_at: float
     trains: list[ArrivalTrain]
+    source: str  # 'live' | 'fallback'
+    fallback_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -118,11 +120,14 @@ _FALLBACK_BY_LINE: dict[str, list[tuple[str, str, str, str]]] = {
 }
 
 
-def _build_fallback_arrivals(normalized_station: str) -> StationArrivals:
+def _build_fallback_arrivals(
+    normalized_station: str, reason: str
+) -> StationArrivals:
     """외부 API 호출이 불가능하거나 결과가 비어 있을 때 사용하는 데모 데이터.
 
     역 이름으로 노선을 식별해 해당 노선 기준 4건을 반환한다. 매칭되는 노선이
-    없으면 인천1호선을 기본값으로 사용한다.
+    없으면 인천1호선을 기본값으로 사용한다. `reason`은 클라이언트에 노출되어
+    화면 배지에 표시되므로 사용자가 보기에 자연스러운 한국어 문구로 작성한다.
     """
     line_label = _LINE_BY_NORMALIZED_STATION.get(normalized_station, "인천1호선")
     rows = _FALLBACK_BY_LINE.get(line_label, _FALLBACK_BY_LINE["인천1호선"])
@@ -140,6 +145,8 @@ def _build_fallback_arrivals(normalized_station: str) -> StationArrivals:
         station_name=normalized_station,
         fetched_at=time.time(),
         trains=trains,
+        source="fallback",
+        fallback_reason=reason,
     )
 
 
@@ -158,7 +165,10 @@ async def fetch_station_arrivals(
 
     if not settings.seoul_open_api_key:
         logger.info("seoul_open_api_key not set; serving fallback arrivals")
-        return _build_fallback_arrivals(normalized)
+        return _build_fallback_arrivals(
+            normalized,
+            "서울 열린데이터광장 인증키가 설정되어 있지 않습니다.",
+        )
 
     url = (
         f"{settings.seoul_open_api_base_url.rstrip('/')}/"
@@ -171,20 +181,47 @@ async def fetch_station_arrivals(
             response = await client.get(url)
     except httpx.HTTPError as error:
         logger.warning("realtimeStationArrival http error: %s; serving fallback", error)
-        return _build_fallback_arrivals(normalized)
+        return _build_fallback_arrivals(
+            normalized,
+            f"외부 API 호출에 실패했어요 ({type(error).__name__}).",
+        )
 
     if response.status_code != 200:
         logger.warning(
             "realtimeStationArrival non-200 status %s; serving fallback",
             response.status_code,
         )
-        return _build_fallback_arrivals(normalized)
+        return _build_fallback_arrivals(
+            normalized,
+            f"외부 API가 비정상 응답을 보냈어요 (status={response.status_code}).",
+        )
 
     try:
         payload = response.json()
     except ValueError as error:
         logger.warning("realtimeStationArrival json error: %s; serving fallback", error)
-        return _build_fallback_arrivals(normalized)
+        return _build_fallback_arrivals(
+            normalized, "외부 API 응답을 해석할 수 없었어요."
+        )
+
+    # 서울 API는 인증·권한·역 미존재 같은 오류를 HTTP 200 + status/code/message 형태로 감싸 보낸다.
+    if isinstance(payload, dict):
+        api_status = payload.get("status")
+        api_message = payload.get("message")
+        api_code = payload.get("code")
+        if isinstance(api_status, int) and api_status >= 400:
+            logger.warning(
+                "realtimeStationArrival api error status=%s code=%s message=%s",
+                api_status,
+                api_code,
+                api_message,
+            )
+            reason = (
+                f"{api_message} ({api_code})"
+                if api_message and api_code
+                else api_message or f"외부 API 오류 (status={api_status})."
+            )
+            return _build_fallback_arrivals(normalized, reason)
 
     items = payload.get("realtimeArrivalList") if isinstance(payload, dict) else None
     if not isinstance(items, list) or not items:
@@ -192,13 +229,18 @@ async def fetch_station_arrivals(
             "realtimeStationArrival returned no items for %s; serving fallback",
             normalized,
         )
-        return _build_fallback_arrivals(normalized)
+        return _build_fallback_arrivals(
+            normalized,
+            "현재 이 역에 도착 예정인 열차가 없거나 정보가 비공개입니다.",
+        )
 
     trains = [_parse_seoul_arrival_train(item) for item in items if isinstance(item, dict)]
     result = StationArrivals(
         station_name=normalized,
         fetched_at=time.time(),
         trains=trains,
+        source="live",
+        fallback_reason=None,
     )
     _arrivals_cache.set(cache_key, result)
     return result
