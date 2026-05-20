@@ -23,8 +23,6 @@ def _serialize_arrivals(payload: StationArrivals) -> dict:
         "stationName": payload.station_name,
         "fetchedAt": payload.fetched_at,
         "trains": [_serialize_train(train) for train in payload.trains],
-        "source": payload.source,
-        "fallbackReason": payload.fallback_reason,
     }
 
 

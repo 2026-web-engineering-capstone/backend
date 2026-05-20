@@ -1,7 +1,9 @@
 """실시간 도착 정보 + 역사 편의시설 정보 서비스.
 
-도착 정보는 서울 열린데이터광장 API를 호출한다. 키가 없거나 호출이 실패하면
-시연·MVP가 멈추지 않도록 fallback 데모 데이터를 반환한다.
+도착 정보는 서울 열린데이터광장 API를 호출한다. 키 미설정, 네트워크 오류,
+응답 파싱 실패, API가 status>=400 envelope으로 반환한 오류는 모두 명시적인
+HTTPException으로 상위에 전달한다 — 우회하지 않고 사용자에게 사유를 그대로
+알린다.
 
 역사 편의시설 정보는 안정적인 무료 공공 API가 없어 코드 내 정적 dict로 제공한다.
 향후 진짜 API가 확정되면 `fetch_station_facilities`의 본문만 외부 호출로 교체하면
@@ -15,6 +17,7 @@ import time
 from dataclasses import dataclass
 
 import httpx
+from fastapi import HTTPException
 
 from app.config import Settings
 
@@ -35,8 +38,6 @@ class StationArrivals:
     station_name: str
     fetched_at: float
     trains: list[ArrivalTrain]
-    source: str  # 'live' | 'fallback'
-    fallback_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -103,59 +104,14 @@ def _parse_seoul_arrival_train(item: dict) -> ArrivalTrain:
     )
 
 
-# 노선별 fallback 데모 데이터. (train_number, destination, eta_message, direction)
-_FALLBACK_BY_LINE: dict[str, list[tuple[str, str, str, str]]] = {
-    "서울4호선": [
-        ("4561", "당고개행", "10분 후 도착", "상행"),
-        ("4559", "오이도행", "3분 후 도착", "하행"),
-        ("4557", "사당행", "2분 전 출발", "상행"),
-        ("4555", "오이도행", "9분 전 출발", "하행"),
-    ],
-    "인천1호선": [
-        ("1146", "계양행", "10분 후 도착", "상행"),
-        ("1144", "국제업무지구행", "3분 후 도착", "하행"),
-        ("1142", "계양행", "2분 전 출발", "상행"),
-        ("1140", "송도달빛축제공원행", "9분 전 출발", "하행"),
-    ],
-}
-
-
-def _build_fallback_arrivals(
-    normalized_station: str, reason: str
-) -> StationArrivals:
-    """외부 API 호출이 불가능하거나 결과가 비어 있을 때 사용하는 데모 데이터.
-
-    역 이름으로 노선을 식별해 해당 노선 기준 4건을 반환한다. 매칭되는 노선이
-    없으면 인천1호선을 기본값으로 사용한다. `reason`은 클라이언트에 노출되어
-    화면 배지에 표시되므로 사용자가 보기에 자연스러운 한국어 문구로 작성한다.
-    """
-    line_label = _LINE_BY_NORMALIZED_STATION.get(normalized_station, "인천1호선")
-    rows = _FALLBACK_BY_LINE.get(line_label, _FALLBACK_BY_LINE["인천1호선"])
-    trains = [
-        ArrivalTrain(
-            train_number=train_number,
-            destination=destination,
-            eta_message=eta_message,
-            direction=direction,
-            line=line_label,
-        )
-        for train_number, destination, eta_message, direction in rows
-    ]
-    return StationArrivals(
-        station_name=normalized_station,
-        fetched_at=time.time(),
-        trains=trains,
-        source="fallback",
-        fallback_reason=reason,
-    )
-
-
 async def fetch_station_arrivals(
     settings: Settings, station_name: str
 ) -> StationArrivals:
     """서울 열린데이터 광장 realtimeStationArrival 호출.
 
-    키가 없거나 호출/파싱이 실패하면 fallback 데모 데이터를 반환한다(200 유지).
+    키 미설정·네트워크·파싱·API 오류 envelope 모두 HTTPException으로 명시 전파.
+    호출이 성공했지만 결과가 비어 있는 정상 케이스는 빈 trains 배열을 200으로
+    반환한다 (프런트의 빈 상태 UI가 처리).
     """
     normalized = _normalize_station_name(station_name)
     cache_key = f"arrivals::{normalized}"
@@ -164,10 +120,12 @@ async def fetch_station_arrivals(
         return cached
 
     if not settings.seoul_open_api_key:
-        logger.info("seoul_open_api_key not set; serving fallback arrivals")
-        return _build_fallback_arrivals(
-            normalized,
-            "서울 열린데이터광장 인증키가 설정되어 있지 않습니다.",
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "서울 열린데이터광장 인증키가 설정되어 있지 않습니다. "
+                "GYOUM_SEOUL_OPEN_API_KEY 환경 변수를 설정해 주세요."
+            ),
         )
 
     url = (
@@ -180,29 +138,32 @@ async def fetch_station_arrivals(
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(url)
     except httpx.HTTPError as error:
-        logger.warning("realtimeStationArrival http error: %s; serving fallback", error)
-        return _build_fallback_arrivals(
-            normalized,
-            f"외부 API 호출에 실패했어요 ({type(error).__name__}).",
-        )
+        logger.warning("realtimeStationArrival http error: %s", error)
+        raise HTTPException(
+            status_code=503,
+            detail=f"외부 API 호출에 실패했어요 ({type(error).__name__}).",
+        ) from error
 
     if response.status_code != 200:
         logger.warning(
-            "realtimeStationArrival non-200 status %s; serving fallback",
-            response.status_code,
+            "realtimeStationArrival non-200 status %s", response.status_code
         )
-        return _build_fallback_arrivals(
-            normalized,
-            f"외부 API가 비정상 응답을 보냈어요 (status={response.status_code}).",
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "외부 API가 비정상 응답을 보냈어요 "
+                f"(status={response.status_code})."
+            ),
         )
 
     try:
         payload = response.json()
     except ValueError as error:
-        logger.warning("realtimeStationArrival json error: %s; serving fallback", error)
-        return _build_fallback_arrivals(
-            normalized, "외부 API 응답을 해석할 수 없었어요."
-        )
+        logger.warning("realtimeStationArrival json error: %s", error)
+        raise HTTPException(
+            status_code=503,
+            detail="외부 API 응답을 해석할 수 없었어요.",
+        ) from error
 
     # 서울 API는 인증·권한·역 미존재 같은 오류를 HTTP 200 + status/code/message 형태로 감싸 보낸다.
     if isinstance(payload, dict):
@@ -216,31 +177,21 @@ async def fetch_station_arrivals(
                 api_code,
                 api_message,
             )
-            reason = (
+            detail = (
                 f"{api_message} ({api_code})"
                 if api_message and api_code
                 else api_message or f"외부 API 오류 (status={api_status})."
             )
-            return _build_fallback_arrivals(normalized, reason)
+            raise HTTPException(status_code=503, detail=detail)
 
     items = payload.get("realtimeArrivalList") if isinstance(payload, dict) else None
-    if not isinstance(items, list) or not items:
-        logger.info(
-            "realtimeStationArrival returned no items for %s; serving fallback",
-            normalized,
-        )
-        return _build_fallback_arrivals(
-            normalized,
-            "현재 이 역에 도착 예정인 열차가 없거나 정보가 비공개입니다.",
-        )
-
+    if not isinstance(items, list):
+        items = []
     trains = [_parse_seoul_arrival_train(item) for item in items if isinstance(item, dict)]
     result = StationArrivals(
         station_name=normalized,
         fetched_at=time.time(),
         trains=trains,
-        source="live",
-        fallback_reason=None,
     )
     _arrivals_cache.set(cache_key, result)
     return result
@@ -254,13 +205,7 @@ def _facility(
     return facility_type, location_note, operational_status
 
 
-# 노선별 정규화 역명 묶음. fallback 도착 노선 판별과 4호선 시설 시드 자동 생성에 사용.
-_INCHEON_LINE_1_STATIONS: tuple[str, ...] = (
-    "계양", "귤현", "박촌", "임학", "작전", "갈산",
-    "지식정보단지", "인천대입구", "센트럴파크", "국제업무지구",
-    "송도달빛축제공원",
-)
-
+# 4호선 정적 시설 시드 자동 보충에 사용하는 정규화 역명 묶음.
 _SEOUL_LINE_4_STATIONS: tuple[str, ...] = (
     "당고개", "상계", "노원", "창동", "쌍문", "수유", "미아",
     "미아사거리", "길음", "성신여대입구", "한성대입구", "혜화",
@@ -271,11 +216,6 @@ _SEOUL_LINE_4_STATIONS: tuple[str, ...] = (
     "산본", "수리산", "대야미", "반월", "상록수", "한대앞",
     "중앙", "고잔", "초지", "안산", "신길온천", "정왕", "오이도",
 )
-
-_LINE_BY_NORMALIZED_STATION: dict[str, str] = {
-    **{name: "인천1호선" for name in _INCHEON_LINE_1_STATIONS},
-    **{name: "서울4호선" for name in _SEOUL_LINE_4_STATIONS},
-}
 
 # 시연용 정적 편의시설 시드. 키는 normalized station name (역 접미사 제거).
 # facility_type 한글 라벨은 프론트 FACILITY_LABELS 키와 일치해야 한다.
