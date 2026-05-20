@@ -101,22 +101,31 @@ def _parse_seoul_arrival_train(item: dict) -> ArrivalTrain:
     )
 
 
+# 노선별 fallback 데모 데이터. (train_number, destination, eta_message, direction)
+_FALLBACK_BY_LINE: dict[str, list[tuple[str, str, str, str]]] = {
+    "서울4호선": [
+        ("4561", "당고개행", "10분 후 도착", "상행"),
+        ("4559", "오이도행", "3분 후 도착", "하행"),
+        ("4557", "사당행", "2분 전 출발", "상행"),
+        ("4555", "오이도행", "9분 전 출발", "하행"),
+    ],
+    "인천1호선": [
+        ("1146", "계양행", "10분 후 도착", "상행"),
+        ("1144", "국제업무지구행", "3분 후 도착", "하행"),
+        ("1142", "계양행", "2분 전 출발", "상행"),
+        ("1140", "송도달빛축제공원행", "9분 전 출발", "하행"),
+    ],
+}
+
+
 def _build_fallback_arrivals(normalized_station: str) -> StationArrivals:
     """외부 API 호출이 불가능하거나 결과가 비어 있을 때 사용하는 데모 데이터.
 
-    현재 STATION_SEED는 모두 인천1호선이므로 인천1호선 기준 4건을 반환한다.
-    실 운영 키가 들어오면 자연스럽게 실시간 데이터로 대체된다.
+    역 이름으로 노선을 식별해 해당 노선 기준 4건을 반환한다. 매칭되는 노선이
+    없으면 인천1호선을 기본값으로 사용한다.
     """
-    line_label = "인천1호선"
-    direction_labels = ["상행", "하행", "상행", "하행"]
-    destinations = ["국제업무지구행", "계양행", "국제업무지구행", "계양행"]
-    train_numbers = ["1146", "1144", "1142", "1140"]
-    eta_messages = [
-        "10분 후 도착",
-        "3분 후 도착",
-        "2분 전 출발",
-        "9분 전 출발",
-    ]
+    line_label = _LINE_BY_NORMALIZED_STATION.get(normalized_station, "인천1호선")
+    rows = _FALLBACK_BY_LINE.get(line_label, _FALLBACK_BY_LINE["인천1호선"])
     trains = [
         ArrivalTrain(
             train_number=train_number,
@@ -125,13 +134,7 @@ def _build_fallback_arrivals(normalized_station: str) -> StationArrivals:
             direction=direction,
             line=line_label,
         )
-        for train_number, destination, eta_message, direction in zip(
-            train_numbers,
-            destinations,
-            eta_messages,
-            direction_labels,
-            strict=True,
-        )
+        for train_number, destination, eta_message, direction in rows
     ]
     return StationArrivals(
         station_name=normalized_station,
@@ -209,8 +212,31 @@ def _facility(
     return facility_type, location_note, operational_status
 
 
+# 노선별 정규화 역명 묶음. fallback 도착 노선 판별과 4호선 시설 시드 자동 생성에 사용.
+_INCHEON_LINE_1_STATIONS: tuple[str, ...] = (
+    "계양", "귤현", "박촌", "임학", "작전", "갈산",
+    "지식정보단지", "인천대입구", "센트럴파크", "국제업무지구",
+    "송도달빛축제공원",
+)
+
+_SEOUL_LINE_4_STATIONS: tuple[str, ...] = (
+    "당고개", "상계", "노원", "창동", "쌍문", "수유", "미아",
+    "미아사거리", "길음", "성신여대입구", "한성대입구", "혜화",
+    "동대문", "동대문역사문화공원", "충무로", "명동", "회현",
+    "서울", "숙대입구", "삼각지", "신용산", "이촌", "동작",
+    "총신대입구", "사당", "남태령", "선바위", "경마공원", "대공원",
+    "과천", "정부과천청사", "인덕원", "평촌", "범계", "금정",
+    "산본", "수리산", "대야미", "반월", "상록수", "한대앞",
+    "중앙", "고잔", "초지", "안산", "신길온천", "정왕", "오이도",
+)
+
+_LINE_BY_NORMALIZED_STATION: dict[str, str] = {
+    **{name: "인천1호선" for name in _INCHEON_LINE_1_STATIONS},
+    **{name: "서울4호선" for name in _SEOUL_LINE_4_STATIONS},
+}
+
 # 시연용 정적 편의시설 시드. 키는 normalized station name (역 접미사 제거).
-# 모든 역은 인천1호선이며 facility_type 한글 라벨은 프론트 FACILITY_LABELS 키와 일치.
+# facility_type 한글 라벨은 프론트 FACILITY_LABELS 키와 일치해야 한다.
 _STATIC_FACILITIES_SEED: dict[str, list[tuple[str, str | None, str]]] = {
     "계양": [
         _facility("엘리베이터", "1번 출구 ↔ 대합실 ↔ 승강장"),
@@ -274,6 +300,83 @@ _STATIC_FACILITIES_SEED: dict[str, list[tuple[str, str | None, str]]] = {
         _facility("휠체어 리프트", "2번 출구 계단", "unknown"),
     ],
 }
+
+
+# 서울 4호선 모든 역에 기본 시설(엘리베이터·에스컬레이터·장애인 화장실)을 보충.
+# 환승역 등 특수한 역은 아래에서 override한다.
+for _name in _SEOUL_LINE_4_STATIONS:
+    _STATIC_FACILITIES_SEED.setdefault(
+        _name,
+        [
+            _facility("엘리베이터", "대합실 ↔ 승강장"),
+            _facility("에스컬레이터", "대합실 ↔ 승강장 (상·하행)"),
+            _facility("장애인 화장실", "지하 대합실"),
+        ],
+    )
+
+# 4호선 주요 환승역·거점역 시설 override.
+_STATIC_FACILITIES_SEED["서울"] = [
+    _facility("엘리베이터", "1·14번 출구 측 (지상 ↔ 대합실 ↔ 승강장)"),
+    _facility("에스컬레이터", "대합실 ↔ 승강장 (상·하행)"),
+    _facility("장애인 화장실", "지하 1층 대합실 동·서측"),
+    _facility("휠체어 리프트", "10번 출구 계단"),
+    _facility("수유실", "고객안내실 옆"),
+]
+_STATIC_FACILITIES_SEED["사당"] = [
+    _facility("엘리베이터", "2·6·14번 출구 측"),
+    _facility("에스컬레이터", "2호선 환승 통로 (상·하행)"),
+    _facility("장애인 화장실", "지하 2층 대합실"),
+    _facility("휠체어 리프트", "12번 출구 계단"),
+    _facility("수유실", "고객센터 옆"),
+]
+_STATIC_FACILITIES_SEED["동대문"] = [
+    _facility("엘리베이터", "1번 출구 측"),
+    _facility("에스컬레이터", "대합실 ↔ 승강장"),
+    _facility("장애인 화장실", "대합실 중앙"),
+    _facility("수유실", "고객센터 옆"),
+]
+_STATIC_FACILITIES_SEED["동대문역사문화공원"] = [
+    _facility("엘리베이터", "10·14번 출구 측"),
+    _facility("에스컬레이터", "2·5호선 환승 통로 (상·하행)"),
+    _facility("장애인 화장실", "대합실 중앙"),
+    _facility("휠체어 리프트", "8번 출구 계단", "out_of_service"),
+    _facility("수유실", "고객센터 옆"),
+]
+_STATIC_FACILITIES_SEED["충무로"] = [
+    _facility("엘리베이터", "1·6번 출구 측"),
+    _facility("에스컬레이터", "3호선 환승 통로"),
+    _facility("장애인 화장실", "대합실 남측"),
+    _facility("수유실", "고객센터 옆"),
+]
+_STATIC_FACILITIES_SEED["삼각지"] = [
+    _facility("엘리베이터", "1·14번 출구 측"),
+    _facility("에스컬레이터", "6호선 환승 통로"),
+    _facility("장애인 화장실", "대합실 동측"),
+]
+_STATIC_FACILITIES_SEED["금정"] = [
+    _facility("엘리베이터", "1·4번 출구 측"),
+    _facility("에스컬레이터", "1호선 환승 통로 (상·하행)"),
+    _facility("장애인 화장실", "지하 2층 대합실"),
+    _facility("휠체어 리프트", "5번 출구 계단"),
+]
+_STATIC_FACILITIES_SEED["노원"] = [
+    _facility("엘리베이터", "1·9번 출구 측"),
+    _facility("에스컬레이터", "7호선 환승 통로 (상·하행)"),
+    _facility("장애인 화장실", "대합실 중앙"),
+    _facility("수유실", "고객센터 옆"),
+]
+_STATIC_FACILITIES_SEED["수유"] = [
+    _facility("엘리베이터", "2·6번 출구 측"),
+    _facility("에스컬레이터", "대합실 ↔ 승강장 상행"),
+    _facility("장애인 화장실", "대합실 동측"),
+    _facility("수유실", "고객센터 옆"),
+]
+_STATIC_FACILITIES_SEED["오이도"] = [
+    _facility("엘리베이터", "1번 출구 측"),
+    _facility("에스컬레이터", "대합실 ↔ 승강장"),
+    _facility("장애인 화장실", "대합실 서측"),
+    _facility("휠체어 리프트", "2번 출구 계단", "unknown"),
+]
 
 
 def _build_static_facilities(normalized_station: str) -> StationFacilities:
