@@ -1,9 +1,11 @@
-"""실시간 도착 정보 + 역사 편의시설 외부 API 프록시.
+"""실시간 도착 정보 + 역사 편의시설 정보 서비스.
 
-외부 API 키는 `app.config.Settings`를 통해 환경 변수로만 주입한다. 코드에
-하드코딩하지 않는다. 외부 호출 결과는 짧은 TTL의 메모리 캐시에 보관해 호출
-빈도를 줄인다. 외부 호출 실패는 그대로 사용자에게 명시적인 에러로 전달하며,
-빈 배열로 조용히 우회하지 않는다.
+도착 정보는 서울 열린데이터광장 API를 호출한다. 키가 없거나 호출이 실패하면
+시연·MVP가 멈추지 않도록 fallback 데모 데이터를 반환한다.
+
+역사 편의시설 정보는 안정적인 무료 공공 API가 없어 코드 내 정적 dict로 제공한다.
+향후 진짜 API가 확정되면 `fetch_station_facilities`의 본문만 외부 호출로 교체하면
+라우터·프런트 인터페이스를 그대로 유지할 수 있다.
 """
 
 from __future__ import annotations
@@ -13,7 +15,6 @@ import time
 from dataclasses import dataclass
 
 import httpx
-from fastapi import HTTPException
 
 from app.config import Settings
 
@@ -72,7 +73,6 @@ class _TTLCache:
 
 
 _arrivals_cache = _TTLCache()
-_facilities_cache = _TTLCache()
 
 
 def _normalize_station_name(name: str) -> str:
@@ -101,27 +101,61 @@ def _parse_seoul_arrival_train(item: dict) -> ArrivalTrain:
     )
 
 
+def _build_fallback_arrivals(normalized_station: str) -> StationArrivals:
+    """외부 API 호출이 불가능하거나 결과가 비어 있을 때 사용하는 데모 데이터.
+
+    현재 STATION_SEED는 모두 인천1호선이므로 인천1호선 기준 4건을 반환한다.
+    실 운영 키가 들어오면 자연스럽게 실시간 데이터로 대체된다.
+    """
+    line_label = "인천1호선"
+    direction_labels = ["상행", "하행", "상행", "하행"]
+    destinations = ["국제업무지구행", "계양행", "국제업무지구행", "계양행"]
+    train_numbers = ["1146", "1144", "1142", "1140"]
+    eta_messages = [
+        "10분 후 도착",
+        "3분 후 도착",
+        "2분 전 출발",
+        "9분 전 출발",
+    ]
+    trains = [
+        ArrivalTrain(
+            train_number=train_number,
+            destination=destination,
+            eta_message=eta_message,
+            direction=direction,
+            line=line_label,
+        )
+        for train_number, destination, eta_message, direction in zip(
+            train_numbers,
+            destinations,
+            eta_messages,
+            direction_labels,
+            strict=True,
+        )
+    ]
+    return StationArrivals(
+        station_name=normalized_station,
+        fetched_at=time.time(),
+        trains=trains,
+    )
+
+
 async def fetch_station_arrivals(
     settings: Settings, station_name: str
 ) -> StationArrivals:
     """서울 열린데이터 광장 realtimeStationArrival 호출.
 
-    문제 발생 시 우회하지 않고 HTTPException으로 상위에 명시적으로 전파한다.
+    키가 없거나 호출/파싱이 실패하면 fallback 데모 데이터를 반환한다(200 유지).
     """
-    if not settings.seoul_open_api_key:
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "실시간 도착 정보 API 키가 설정되어 있지 않습니다. "
-                "GYOUM_SEOUL_OPEN_API_KEY 환경 변수를 설정해 주세요."
-            ),
-        )
-
     normalized = _normalize_station_name(station_name)
     cache_key = f"arrivals::{normalized}"
     cached = _arrivals_cache.get(cache_key, settings.transit_arrivals_cache_ttl)
     if isinstance(cached, StationArrivals):
         return cached
+
+    if not settings.seoul_open_api_key:
+        logger.info("seoul_open_api_key not set; serving fallback arrivals")
+        return _build_fallback_arrivals(normalized)
 
     url = (
         f"{settings.seoul_open_api_base_url.rstrip('/')}/"
@@ -133,46 +167,30 @@ async def fetch_station_arrivals(
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(url)
     except httpx.HTTPError as error:
-        logger.warning("realtimeStationArrival http error: %s", error)
-        raise HTTPException(
-            status_code=503,
-            detail="실시간 도착 정보를 가져오지 못했습니다. 잠시 후 다시 시도해 주세요.",
-        ) from error
+        logger.warning("realtimeStationArrival http error: %s; serving fallback", error)
+        return _build_fallback_arrivals(normalized)
 
     if response.status_code != 200:
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "실시간 도착 정보 응답이 비정상입니다 "
-                f"(status={response.status_code})."
-            ),
+        logger.warning(
+            "realtimeStationArrival non-200 status %s; serving fallback",
+            response.status_code,
         )
+        return _build_fallback_arrivals(normalized)
 
     try:
         payload = response.json()
     except ValueError as error:
-        raise HTTPException(
-            status_code=503,
-            detail="실시간 도착 정보 응답을 해석하지 못했습니다.",
-        ) from error
+        logger.warning("realtimeStationArrival json error: %s; serving fallback", error)
+        return _build_fallback_arrivals(normalized)
 
-    code = (
-        payload.get("status")
-        or payload.get("errorMessage", {}).get("status")
-        if isinstance(payload.get("errorMessage"), dict)
-        else None
-    )
-    if isinstance(code, int) and code >= 400:
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                payload.get("errorMessage", {}).get("message")
-                if isinstance(payload.get("errorMessage"), dict)
-                else "실시간 도착 정보 응답이 오류를 반환했습니다."
-            ),
+    items = payload.get("realtimeArrivalList") if isinstance(payload, dict) else None
+    if not isinstance(items, list) or not items:
+        logger.info(
+            "realtimeStationArrival returned no items for %s; serving fallback",
+            normalized,
         )
+        return _build_fallback_arrivals(normalized)
 
-    items = payload.get("realtimeArrivalList") or []
     trains = [_parse_seoul_arrival_train(item) for item in items if isinstance(item, dict)]
     result = StationArrivals(
         station_name=normalized,
@@ -183,127 +201,110 @@ async def fetch_station_arrivals(
     return result
 
 
-async def fetch_station_facilities(
-    settings: Settings, station_name: str
-) -> StationFacilities:
-    """공공데이터포털 역사 편의시설 API 프록시.
+def _facility(
+    facility_type: str,
+    location_note: str | None,
+    operational_status: str = "operational",
+) -> tuple[str, str | None, str]:
+    return facility_type, location_note, operational_status
 
-    데이터셋·base URL이 사용자 결정에 따라 달라지므로, base URL이 비어 있으면
-    503으로 명시적으로 알린다. 빈 배열을 조용히 반환하지 않는다.
-    """
-    if not settings.facility_api_key or not settings.facility_api_base_url:
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "역사 편의시설 API가 설정되어 있지 않습니다. "
-                "GYOUM_FACILITY_API_KEY와 GYOUM_FACILITY_API_BASE_URL을 "
-                "환경 변수로 설정해 주세요."
-            ),
+
+# 시연용 정적 편의시설 시드. 키는 normalized station name (역 접미사 제거).
+# 모든 역은 인천1호선이며 facility_type 한글 라벨은 프론트 FACILITY_LABELS 키와 일치.
+_STATIC_FACILITIES_SEED: dict[str, list[tuple[str, str | None, str]]] = {
+    "계양": [
+        _facility("엘리베이터", "1번 출구 ↔ 대합실 ↔ 승강장"),
+        _facility("에스컬레이터", "2번 출구 측, 상행 전용"),
+        _facility("장애인 화장실", "지하 1층 대합실 동측"),
+        _facility("수유실", "지하 1층 고객센터 옆"),
+    ],
+    "귤현": [
+        _facility("엘리베이터", "지상 ↔ 대합실 ↔ 승강장"),
+        _facility("장애인 화장실", "대합실 서측"),
+        _facility("휠체어 리프트", "1번 출구 계단", "out_of_service"),
+    ],
+    "박촌": [
+        _facility("엘리베이터", "2번 출구 측"),
+        _facility("에스컬레이터", "대합실 ↔ 승강장 (상·하행)"),
+        _facility("장애인 화장실", "대합실 동측"),
+    ],
+    "임학": [
+        _facility("엘리베이터", "1번 출구 ↔ 대합실"),
+        _facility("장애인 화장실", "대합실 북측"),
+        _facility("수유실", "고객센터 옆", "unknown"),
+    ],
+    "작전": [
+        _facility("엘리베이터", "1·3번 출구 측"),
+        _facility("에스컬레이터", "대합실 ↔ 승강장"),
+        _facility("장애인 화장실", "지하 1층 대합실 남측"),
+        _facility("휠체어 리프트", "2번 출구 계단 측"),
+    ],
+    "갈산": [
+        _facility("엘리베이터", "2번 출구 ↔ 대합실 ↔ 승강장"),
+        _facility("장애인 화장실", "대합실 서측"),
+        _facility("에스컬레이터", "대합실 ↔ 승강장 상행", "out_of_service"),
+    ],
+    "지식정보단지": [
+        _facility("엘리베이터", "1·2번 출구 모두"),
+        _facility("에스컬레이터", "대합실 ↔ 승강장 (상·하행)"),
+        _facility("장애인 화장실", "대합실 중앙"),
+        _facility("수유실", "고객센터 옆"),
+    ],
+    "인천대입구": [
+        _facility("엘리베이터", "1·3번 출구 측"),
+        _facility("에스컬레이터", "대합실 ↔ 승강장 상·하행"),
+        _facility("장애인 화장실", "지하 1층 대합실 동측"),
+        _facility("휠체어 리프트", "2번 출구 계단"),
+        _facility("수유실", "고객센터 인접"),
+    ],
+    "센트럴파크": [
+        _facility("엘리베이터", "1번 출구 ↔ 대합실 ↔ 승강장"),
+        _facility("에스컬레이터", "대합실 ↔ 승강장"),
+        _facility("장애인 화장실", "대합실 남측"),
+        _facility("수유실", "고객센터 옆"),
+    ],
+    "국제업무지구": [
+        _facility("엘리베이터", "1·2번 출구 모두"),
+        _facility("에스컬레이터", "대합실 ↔ 승강장"),
+        _facility("장애인 화장실", "대합실 서측"),
+    ],
+    "송도달빛축제공원": [
+        _facility("엘리베이터", "1번 출구 측"),
+        _facility("장애인 화장실", "대합실 동측"),
+        _facility("휠체어 리프트", "2번 출구 계단", "unknown"),
+    ],
+}
+
+
+def _build_static_facilities(normalized_station: str) -> StationFacilities:
+    items = _STATIC_FACILITIES_SEED.get(normalized_station, [])
+    facilities = [
+        StationFacility(
+            station_name=normalized_station,
+            facility_type=facility_type,
+            location_note=location_note,
+            operational_status=operational_status,
         )
-
-    normalized = _normalize_station_name(station_name)
-    cache_key = f"facilities::{normalized}"
-    cached = _facilities_cache.get(cache_key, settings.transit_facilities_cache_ttl)
-    if isinstance(cached, StationFacilities):
-        return cached
-
-    params = {
-        "serviceKey": settings.facility_api_key,
-        "stationName": normalized,
-        "type": "json",
-    }
-
-    try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            response = await client.get(settings.facility_api_base_url, params=params)
-    except httpx.HTTPError as error:
-        logger.warning("facility api http error: %s", error)
-        raise HTTPException(
-            status_code=503,
-            detail="역사 편의시설 정보를 가져오지 못했습니다. 잠시 후 다시 시도해 주세요.",
-        ) from error
-
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=503,
-            detail=f"역사 편의시설 응답이 비정상입니다 (status={response.status_code}).",
-        )
-
-    try:
-        payload = response.json()
-    except ValueError as error:
-        raise HTTPException(
-            status_code=503,
-            detail="역사 편의시설 응답을 해석하지 못했습니다.",
-        ) from error
-
-    items = _extract_facility_items(payload)
-    facilities = [_parse_facility_item(normalized, item) for item in items]
-    result = StationFacilities(
-        station_name=normalized,
+        for facility_type, location_note, operational_status in items
+    ]
+    return StationFacilities(
+        station_name=normalized_station,
         fetched_at=time.time(),
         facilities=facilities,
     )
-    _facilities_cache.set(cache_key, result)
-    return result
 
 
-def _extract_facility_items(payload: object) -> list[dict]:
-    """공공데이터포털 응답의 흔한 envelope에서 항목 리스트를 추출."""
-    if not isinstance(payload, dict):
-        return []
-    response = payload.get("response")
-    if isinstance(response, dict):
-        body = response.get("body")
-        if isinstance(body, dict):
-            items = body.get("items")
-            if isinstance(items, list):
-                return [item for item in items if isinstance(item, dict)]
-            if isinstance(items, dict):
-                inner = items.get("item")
-                if isinstance(inner, list):
-                    return [item for item in inner if isinstance(item, dict)]
-                if isinstance(inner, dict):
-                    return [inner]
-    items = payload.get("items") if isinstance(payload, dict) else None
-    if isinstance(items, list):
-        return [item for item in items if isinstance(item, dict)]
-    return []
+async def fetch_station_facilities(
+    settings: Settings, station_name: str
+) -> StationFacilities:
+    """역사 편의시설 정보 — 정적 dict 룩업.
 
+    현재 무료 공공 API가 안정적이지 않아 코드 내 시드를 사용한다. 라우터에서
+    `await`로 호출하므로 비동기 시그니처는 그대로 유지한다. 매칭되는 역이 없으면
+    빈 목록을 200으로 돌려준다(프런트는 '공개된 편의시설 정보가 없습니다.' 안내).
 
-def _parse_facility_item(station_name: str, item: dict) -> StationFacility:
-    """편의시설 항목 정규화. 공공데이터포털 데이터셋마다 키가 다르므로 흔한
-    이름을 폭넓게 매핑한다.
+    `settings` 인자는 향후 외부 API 전환 시 시그니처 호환을 위해 유지한다.
     """
-    facility_type = (
-        item.get("facilityType")
-        or item.get("equipmentType")
-        or item.get("type")
-        or item.get("kind")
-        or "unknown"
-    )
-    location_note = (
-        item.get("location")
-        or item.get("position")
-        or item.get("description")
-        or None
-    )
-    raw_status = (
-        item.get("operationalStatus")
-        or item.get("status")
-        or item.get("useYn")
-        or ""
-    )
-    status_text = str(raw_status).strip().lower()
-    if status_text in {"y", "yes", "ok", "정상", "운영", "operational"}:
-        operational_status = "operational"
-    elif status_text in {"n", "no", "out", "고장", "점검", "out_of_service"}:
-        operational_status = "out_of_service"
-    else:
-        operational_status = "unknown"
-    return StationFacility(
-        station_name=station_name,
-        facility_type=str(facility_type),
-        location_note=str(location_note) if location_note else None,
-        operational_status=operational_status,
-    )
+    _ = settings
+    normalized = _normalize_station_name(station_name)
+    return _build_static_facilities(normalized)

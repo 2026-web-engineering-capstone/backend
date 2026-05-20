@@ -28,14 +28,11 @@ class Settings(BaseSettings):
 
     # 외부 API 자격 증명 — 코드 하드코딩 금지. .env 또는 환경 변수로만 주입.
     # 서울 열린데이터 광장: http://swopenapi.seoul.go.kr/api/subway
+    # 키가 비어 있거나 호출이 실패하면 transit_service가 fallback 데모 데이터를 반환한다.
     seoul_open_api_key: str | None = None
     seoul_open_api_base_url: str = "http://swopenapi.seoul.go.kr/api/subway"
-    # 공공데이터포털: 도시철도 역사 편의시설 데이터셋 (사용자가 base URL 확정 필요)
-    facility_api_key: str | None = None
-    facility_api_base_url: str | None = None
-    # 외부 API 캐시 TTL(초). 도착 정보는 짧게, 시설 정보는 길게.
+    # 실시간 도착 정보 캐시 TTL(초).
     transit_arrivals_cache_ttl: int = 20
-    transit_facilities_cache_ttl: int = 86400
 
     model_config = SettingsConfigDict(
         env_prefix="GYOUM_",
