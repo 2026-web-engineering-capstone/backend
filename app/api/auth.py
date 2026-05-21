@@ -43,7 +43,7 @@ def sign_in(
             delete_user_session(db, session_id)
             session_id = None
 
-    user = service.get_demo_user_for_role(db, payload.role)
+    user = service.get_demo_user_for_role(db, payload.role, payload.station_id)
     if payload.installation_id and payload.push_token and payload.push_platform:
         service.register_push_token(
             db,

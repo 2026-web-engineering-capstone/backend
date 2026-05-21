@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     # 실시간 도착 정보 캐시 TTL(초).
     transit_arrivals_cache_ttl: int = 20
 
+    # Firebase Cloud Messaging 서비스 계정 JSON 파일 경로.
+    # 미설정 시 푸시 발송은 no-op으로 폴백하고 WebSocket으로 실시간 업데이트만 동작.
+    firebase_credentials_path: str | None = None
+
     model_config = SettingsConfigDict(
         env_prefix="GYOUM_",
         env_file=".env",

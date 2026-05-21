@@ -165,13 +165,6 @@ USER_SEED = [
         "station_id": None,
     },
     {
-        "id": "USR-STAFF-DEMO",
-        "name": "김민수",
-        "email": "staff@gyoum.kr",
-        "role": Role.STAFF,
-        "station_id": "STN-ICU",
-    },
-    {
         "id": "USR-DRIVER-DEMO",
         "name": "박기관",
         "email": "driver@gyoum.kr",
@@ -187,18 +180,48 @@ USER_SEED = [
     },
 ]
 
+
+def _build_staff_seed() -> list[dict[str, object]]:
+    """모든 시드 역에 1명씩 데모 staff 자동 생성."""
+    staff: list[dict[str, object]] = []
+    for station_id, station_name, _line, _line_color in STATION_SEED:
+        suffix = station_id.removeprefix("STN-")
+        staff.append(
+            {
+                "id": f"USR-STAFF-{suffix}",
+                "name": f"{station_name} 역무원",
+                "email": f"staff.{suffix.lower()}@gyoum.kr",
+                "role": Role.STAFF,
+                "station_id": station_id,
+            }
+        )
+    return staff
+
+
+STAFF_SEED = _build_staff_seed()
+
 CHECKLIST_TEMPLATES: dict[SupportType, list[tuple[str, str]]] = {
+    SupportType.FOOTBOARD: [
+        ("prepare-footboard", "이동식 안전발판을 준비했어요."),
+        ("confirm-train-gap", "승강장과 열차 사이 발판을 설치했어요."),
+    ],
+    SupportType.COMPANION: [
+        ("meet-passenger", "만남 위치에서 승객을 확인했어요."),
+        ("escort-to-platform", "승강장까지 동행 안내를 시작했어요."),
+    ],
+    SupportType.ELEVATOR: [
+        ("guide-elevator-route", "엘리베이터 경유 동선을 안내했어요."),
+    ],
+    SupportType.VISION: [
+        ("verbal-guide", "구두 안내와 인사를 마쳤어요."),
+        ("confirm-tactile-blocks", "점자 블록과 동선을 확인했어요."),
+    ],
     SupportType.WHEELCHAIR: [
-        ("prepare-wheelchair-ramp", "휠체어 승하차 발판을 준비했어요."),
-        ("check-wheelchair-route", "엘리베이터와 이동 동선을 확인했어요."),
+        ("verify-wheelchair-fit", "휠체어 통로와 폭을 확인했어요."),
+        ("confirm-clear-path", "이동 동선의 장애물을 확인했어요."),
     ],
-    SupportType.VISUAL_GUIDE: [
-        ("greet-passenger", "만남 위치에서 승객을 확인했어요."),
-        ("guide-to-platform", "승강장과 하차 동선을 안내할 준비를 마쳤어요."),
-    ],
-    SupportType.BOARDING_RAMP: [
-        ("prepare-boarding-support", "승하차 보조 장비와 위치를 확인했어요."),
-        ("share-boarding-position", "탑승 위치와 열차 칸 정보를 확인했어요."),
+    SupportType.CHAT: [
+        ("prepare-pen-paper-or-sign", "필담/수어 준비를 마쳤어요."),
     ],
 }
 
@@ -217,8 +240,25 @@ class AppService:
                         for station_id, name, line, line_color in STATION_SEED
                     ]
                 )
+                session.flush()
             if session.scalar(select(User.id).limit(1)) is None:
                 session.add_all([User(**item) for item in USER_SEED])
+                session.add_all([User(**item) for item in STAFF_SEED])
+            else:
+                # 기존 DB에 staff가 누락된 역은 자동 추가(다수 역 커버용).
+                existing_staff_station_ids = {
+                    row
+                    for row in session.scalars(
+                        select(User.station_id).where(User.role == Role.STAFF)
+                    )
+                }
+                missing_staff = [
+                    item
+                    for item in STAFF_SEED
+                    if item["station_id"] not in existing_staff_station_ids
+                ]
+                if missing_staff:
+                    session.add_all([User(**item) for item in missing_staff])
             session.commit()
         finally:
             session.close()
@@ -229,7 +269,24 @@ class AppService:
             stmt = stmt.where(Station.name.contains(query))
         return list(db.scalars(stmt))
 
-    def get_demo_user_for_role(self, db: Session, role: Role) -> User:
+    def get_demo_user_for_role(
+        self,
+        db: Session,
+        role: Role,
+        station_id: str | None = None,
+    ) -> User:
+        if role == Role.STAFF:
+            if not station_id:
+                raise HTTPException(status_code=422, detail="근무 역을 선택해주세요.")
+            user = db.scalar(
+                select(User).where(User.role == Role.STAFF, User.station_id == station_id)
+            )
+            if not user:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"해당 역의 역무원 계정을 찾을 수 없습니다: {station_id}",
+                )
+            return user
         stmt = select(User).where(User.role == role).limit(1)
         user = db.scalar(stmt)
         if not user:
@@ -879,6 +936,23 @@ class AppService:
         if support_request.assigned_staff_user_id == actor.id:
             return
         raise HTTPException(status_code=403, detail="Request must be assigned to current staff")
+
+    # ─── Firebase Push 알림 트리거 ─────────────────────────────────
+    def collect_push_tokens(self, db: Session, user_ids: list[str]) -> list[str]:
+        """주어진 user_id들에 등록된 모든 push token을 모은다."""
+        if not user_ids:
+            return []
+        tokens = db.scalars(
+            select(UserPushToken.token).where(UserPushToken.user_id.in_(user_ids))
+        ).all()
+        return [token for token in tokens if token]
+
+    def collect_station_staff_user_ids(self, db: Session, station_id: str) -> list[str]:
+        """특정 역에 배정된 staff user_id 전부."""
+        ids = db.scalars(
+            select(User.id).where(User.role == Role.STAFF, User.station_id == station_id)
+        ).all()
+        return list(ids)
 
     def _status_message(self, status_value: SupportRequestStatus) -> str:
         messages = {

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.enums import (
     CancelReason,
@@ -34,9 +34,16 @@ class SessionResponse(BaseModel):
 
 class SignInRequest(BaseModel):
     role: Role
+    station_id: str | None = Field(default=None, min_length=1, max_length=64)
     installation_id: str | None = Field(default=None, min_length=1, max_length=128)
     push_token: str | None = Field(default=None, min_length=1, max_length=255)
     push_platform: Literal["ios", "android"] | None = None
+
+    @model_validator(mode="after")
+    def _require_station_for_staff(self) -> "SignInRequest":
+        if self.role == Role.STAFF and not self.station_id:
+            raise ValueError("근무 역을 선택해주세요.")
+        return self
 
 
 class SignOutRequest(BaseModel):

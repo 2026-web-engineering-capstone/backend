@@ -20,16 +20,21 @@ class SupportRequestStatus(StrEnum):
 
 
 class SupportType(StrEnum):
+    FOOTBOARD = "footboard"
+    COMPANION = "companion"
+    ELEVATOR = "elevator"
+    VISION = "vision"
     WHEELCHAIR = "wheelchair"
-    VISUAL_GUIDE = "visual-guide"
-    BOARDING_RAMP = "boarding-ramp"
+    CHAT = "chat"
 
 
 class MeetingPoint(StrEnum):
-    ELEVATOR = "elevator"
-    GATE = "gate"
-    INFO_CENTER = "info-center"
-    PLATFORM = "platform"
+    STAFF_OFFICE = "staff_office"
+    ELEVATOR_CONCOURSE = "elevator_concourse"
+    INFO_DESK = "info_desk"
+    EXIT = "exit"
+    TRANSFER_ELEVATOR = "transfer_elevator"
+    PLATFORM_CENTER = "platform_center"
     OTHER = "other"
 
 

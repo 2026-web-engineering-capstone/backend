@@ -9,6 +9,7 @@ from app.config import Settings
 from app.database import Database
 from app.enums import Role
 from app.models import User, UserSession
+from app.notifications import FirebaseNotifier, get_notifier, reset_notifier_for_tests
 from app.realtime import SupportRequestUpdatesHub
 from app.service import AppService
 
@@ -25,6 +26,11 @@ def configure_runtime(new_settings: Settings | None = None) -> None:
     database = Database(settings.database_url)
     service = AppService(database.session_factory)
     updates_hub = SupportRequestUpdatesHub()
+    reset_notifier_for_tests()
+
+
+def get_firebase_notifier() -> FirebaseNotifier:
+    return get_notifier(settings)
 
 
 def get_settings() -> Settings:
