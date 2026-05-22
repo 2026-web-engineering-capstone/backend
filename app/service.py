@@ -4,7 +4,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from fastapi import HTTPException
-from sqlalchemy import Select, select, text
+from sqlalchemy import Select, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload, selectinload
 
@@ -34,11 +34,6 @@ from app.schemas import (
     SupportRequestEventResponse,
     SupportRequestListItem,
     UploadSupportRequestCurrentLocationRequest,
-)
-from app.station_catalog import (
-    load_arrival_station_catalog,
-    normalize_line_name,
-    normalize_station_name,
 )
 
 CANCEL_REASON_ALIASES: dict[str, tuple[CancelReason, str]] = {
@@ -94,18 +89,22 @@ ALLOWED_TRANSITIONS: dict[SupportRequestStatus, set[SupportRequestStatus]] = {
     SupportRequestStatus.UNAVAILABLE: set(),
 }
 
-_LINE_SEOUL_1 = ("1호선", "#0052A4")
-_LINE_SEOUL_2 = ("2호선", "#00A84D")
-_LINE_SEOUL_3 = ("3호선", "#EF7C1C")
-_LINE_SEOUL_4 = ("4호선", "#00A4E3")
-_LINE_SEOUL_5 = ("5호선", "#996CAC")
-_LINE_SEOUL_6 = ("6호선", "#CD7C2F")
-_LINE_SEOUL_7 = ("7호선", "#747F00")
-_LINE_GYEONGUI_JUNGANG = ("경의중앙선", "#77C4A3")
-_LINE_SUIN_BUNDANG = ("수인분당선", "#F5A200")
-_LINE_AIRPORT = ("공항철도", "#0090D2")
+_LINE_INCHEON_1 = ("인천1호선", "#3681cb")
+_LINE_SEOUL_4 = ("서울4호선", "#00a4e3")
 
 STATION_SEED = [
+    # 인천 1호선 (송도 ~ 계양 일부 11개)
+    ("STN-GY", "계양역", *_LINE_INCHEON_1),
+    ("STN-GH", "귤현역", *_LINE_INCHEON_1),
+    ("STN-BC", "박촌역", *_LINE_INCHEON_1),
+    ("STN-IH", "임학역", *_LINE_INCHEON_1),
+    ("STN-JJ", "작전역", *_LINE_INCHEON_1),
+    ("STN-GS", "갈산역", *_LINE_INCHEON_1),
+    ("STN-JI", "지식정보단지역", *_LINE_INCHEON_1),
+    ("STN-ICU", "인천대입구역", *_LINE_INCHEON_1),
+    ("STN-CP", "센트럴파크역", *_LINE_INCHEON_1),
+    ("STN-IBD", "국제업무지구역", *_LINE_INCHEON_1),
+    ("STN-SD", "송도달빛축제공원역", *_LINE_INCHEON_1),
     # 서울 4호선 전체 (당고개 ~ 오이도 48개)
     ("STN-DGG", "당고개역", *_LINE_SEOUL_4),
     ("STN-SGE", "상계역", *_LINE_SEOUL_4),
@@ -155,50 +154,7 @@ STATION_SEED = [
     ("STN-SGO", "신길온천역", *_LINE_SEOUL_4),
     ("STN-JWG", "정왕역", *_LINE_SEOUL_4),
     ("STN-ODO", "오이도역", *_LINE_SEOUL_4),
-    # 주요 환승역은 노선별 선택/표시가 가능하도록 별도 station_id로 보강.
-    ("STN-DDM-L1", "동대문역", *_LINE_SEOUL_1),
-    ("STN-DDH-L2", "동대문역사문화공원역", *_LINE_SEOUL_2),
-    ("STN-DDH-L5", "동대문역사문화공원역", *_LINE_SEOUL_5),
-    ("STN-CMR-L3", "충무로역", *_LINE_SEOUL_3),
-    ("STN-SLY-L1", "서울역", *_LINE_SEOUL_1),
-    ("STN-SLY-GJ", "서울역", *_LINE_GYEONGUI_JUNGANG),
-    ("STN-SLY-AR", "서울역", *_LINE_AIRPORT),
-    ("STN-SGJ-L6", "삼각지역", *_LINE_SEOUL_6),
-    ("STN-ICN-GJ", "이촌역", *_LINE_GYEONGUI_JUNGANG),
-    ("STN-SDG-L2", "사당역", *_LINE_SEOUL_2),
-    ("STN-NWN-L7", "노원역", *_LINE_SEOUL_7),
-    ("STN-CDG-L1", "창동역", *_LINE_SEOUL_1),
-    ("STN-GMJ-L1", "금정역", *_LINE_SEOUL_1),
-    ("STN-ODO-SB", "오이도역", *_LINE_SUIN_BUNDANG),
 ]
-
-
-def _build_station_seed() -> list[tuple[str, str, str, str]]:
-    seed = list(STATION_SEED)
-    seen = {
-        (normalize_station_name(name), normalize_line_name(line))
-        for _station_id, name, line, _line_color in seed
-    }
-
-    for item in load_arrival_station_catalog():
-        key = (normalize_station_name(item["name"]), normalize_line_name(item["line"]))
-        if key in seen:
-            continue
-        seed.append(
-            (
-                f"STN-{item['subway_id']}-{item['station_id']}",
-                item["name"],
-                item["line"],
-                item["line_color"],
-            )
-        )
-        seen.add(key)
-
-    return seed
-
-
-ALL_STATION_SEED = _build_station_seed()
-VISIBLE_STATION_IDS = {station_id for station_id, _name, _line, _color in ALL_STATION_SEED}
 
 USER_SEED = [
     {
@@ -228,7 +184,7 @@ USER_SEED = [
 def _build_staff_seed() -> list[dict[str, object]]:
     """모든 시드 역에 1명씩 데모 staff 자동 생성."""
     staff: list[dict[str, object]] = []
-    for station_id, station_name, _line, _line_color in ALL_STATION_SEED:
+    for station_id, station_name, _line, _line_color in STATION_SEED:
         suffix = station_id.removeprefix("STN-")
         staff.append(
             {
@@ -243,94 +199,6 @@ def _build_staff_seed() -> list[dict[str, object]]:
 
 
 STAFF_SEED = _build_staff_seed()
-
-
-def _quote_sqlite_identifier(value: str) -> str:
-    return '"' + value.replace('"', '""') + '"'
-
-
-def _sqlite_station_name_has_unique_index(session: Session) -> bool:
-    indexes = session.execute(text("PRAGMA index_list('stations')")).all()
-    for index in indexes:
-        index_name = index[1]
-        is_unique = bool(index[2])
-        if not is_unique:
-            continue
-        columns = session.execute(
-            text(f"PRAGMA index_info({_quote_sqlite_identifier(index_name)})")
-        ).all()
-        if [column[2] for column in columns] == ["name"]:
-            return True
-    return False
-
-
-def _allow_duplicate_station_names_for_transfers(session: Session) -> None:
-    """SQLite dev DB migration for line-specific transfer station cards."""
-    bind = session.get_bind()
-    if bind.dialect.name != "sqlite":
-        return
-    if not _sqlite_station_name_has_unique_index(session):
-        return
-
-    session.execute(text("PRAGMA foreign_keys=OFF"))
-    session.execute(
-        text(
-            """
-            CREATE TABLE stations_new (
-                id VARCHAR(64) NOT NULL,
-                name VARCHAR(255) NOT NULL,
-                line VARCHAR(128) NOT NULL,
-                line_color VARCHAR(16) NOT NULL,
-                PRIMARY KEY (id)
-            )
-            """
-        )
-    )
-    session.execute(
-        text(
-            """
-            INSERT INTO stations_new (id, name, line, line_color)
-            SELECT id, name, line, line_color FROM stations
-            """
-        )
-    )
-    session.execute(text("DROP TABLE stations"))
-    session.execute(text("ALTER TABLE stations_new RENAME TO stations"))
-    session.execute(text("CREATE INDEX ix_stations_name ON stations (name)"))
-    session.execute(text("PRAGMA foreign_keys=ON"))
-    session.commit()
-
-
-def _line_sort_key(line: str) -> tuple[int, str]:
-    order = {
-        "1호선": 1,
-        "2호선": 2,
-        "3호선": 3,
-        "4호선": 4,
-        "5호선": 5,
-        "6호선": 6,
-        "7호선": 7,
-        "8호선": 8,
-        "9호선": 9,
-        "경의중앙선": 20,
-        "공항철도": 21,
-        "경춘선": 22,
-        "수인분당선": 23,
-        "신분당선": 24,
-        "우이신설선": 25,
-        "서해선": 26,
-        "경강선": 27,
-        "신림선": 28,
-        "김포골드라인": 29,
-        "GTX-A": 30,
-    }
-    return (order.get(line, 999), line)
-
-
-def _station_sort_key(station: Station) -> tuple[int, str, tuple[int, str]]:
-    name = station.name.strip()
-    starts_with_digit = bool(name[:1] and name[0].isdigit())
-    return (1 if starts_with_digit else 0, name, _line_sort_key(station.line))
 
 CHECKLIST_TEMPLATES: dict[SupportType, list[tuple[str, str]]] = {
     SupportType.FOOTBOARD: [
@@ -365,32 +233,14 @@ class AppService:
     def seed(self) -> None:
         session = self.db_factory()
         try:
-            _allow_duplicate_station_names_for_transfers(session)
-            existing_station_ids = set(session.scalars(select(Station.id)))
-            missing_stations = [
-                Station(id=station_id, name=name, line=line, line_color=line_color)
-                for station_id, name, line, line_color in ALL_STATION_SEED
-                if station_id not in existing_station_ids
-            ]
-            if missing_stations:
-                session.add_all(missing_stations)
+            if session.scalar(select(Station.id).limit(1)) is None:
+                session.add_all(
+                    [
+                        Station(id=station_id, name=name, line=line, line_color=line_color)
+                        for station_id, name, line, line_color in STATION_SEED
+                    ]
+                )
                 session.flush()
-
-            station_seed_by_id = {
-                station_id: (name, line, line_color)
-                for station_id, name, line, line_color in ALL_STATION_SEED
-            }
-            seeded_stations = session.scalars(
-                select(Station).where(Station.id.in_(station_seed_by_id.keys()))
-            )
-            for station in seeded_stations:
-                name, line, line_color = station_seed_by_id[station.id]
-                if station.name != name:
-                    station.name = name
-                if station.line != line:
-                    station.line = line
-                if station.line_color != line_color:
-                    station.line_color = line_color
             if session.scalar(select(User.id).limit(1)) is None:
                 session.add_all([User(**item) for item in USER_SEED])
                 session.add_all([User(**item) for item in STAFF_SEED])
@@ -415,10 +265,9 @@ class AppService:
 
     def list_stations(self, db: Session, query: str | None) -> list[Station]:
         stmt = select(Station).order_by(Station.name)
-        stmt = stmt.where(Station.id.in_(VISIBLE_STATION_IDS))
         if query:
             stmt = stmt.where(Station.name.contains(query))
-        return sorted(db.scalars(stmt), key=_station_sort_key)
+        return list(db.scalars(stmt))
 
     def get_demo_user_for_role(
         self,
@@ -541,28 +390,21 @@ class AppService:
 
     def list_support_requests(self, db: Session, actor: User) -> list[SupportRequestListItem]:
         stmt = self._base_request_query(include_current_locations=False)
-        stmt = stmt.where(
-            SupportRequest.origin_station_id.in_(VISIBLE_STATION_IDS),
-            SupportRequest.destination_station_id.in_(VISIBLE_STATION_IDS),
-        )
         if actor.role == Role.PASSENGER:
             stmt = stmt.where(SupportRequest.passenger_user_id == actor.id)
         elif actor.role == Role.STAFF:
+            visible_statuses = {
+                SupportRequestStatus.SUBMITTED,
+                SupportRequestStatus.ASSIGNED,
+                SupportRequestStatus.IN_PROGRESS,
+                SupportRequestStatus.BOARDED,
+                SupportRequestStatus.AWAITING_DROPOFF,
+            }
             stmt = stmt.where(
-                (
-                    (SupportRequest.origin_station_id == actor.station_id)
-                    & SupportRequest.status.in_(
-                        [
-                            SupportRequestStatus.SUBMITTED,
-                            SupportRequestStatus.ASSIGNED,
-                            SupportRequestStatus.IN_PROGRESS,
-                        ]
-                    )
-                )
+                (SupportRequest.assigned_staff_user_id == actor.id)
                 | (
-                    (SupportRequest.assigned_staff_user_id == actor.id)
-                    & (SupportRequest.origin_station_id == actor.station_id)
-                    & (SupportRequest.status == SupportRequestStatus.BOARDED)
+                    (SupportRequest.origin_station_id == actor.station_id)
+                    & SupportRequest.status.in_(visible_statuses)
                 )
                 | (
                     (SupportRequest.destination_station_id == actor.station_id)
@@ -570,7 +412,6 @@ class AppService:
                         [
                             SupportRequestStatus.BOARDED,
                             SupportRequestStatus.AWAITING_DROPOFF,
-                            SupportRequestStatus.COMPLETED,
                         ]
                     )
                 )
@@ -735,11 +576,6 @@ class AppService:
             support_request.train_number = normalized_train_number
         if normalized_train_car_number:
             support_request.train_car_number = normalized_train_car_number
-        if next_status in {
-            SupportRequestStatus.AWAITING_DROPOFF,
-            SupportRequestStatus.COMPLETED,
-        } and actor.station_id == support_request.destination_station_id:
-            support_request.assigned_staff_user_id = actor.id
         self._transition_request(
             db,
             support_request=support_request,
@@ -1007,16 +843,9 @@ class AppService:
             meeting_point=support_request.meeting_point,
             passenger_name=support_request.passenger.name,
             assigned_staff_name=support_request.assigned_staff.name if support_request.assigned_staff else None,
-            assigned_staff_id=support_request.assigned_staff_user_id,
             train_number=support_request.train_number,
             train_car_number=support_request.train_car_number,
             created_at=support_request.created_at,
-            boarded_at=self._event_time(support_request, SupportRequestStatus.BOARDED),
-            dropoff_started_at=self._event_time(
-                support_request,
-                SupportRequestStatus.AWAITING_DROPOFF,
-            ),
-            completed_at=self._event_time(support_request, SupportRequestStatus.COMPLETED),
         )
 
     def _to_detail_response(
@@ -1036,6 +865,7 @@ class AppService:
             ),
             completion_note=support_request.completion_note,
             passenger_id=support_request.passenger_user_id,
+            assigned_staff_id=support_request.assigned_staff_user_id,
             current_location=current_location,
             checklist_items=[
                 SupportRequestChecklistItemResponse(
@@ -1078,6 +908,7 @@ class AppService:
                 SupportRequestStatus.ASSIGNED,
                 SupportRequestStatus.IN_PROGRESS,
                 SupportRequestStatus.BOARDED,
+                SupportRequestStatus.AWAITING_DROPOFF,
             }:
                 return
             if actor.station_id == support_request.destination_station_id and support_request.status in {
@@ -1128,17 +959,7 @@ class AppService:
             SupportRequestStatus.ASSIGNED: "역무원이 배정되었습니다.",
             SupportRequestStatus.IN_PROGRESS: "역무원이 만남 위치로 이동하고 있습니다.",
             SupportRequestStatus.BOARDED: "승차가 완료되었습니다.",
-            SupportRequestStatus.AWAITING_DROPOFF: "하차 역에서 지원 처리 중입니다.",
-            SupportRequestStatus.COMPLETED: "하차 지원이 완료되었습니다.",
+            SupportRequestStatus.AWAITING_DROPOFF: "하차 역에서 지원 준비 중입니다.",
+            SupportRequestStatus.COMPLETED: "지원이 완료되었습니다.",
         }
         return messages.get(status_value, status_value.value)
-
-    def _event_time(
-        self,
-        support_request: SupportRequest,
-        status_value: SupportRequestStatus,
-    ) -> datetime | None:
-        for event in support_request.events:
-            if event.to_status == status_value:
-                return event.created_at
-        return None

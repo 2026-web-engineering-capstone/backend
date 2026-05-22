@@ -27,7 +27,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/sign-in", response_model=ApiResponse)
-async def sign_in(
+def sign_in(
     payload: SignInRequest,
     request: Request,
     response: Response,
@@ -38,7 +38,7 @@ async def sign_in(
     session_id = request.cookies.get(settings.session_cookie_name)
     if session_id:
         try:
-            await get_current_user(request, db)
+            get_current_user(request, db)
         except HTTPException:
             delete_user_session(db, session_id)
             session_id = None
@@ -79,7 +79,7 @@ async def sign_out(
     user = None
     if session_id:
         try:
-            user = await get_current_user(request, db)
+            user = get_current_user(request, db)
         except HTTPException:
             user = None
     if payload is not None:
@@ -107,7 +107,7 @@ async def sign_out(
 
 
 @router.get("/session", response_model=ApiResponse)
-async def get_session(user: User = Depends(get_current_user)):
+def get_session(user: User = Depends(get_current_user)):
     return ApiResponse(data=SessionResponse(user=_to_session_user(user)))
 
 

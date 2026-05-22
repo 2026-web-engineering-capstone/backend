@@ -112,13 +112,9 @@ class SupportRequestListItem(BaseModel):
     meeting_point: MeetingPoint
     passenger_name: str
     assigned_staff_name: str | None
-    assigned_staff_id: str | None
     train_number: str | None
     train_car_number: str | None
     created_at: datetime
-    boarded_at: datetime | None = None
-    dropoff_started_at: datetime | None = None
-    completed_at: datetime | None = None
 
 
 class SupportRequestDetailResponse(SupportRequestListItem):
@@ -127,6 +123,7 @@ class SupportRequestDetailResponse(SupportRequestListItem):
     unavailable_reason: UnavailableReason | None
     completion_note: str | None
     passenger_id: str
+    assigned_staff_id: str | None
     current_location: SupportRequestCurrentLocationResponse | None = None
     checklist_items: list[SupportRequestChecklistItemResponse]
     events: list[SupportRequestEventResponse]

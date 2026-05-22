@@ -30,14 +30,9 @@ def _serialize_train(train: ArrivalTrain) -> dict:
     return {
         "trainNumber": train.train_number,
         "destination": train.destination,
-        "destinationLabel": train.destination_label,
         "etaMessage": train.eta_message,
         "direction": train.direction,
-        "routeLabel": train.route_label,
-        "trainStatus": train.train_status,
-        "currentStation": train.current_station,
         "line": train.line,
-        "lineId": train.line_id,
     }
 
 

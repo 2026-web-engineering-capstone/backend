@@ -1,4 +1,4 @@
-from collections.abc import AsyncGenerator
+from collections.abc import Generator
 from datetime import datetime, timezone
 
 from fastapi import Depends, HTTPException, Request, WebSocket, WebSocketException, status
@@ -29,7 +29,7 @@ def configure_runtime(new_settings: Settings | None = None) -> None:
     reset_notifier_for_tests()
 
 
-async def get_firebase_notifier() -> FirebaseNotifier:
+def get_firebase_notifier() -> FirebaseNotifier:
     return get_notifier(settings)
 
 
@@ -37,12 +37,8 @@ def get_settings() -> Settings:
     return settings
 
 
-async def get_db() -> AsyncGenerator[Session, None]:
-    session = database.session_factory()
-    try:
-        yield session
-    finally:
-        session.close()
+def get_db() -> Generator[Session, None, None]:
+    yield from database.session()
 
 
 def create_user_session(db: Session, user: User) -> UserSession:
@@ -88,7 +84,7 @@ def _get_user_from_session_id(db: Session, session_id: str | None) -> User:
     return user
 
 
-async def get_current_user(
+def get_current_user(
     request: Request,
     db: Session = Depends(get_db),
 ) -> User:
@@ -107,7 +103,7 @@ def get_current_websocket_session(
 
 
 def require_roles(*roles: Role):
-    async def dependency(user: User = Depends(get_current_user)) -> User:
+    def dependency(user: User = Depends(get_current_user)) -> User:
         if user.role not in roles:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
         return user
@@ -115,9 +111,9 @@ def require_roles(*roles: Role):
     return dependency
 
 
-async def get_service() -> AppService:
+def get_service() -> AppService:
     return service
 
 
-async def get_updates_hub() -> SupportRequestUpdatesHub:
+def get_updates_hub() -> SupportRequestUpdatesHub:
     return updates_hub

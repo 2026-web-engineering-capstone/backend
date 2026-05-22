@@ -19,11 +19,6 @@ SQLITE_STARTUP_INDEXES = {
     "CREATE UNIQUE INDEX IF NOT EXISTS ix_user_push_tokens_installation_id ON user_push_tokens (installation_id)",
 }
 
-SQLITE_STARTUP_DATA_MIGRATIONS = (
-    "UPDATE support_requests SET meeting_point = 'ELEVATOR_CONCOURSE' WHERE meeting_point = 'ELEVATOR'",
-    "UPDATE support_request_support_types SET support_type = 'FOOTBOARD' WHERE support_type = 'BOARDING_RAMP'",
-)
-
 
 class Base(DeclarativeBase):
     pass
@@ -75,9 +70,6 @@ class Database:
 
             for index_statement in SQLITE_STARTUP_INDEXES:
                 connection.execute(text(index_statement))
-
-            for migration_statement in SQLITE_STARTUP_DATA_MIGRATIONS:
-                connection.execute(text(migration_statement))
 
     def session(self) -> Generator[Session, None, None]:
         session = self.session_factory()

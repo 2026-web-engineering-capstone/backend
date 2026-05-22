@@ -9,7 +9,7 @@ router = APIRouter(prefix="/stations", tags=["stations"])
 
 
 @router.get("", response_model=ApiResponse)
-async def list_stations(
+def list_stations(
     query: str | None = Query(default=None),
     db: Session = Depends(get_db),
     service: AppService = Depends(get_service),
