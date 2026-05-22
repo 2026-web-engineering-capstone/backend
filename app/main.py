@@ -30,7 +30,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(transit_router)
 
     @app.get("/health")
-    def health_check():
+    async def health_check():
         return {"status": "ok"}
 
     @app.on_event("startup")
