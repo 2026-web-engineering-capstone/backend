@@ -155,7 +155,7 @@ USER_SEED = [
 def _build_staff_seed() -> list[dict[str, object]]:
     """모든 시드 역에 1명씩 데모 staff 자동 생성."""
     staff: list[dict[str, object]] = []
-    for station_id, station_name, _line, _line_color in STATION_SEED:
+    for station_id, station_name, _line, _line_color, *_ in STATION_SEED:
         suffix = station_id.removeprefix("STN-")
         staff.append(
             {
