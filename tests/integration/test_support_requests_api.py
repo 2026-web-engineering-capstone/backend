@@ -134,8 +134,8 @@ def test_create_support_request_succeeds_after_startup_schema_reconcile(app_sett
         create_response = client.post(
             "/support-requests",
             json={
-                "origin_station_id": "STN-ICU",
-                "destination_station_id": "STN-CP",
+                "origin_station_id": "STN-GN",
+                "destination_station_id": "STN-YS",
                 "meeting_point": MeetingPoint.ELEVATOR,
                 "notes": "레거시 스키마 검증",
                 "support_types": [SupportType.WHEELCHAIR],
@@ -225,8 +225,8 @@ def test_passenger_can_create_and_list_support_request(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "전동휠체어 사용",
             "support_types": [SupportType.WHEELCHAIR, SupportType.BOARDING_RAMP],
@@ -236,7 +236,7 @@ def test_passenger_can_create_and_list_support_request(client):
     assert create_response.status_code == 201
     created = create_response.json()["data"]
     assert created["status"] == SupportRequestStatus.SUBMITTED
-    assert created["origin_station_name"] == "인천대입구역"
+    assert created["origin_station_name"] == "강남역"
     assert len(created["events"]) == 1
     assert created["events"][0]["actor_role"] == Role.PASSENGER
 
@@ -253,8 +253,8 @@ def test_passenger_list_omits_detail_only_fields_while_detail_includes_them(clie
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "목록에는 노출하지 않는 상세 메모",
             "support_types": [SupportType.WHEELCHAIR],
@@ -292,8 +292,8 @@ def test_passenger_list_ignores_legacy_invalid_cancel_reason(client):
         assert passenger is not None
         support_request = SupportRequest(
             passenger_user_id=passenger.id,
-            origin_station_id="STN-ICU",
-            destination_station_id="STN-CP",
+            origin_station_id="STN-GN",
+            destination_station_id="STN-YS",
             meeting_point=MeetingPoint.ELEVATOR,
             notes="레거시 취소 사유 검증",
             status=SupportRequestStatus.CANCELLED,
@@ -329,8 +329,8 @@ def test_passenger_list_ignores_legacy_invalid_unavailable_reason(client):
         assert passenger is not None
         support_request = SupportRequest(
             passenger_user_id=passenger.id,
-            origin_station_id="STN-ICU",
-            destination_station_id="STN-CP",
+            origin_station_id="STN-GN",
+            destination_station_id="STN-YS",
             meeting_point=MeetingPoint.ELEVATOR,
             notes="레거시 지원 불가 사유 검증",
             status=SupportRequestStatus.UNAVAILABLE,
@@ -361,8 +361,8 @@ def test_staff_can_assign_and_progress_support_request(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -397,8 +397,8 @@ def test_passenger_cannot_assign_support_request(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -415,8 +415,8 @@ def test_unrelated_staff_cannot_assign_support_request(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -425,7 +425,7 @@ def test_unrelated_staff_cannot_assign_support_request(client):
     request_id = create_response.json()["data"]["id"]
 
     client.post("/auth/sign-out")
-    create_staff_user("USR-STAFF-OTHER", "STN-GY")
+    create_staff_user("USR-STAFF-OTHER", "STN-GD")
     sign_in_as_user(client, "USR-STAFF-OTHER")
 
     assign_response = client.post(f"/support-requests/{request_id}/assign")
@@ -437,8 +437,8 @@ def test_destination_staff_cannot_assign_support_request_before_handoff(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -447,7 +447,7 @@ def test_destination_staff_cannot_assign_support_request_before_handoff(client):
     request_id = create_response.json()["data"]["id"]
 
     client.post("/auth/sign-out")
-    create_staff_user("USR-STAFF-DEST-ASSIGN", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-ASSIGN", "STN-YS")
     sign_in_as_user(client, "USR-STAFF-DEST-ASSIGN")
 
     assign_response = client.post(f"/support-requests/{request_id}/assign")
@@ -459,8 +459,8 @@ def test_destination_staff_only_sees_handoff_queue_after_boarded(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -481,7 +481,7 @@ def test_destination_staff_only_sees_handoff_queue_after_boarded(client):
     assert in_progress_response.status_code == 200
     assert in_progress_response.json()["data"]["status"] == SupportRequestStatus.IN_PROGRESS
 
-    create_staff_user("USR-STAFF-DEST", "STN-CP")
+    create_staff_user("USR-STAFF-DEST", "STN-YS")
     sign_in_as_user(client, "USR-STAFF-DEST")
 
     list_response = client.get("/support-requests")
@@ -507,7 +507,7 @@ def test_destination_staff_only_sees_handoff_queue_after_boarded(client):
     assert len(handoff_items) == 1
     assert handoff_items[0]["id"] == request_id
     assert handoff_items[0]["status"] == SupportRequestStatus.BOARDED
-    assert handoff_items[0]["destination_station_id"] == "STN-CP"
+    assert handoff_items[0]["destination_station_id"] == "STN-YS"
 
 
 def test_destination_staff_cannot_view_detail_before_boarded(client):
@@ -515,8 +515,8 @@ def test_destination_staff_cannot_view_detail_before_boarded(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -529,7 +529,7 @@ def test_destination_staff_cannot_view_detail_before_boarded(client):
     assign_response = client.post(f"/support-requests/{request_id}/assign")
     assert assign_response.status_code == 200
 
-    create_staff_user("USR-STAFF-DEST-DETAIL", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-DETAIL", "STN-YS")
     sign_in_as_user(client, "USR-STAFF-DEST-DETAIL")
 
     detail_response = client.get(f"/support-requests/{request_id}")
@@ -585,8 +585,8 @@ def test_get_latest_current_location_returns_latest_matching_passenger_row(clien
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "최신 현위치 조회 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -640,8 +640,8 @@ def test_origin_staff_detail_includes_current_location_when_latest_location_exis
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "현위치 조회 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -682,8 +682,8 @@ def test_origin_staff_list_does_not_include_current_location(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "목록 현위치 비노출 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -716,8 +716,8 @@ def test_destination_staff_detail_does_not_include_current_location_after_boarde
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "하차역 현위치 비노출 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -759,7 +759,7 @@ def test_destination_staff_detail_does_not_include_current_location_after_boarde
     assert detail["current_location"] is None
 
     client.post("/auth/sign-out")
-    create_staff_user("USR-STAFF-DEST-LOCATION", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-LOCATION", "STN-YS")
     sign_in_as_user(client, "USR-STAFF-DEST-LOCATION")
 
     detail_response = client.get(f"/support-requests/{request_id}")
@@ -775,8 +775,8 @@ def test_origin_staff_detail_ignores_location_rows_for_other_passenger(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "다른 승객 위치 무시 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -816,8 +816,8 @@ def test_origin_staff_detail_prefers_latest_current_location_when_multiple_rows_
         create_response = client.post(
             "/support-requests",
             json={
-                "origin_station_id": "STN-ICU",
-                "destination_station_id": "STN-CP",
+                "origin_station_id": "STN-GN",
+                "destination_station_id": "STN-YS",
                 "meeting_point": MeetingPoint.ELEVATOR,
                 "notes": "현위치 최신값 테스트",
                 "support_types": [SupportType.WHEELCHAIR],
@@ -911,8 +911,8 @@ def test_passenger_can_upload_current_location_for_active_request(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "현위치 업로드 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -952,8 +952,8 @@ def test_staff_cannot_upload_current_location_for_request(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "현위치 업로드 권한 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -982,8 +982,8 @@ def test_passenger_cannot_upload_current_location_after_boarded(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "보딩 후 현위치 업로드 차단 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1024,8 +1024,8 @@ def test_passenger_cannot_upload_current_location_after_completion(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "완료 후 현위치 업로드 차단 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1045,7 +1045,7 @@ def test_passenger_cannot_upload_current_location_after_completion(client):
         json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
     ).status_code == 200
 
-    create_staff_user("USR-STAFF-DEST-COMPLETE", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-COMPLETE", "STN-YS")
     client.post("/auth/sign-out")
     sign_in_as_user(client, "USR-STAFF-DEST-COMPLETE")
     assert client.post(
@@ -1078,8 +1078,8 @@ def test_cannot_skip_directly_to_completed(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1103,8 +1103,8 @@ def test_staff_cannot_send_train_car_number_before_boarded(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1131,8 +1131,8 @@ def test_staff_must_provide_non_blank_train_car_number_when_boarding(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1163,8 +1163,8 @@ def test_staff_cannot_send_completion_note_before_completed(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1195,8 +1195,8 @@ def test_staff_must_provide_non_blank_completion_note_when_completing_request(cl
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1216,7 +1216,7 @@ def test_staff_must_provide_non_blank_completion_note_when_completing_request(cl
         json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
     )
 
-    create_staff_user("USR-STAFF-DEST-BLANK-COMPLETE", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-BLANK-COMPLETE", "STN-YS")
     client.post("/auth/sign-out")
     sign_in_as_user(client, "USR-STAFF-DEST-BLANK-COMPLETE")
     client.post(
@@ -1243,8 +1243,8 @@ def test_passenger_can_cancel_with_human_readable_reason(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1268,8 +1268,8 @@ def test_passenger_can_cancel_before_in_progress(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1292,8 +1292,8 @@ def test_passenger_cannot_cancel_after_support_in_progress(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1324,8 +1324,8 @@ def test_staff_cannot_mark_request_unavailable_before_assignment(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1348,8 +1348,8 @@ def test_staff_can_mark_request_unavailable_with_human_readable_reason(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1376,8 +1376,8 @@ def test_staff_can_mark_request_unavailable_with_reason_code(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1405,8 +1405,8 @@ def test_create_support_request_auto_generates_checklist_items_from_support_type
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "자동 체크리스트 테스트",
             "support_types": [SupportType.WHEELCHAIR, SupportType.BOARDING_RAMP],
@@ -1432,8 +1432,8 @@ def test_staff_can_save_and_read_request_checklist(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "체크리스트 저장 테스트",
             "support_types": [SupportType.WHEELCHAIR, SupportType.BOARDING_RAMP],
@@ -1499,8 +1499,8 @@ def test_passenger_cannot_update_request_checklist(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "권한 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1529,8 +1529,8 @@ def test_staff_cannot_submit_invalid_request_checklist_items(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "체크리스트 검증 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1587,8 +1587,8 @@ def test_assigned_staff_cannot_update_request_checklist_after_completion(client)
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "완료 후 체크리스트 수정 금지 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1608,7 +1608,7 @@ def test_assigned_staff_cannot_update_request_checklist_after_completion(client)
         json={"status": SupportRequestStatus.BOARDED, "train_car_number": "4"},
     )
 
-    create_staff_user("USR-STAFF-DEST-CHECKLIST", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-CHECKLIST", "STN-YS")
     client.post("/auth/sign-out")
     sign_in_as_user(client, "USR-STAFF-DEST-CHECKLIST")
 
@@ -1654,8 +1654,8 @@ def test_staff_must_provide_completion_note_when_completing_request(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1679,7 +1679,7 @@ def test_staff_must_provide_completion_note_when_completing_request(client):
     assert boarded_response.status_code == 200
     boarded = boarded_response.json()["data"]
 
-    create_staff_user("USR-STAFF-DEST-COMPLETE", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-COMPLETE", "STN-YS")
     client.post("/auth/sign-out")
     sign_in(client, "staff")
 
@@ -1701,7 +1701,7 @@ def test_staff_must_provide_completion_note_when_completing_request(client):
     assert awaiting["status"] == SupportRequestStatus.AWAITING_DROPOFF
     assert len(awaiting["events"]) == len(boarded["events"]) + 1
     assert awaiting["events"][-1]["to_status"] == SupportRequestStatus.AWAITING_DROPOFF
-    assert awaiting["events"][-1]["actor_name"] == "테스트 역무원 STN-CP"
+    assert awaiting["events"][-1]["actor_name"] == "테스트 역무원 STN-YS"
     assert awaiting["events"][-1]["actor_role"] == Role.STAFF
 
     client.post("/auth/sign-out")
@@ -1795,8 +1795,8 @@ def test_support_request_status_change_broadcasts_websocket_event(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "실시간 이벤트 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1829,8 +1829,8 @@ def test_unrelated_passenger_does_not_receive_other_request_events(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "다른 승객 이벤트 차단 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1876,8 +1876,8 @@ def test_destination_staff_does_not_receive_pre_boarded_events(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "하차역 실시간 범위 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1885,7 +1885,7 @@ def test_destination_staff_does_not_receive_pre_boarded_events(client):
     )
     request_id = create_response.json()["data"]["id"]
 
-    create_staff_user("USR-STAFF-DEST-WS", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-WS", "STN-YS")
     client.post("/auth/sign-out")
     sign_in_as_user(client, "USR-STAFF-DEST-WS")
 
@@ -1907,8 +1907,8 @@ def test_destination_staff_receives_boarded_events(client):
     create_response = client.post(
         "/support-requests",
         json={
-            "origin_station_id": "STN-ICU",
-            "destination_station_id": "STN-CP",
+            "origin_station_id": "STN-GN",
+            "destination_station_id": "STN-YS",
             "meeting_point": MeetingPoint.ELEVATOR,
             "notes": "하차역 보딩 이벤트 테스트",
             "support_types": [SupportType.WHEELCHAIR],
@@ -1926,7 +1926,7 @@ def test_destination_staff_receives_boarded_events(client):
     )
     assert progress_response.status_code == 200
 
-    create_staff_user("USR-STAFF-DEST-WS-BOARDED", "STN-CP")
+    create_staff_user("USR-STAFF-DEST-WS-BOARDED", "STN-YS")
     client.post("/auth/sign-out")
     sign_in_as_user(client, "USR-STAFF-DEST-WS-BOARDED")
 
