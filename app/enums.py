@@ -4,8 +4,6 @@ from enum import StrEnum
 class Role(StrEnum):
     PASSENGER = "passenger"
     STAFF = "staff"
-    DRIVER = "driver"
-    ADMIN = "admin"
 
 
 class SupportRequestStatus(StrEnum):

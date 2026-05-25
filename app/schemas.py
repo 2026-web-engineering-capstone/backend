@@ -26,6 +26,7 @@ class SessionUser(BaseModel):
     email: str
     role: Role
     station_id: str | None = None
+    station_name: str | None = None
 
 
 class SessionResponse(BaseModel):
