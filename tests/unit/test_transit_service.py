@@ -11,6 +11,7 @@ def test_parse_seoul_arrival_train_maps_subway_id_to_line():
             "arvlMsg3": "뚝섬",
             "updnLine": "내선",
             "btrainNo": "2201",
+            "barvlDt": "240",
         }
     )
 
@@ -22,6 +23,7 @@ def test_parse_seoul_arrival_train_maps_subway_id_to_line():
     assert train.train_status == "급행"
     assert train.current_station == "뚝섬"
     assert train.eta_message == "전역 도착"
+    assert train.eta_seconds == 240
 
 
 def test_parse_seoul_arrival_train_keeps_unknown_line_name_fallback():

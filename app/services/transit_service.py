@@ -37,6 +37,7 @@ class ArrivalTrain:
     current_station: str | None
     line: str | None
     line_id: str | None
+    eta_seconds: int | None
 
 
 @dataclass(frozen=True)
@@ -128,6 +129,10 @@ def _normalize_station_name(name: str) -> str:
     return stripped
 
 
+def _get_arrivals_api_key(settings: Settings) -> str | None:
+    return settings.seoul_open_api_key or settings.subway_arrival_api_key
+
+
 _TRAIN_LINE_PATTERN = re.compile(
     r"^(?P<destination>.+?행)(?:\s*-\s*(?P<route>.+?방면))?(?:\s*(?P<status>\(.+\)))?$"
 )
@@ -168,6 +173,7 @@ def _parse_seoul_arrival_train(item: dict) -> ArrivalTrain:
     line = _normalize_line_label(line_id, item.get("subwayNm"))
     train_number = item.get("btrainNo") or None
     current_station = (item.get("arvlMsg3") or item.get("statnNm") or "").strip() or None
+    eta_seconds = _to_int(item.get("barvlDt")) if item.get("barvlDt") is not None else None
     return ArrivalTrain(
         train_number=train_number,
         destination=destination,
@@ -179,6 +185,7 @@ def _parse_seoul_arrival_train(item: dict) -> ArrivalTrain:
         current_station=current_station,
         line=str(line) if line is not None else None,
         line_id=str(line_id) if line_id is not None else None,
+        eta_seconds=eta_seconds,
     )
 
 
@@ -197,7 +204,8 @@ async def fetch_station_arrivals(
     if isinstance(cached, StationArrivals):
         return cached
 
-    if not settings.seoul_open_api_key:
+    api_key = _get_arrivals_api_key(settings)
+    if not api_key:
         result = StationArrivals(
             station_name=normalized,
             fetched_at=time.time(),
@@ -208,7 +216,7 @@ async def fetch_station_arrivals(
 
     url = (
         f"{settings.seoul_open_api_base_url.rstrip('/')}/"
-        f"{settings.seoul_open_api_key}/json/realtimeStationArrival/0/10/"
+        f"{api_key}/json/realtimeStationArrival/0/10/"
         f"{normalized}"
     )
 
@@ -402,6 +410,13 @@ def _build_static_facilities(normalized_station: str) -> StationFacilities:
         fetched_at=time.time(),
         facilities=facilities,
     )
+
+
+def _to_int(value: object) -> int:
+    try:
+        return int(str(value).strip())
+    except (TypeError, ValueError):
+        return 0
 
 
 async def fetch_station_facilities(

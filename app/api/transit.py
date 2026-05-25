@@ -38,6 +38,7 @@ def _serialize_train(train: ArrivalTrain) -> dict:
         "currentStation": train.current_station,
         "line": train.line,
         "lineId": train.line_id,
+        "etaSeconds": train.eta_seconds,
     }
 
 

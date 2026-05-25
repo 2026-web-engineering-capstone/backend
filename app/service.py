@@ -208,20 +208,6 @@ USER_SEED = [
         "role": Role.PASSENGER,
         "station_id": None,
     },
-    {
-        "id": "USR-DRIVER-DEMO",
-        "name": "박기관",
-        "email": "driver@gyoum.kr",
-        "role": Role.DRIVER,
-        "station_id": None,
-    },
-    {
-        "id": "USR-ADMIN-DEMO",
-        "name": "관리자",
-        "email": "admin@gyoum.kr",
-        "role": Role.ADMIN,
-        "station_id": None,
-    },
 ]
 
 
