@@ -146,4 +146,5 @@ def _to_session_user(user: User) -> SessionUser:
         email=user.email,
         role=user.role,
         station_id=user.station_id,
+        station_name=user.station.name if user.station else None,
     )

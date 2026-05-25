@@ -3,11 +3,27 @@ from sqlalchemy import select
 import app.dependencies as dependencies
 from app.models import UserPushToken, UserSession
 
+STAFF_STATION_ID = "STN-SLY"
+STAFF_USER_ID = "USR-STAFF-SLY"
+STAFF_EMAIL = "staff.sly@gyoum.kr"
+
+
+def staff_sign_in_payload(**overrides):
+    payload = {
+        "role": "staff",
+        "station_id": STAFF_STATION_ID,
+        "installation_id": None,
+        "push_token": None,
+        "push_platform": None,
+    }
+    payload.update(overrides)
+    return payload
+
 
 def test_sign_in_and_session(client):
     sign_in_response = client.post(
         "/auth/sign-in",
-        json={"role": "staff", "installation_id": None, "push_token": None, "push_platform": None},
+        json=staff_sign_in_payload(),
     )
 
     assert sign_in_response.status_code == 200
@@ -27,11 +43,11 @@ def test_sign_in_and_session(client):
         session.close()
 
     assert user_session is not None
-    assert user_session.user_id == "USR-STAFF-DEMO"
+    assert user_session.user_id == STAFF_USER_ID
 
     session_response = client.get("/auth/session")
     assert session_response.status_code == 200
-    assert session_response.json()["data"]["user"]["email"] == "staff@gyoum.kr"
+    assert session_response.json()["data"]["user"]["email"] == STAFF_EMAIL
 
 
 def test_sign_out_clears_session(client):
@@ -188,7 +204,7 @@ def test_register_push_token_allows_account_switch_on_same_installation(client):
     )
     client.post(
         "/auth/sign-in",
-        json={"role": "staff", "installation_id": None, "push_token": None, "push_platform": None},
+        json=staff_sign_in_payload(),
     )
 
     response = client.post(
@@ -213,7 +229,7 @@ def test_register_push_token_allows_account_switch_on_same_installation(client):
         session.close()
 
     assert push_token is not None
-    assert push_token.user_id == "USR-STAFF-DEMO"
+    assert push_token.user_id == STAFF_USER_ID
     assert push_token.token == "ExponentPushToken[test-token-1]"
 
 
@@ -232,7 +248,7 @@ def test_register_push_token_rejects_reassignment_from_other_installation(client
     )
     client.post(
         "/auth/sign-in",
-        json={"role": "staff", "installation_id": None, "push_token": None, "push_platform": None},
+        json=staff_sign_in_payload(),
     )
 
     response = client.post(
@@ -324,12 +340,11 @@ def test_sign_in_reassigns_installation_when_push_payload_is_provided(client):
 
     response = client.post(
         "/auth/sign-in",
-        json={
-            "role": "staff",
-            "installation_id": "install-1",
-            "push_token": "ExponentPushToken[test-token-1]",
-            "push_platform": "android",
-        },
+        json=staff_sign_in_payload(
+            installation_id="install-1",
+            push_token="ExponentPushToken[test-token-1]",
+            push_platform="android",
+        ),
     )
 
     assert response.status_code == 200
@@ -343,7 +358,7 @@ def test_sign_in_reassigns_installation_when_push_payload_is_provided(client):
         session.close()
 
     assert push_token is not None
-    assert push_token.user_id == "USR-STAFF-DEMO"
+    assert push_token.user_id == STAFF_USER_ID
 
 
 def test_sign_out_requires_matching_token_to_unregister_installation(client):

@@ -26,6 +26,7 @@ class SessionUser(BaseModel):
     email: str
     role: Role
     station_id: str | None = None
+    station_name: str | None = None
 
 
 class SessionResponse(BaseModel):
@@ -160,3 +161,51 @@ class CancelSupportRequestRequest(BaseModel):
 
 class UnavailableSupportRequestRequest(BaseModel):
     reason: str = Field(min_length=1)
+
+
+class NeighborStationResponse(BaseModel):
+    id: str
+    name: str
+
+
+class CurrentStationResponse(BaseModel):
+    id: str
+    name: str
+    name_short: str
+    latitude: float
+    longitude: float
+    line: str
+    line_label: str
+    line_color: str
+    line_color_soft: str
+
+
+class StationContextResponse(BaseModel):
+    previous: NeighborStationResponse | None
+    current: CurrentStationResponse
+    next: NeighborStationResponse | None
+
+
+class TrainEntryResponse(BaseModel):
+    minutes: int
+    destination: str
+
+
+class ArrivalCardResponse(BaseModel):
+    display_direction: str
+    line_color: str
+    first_train: TrainEntryResponse | None
+    second_train: TrainEntryResponse | None
+
+
+class SummaryFacilitiesResponse(BaseModel):
+    accessible_toilet: bool
+    elevator: bool
+    wheelchair_lift: bool
+    escalator: bool
+
+
+class StationSummaryResponse(BaseModel):
+    station_context: StationContextResponse
+    arrival_cards: list[ArrivalCardResponse]
+    facilities: SummaryFacilitiesResponse

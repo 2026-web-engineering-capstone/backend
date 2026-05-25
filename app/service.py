@@ -89,71 +89,35 @@ ALLOWED_TRANSITIONS: dict[SupportRequestStatus, set[SupportRequestStatus]] = {
     SupportRequestStatus.UNAVAILABLE: set(),
 }
 
-_LINE_INCHEON_1 = ("인천1호선", "#3681cb")
-_LINE_SEOUL_4 = ("서울4호선", "#00a4e3")
-
+# 서울 지하철 4호선 전체 (당고개 → 남태령, 서울 구간 26개역)
+# (id, name, line, line_color, line_color_soft, line_label, latitude, longitude)
 STATION_SEED = [
-    # 인천 1호선 (송도 ~ 계양 일부 11개)
-    ("STN-GY", "계양역", *_LINE_INCHEON_1),
-    ("STN-GH", "귤현역", *_LINE_INCHEON_1),
-    ("STN-BC", "박촌역", *_LINE_INCHEON_1),
-    ("STN-IH", "임학역", *_LINE_INCHEON_1),
-    ("STN-JJ", "작전역", *_LINE_INCHEON_1),
-    ("STN-GS", "갈산역", *_LINE_INCHEON_1),
-    ("STN-JI", "지식정보단지역", *_LINE_INCHEON_1),
-    ("STN-ICU", "인천대입구역", *_LINE_INCHEON_1),
-    ("STN-CP", "센트럴파크역", *_LINE_INCHEON_1),
-    ("STN-IBD", "국제업무지구역", *_LINE_INCHEON_1),
-    ("STN-SD", "송도달빛축제공원역", *_LINE_INCHEON_1),
-    # 서울 4호선 전체 (당고개 ~ 오이도 48개)
-    ("STN-DGG", "당고개역", *_LINE_SEOUL_4),
-    ("STN-SGE", "상계역", *_LINE_SEOUL_4),
-    ("STN-NWN", "노원역", *_LINE_SEOUL_4),
-    ("STN-CDG", "창동역", *_LINE_SEOUL_4),
-    ("STN-SMM", "쌍문역", *_LINE_SEOUL_4),
-    ("STN-SYU", "수유역", *_LINE_SEOUL_4),
-    ("STN-MIA", "미아역", *_LINE_SEOUL_4),
-    ("STN-MSG", "미아사거리역", *_LINE_SEOUL_4),
-    ("STN-GIM", "길음역", *_LINE_SEOUL_4),
-    ("STN-SSW", "성신여대입구역", *_LINE_SEOUL_4),
-    ("STN-HSU", "한성대입구역", *_LINE_SEOUL_4),
-    ("STN-HYE", "혜화역", *_LINE_SEOUL_4),
-    ("STN-DDM", "동대문역", *_LINE_SEOUL_4),
-    ("STN-DDH", "동대문역사문화공원역", *_LINE_SEOUL_4),
-    ("STN-CMR", "충무로역", *_LINE_SEOUL_4),
-    ("STN-MDG", "명동역", *_LINE_SEOUL_4),
-    ("STN-HOH", "회현역", *_LINE_SEOUL_4),
-    ("STN-SLY", "서울역", *_LINE_SEOUL_4),
-    ("STN-SUK", "숙대입구역", *_LINE_SEOUL_4),
-    ("STN-SGJ", "삼각지역", *_LINE_SEOUL_4),
-    ("STN-SYS", "신용산역", *_LINE_SEOUL_4),
-    ("STN-ICN", "이촌역", *_LINE_SEOUL_4),
-    ("STN-DJK", "동작역", *_LINE_SEOUL_4),
-    ("STN-CSD", "총신대입구역", *_LINE_SEOUL_4),
-    ("STN-SDG", "사당역", *_LINE_SEOUL_4),
-    ("STN-NTR", "남태령역", *_LINE_SEOUL_4),
-    ("STN-SBW", "선바위역", *_LINE_SEOUL_4),
-    ("STN-GMP", "경마공원역", *_LINE_SEOUL_4),
-    ("STN-DGW", "대공원역", *_LINE_SEOUL_4),
-    ("STN-GCN", "과천역", *_LINE_SEOUL_4),
-    ("STN-GCH", "정부과천청사역", *_LINE_SEOUL_4),
-    ("STN-IDW", "인덕원역", *_LINE_SEOUL_4),
-    ("STN-PCN", "평촌역", *_LINE_SEOUL_4),
-    ("STN-BGE", "범계역", *_LINE_SEOUL_4),
-    ("STN-GMJ", "금정역", *_LINE_SEOUL_4),
-    ("STN-SBN", "산본역", *_LINE_SEOUL_4),
-    ("STN-SRS", "수리산역", *_LINE_SEOUL_4),
-    ("STN-DYM", "대야미역", *_LINE_SEOUL_4),
-    ("STN-BWL", "반월역", *_LINE_SEOUL_4),
-    ("STN-SNS", "상록수역", *_LINE_SEOUL_4),
-    ("STN-HDA", "한대앞역", *_LINE_SEOUL_4),
-    ("STN-JAN", "중앙역", *_LINE_SEOUL_4),
-    ("STN-GJN", "고잔역", *_LINE_SEOUL_4),
-    ("STN-CZI", "초지역", *_LINE_SEOUL_4),
-    ("STN-ANS", "안산역", *_LINE_SEOUL_4),
-    ("STN-SGO", "신길온천역", *_LINE_SEOUL_4),
-    ("STN-JWG", "정왕역", *_LINE_SEOUL_4),
-    ("STN-ODO", "오이도역", *_LINE_SEOUL_4),
+    ("STN-4-DGG",  "당고개역",          "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6614, 127.0633),
+    ("STN-4-SGY",  "상계역",            "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6560, 127.0633),
+    ("STN-4-NW",   "노원역",            "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6549, 127.0567),
+    ("STN-4-CD",   "창동역",            "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6522, 127.0474),
+    ("STN-4-SM",   "쌍문역",            "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6489, 127.0350),
+    ("STN-4-SY",   "수유역",            "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6376, 127.0251),
+    ("STN-4-MIA",  "미아역",            "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6283, 127.0246),
+    ("STN-4-MISS", "미아사거리역",       "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6198, 127.0252),
+    ("STN-4-GU",   "길음역",            "서울 4호선", "#00a2d1", "#33b5de", "4", 37.6031, 127.0252),
+    ("STN-4-SNY",  "성신여대입구역",     "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5922, 127.0167),
+    ("STN-4-HSD",  "한성대입구역",       "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5894, 127.0062),
+    ("STN-4-HH",   "혜화역",            "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5820, 127.0017),
+    ("STN-4-DD",   "동대문역",           "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5717, 127.0076),
+    ("STN-4-DHCP", "동대문역사문화공원역","서울 4호선", "#00a2d1", "#33b5de", "4", 37.5649, 127.0075),
+    ("STN-4-CM",   "충무로역",           "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5609, 126.9946),
+    ("STN-4-MD",   "명동역",             "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5607, 126.9856),
+    ("STN-4-HY",   "회현역",             "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5573, 126.9779),
+    ("STN-4-SR",   "서울역",             "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5543, 126.9723),
+    ("STN-4-SDK",  "숙대입구역",         "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5459, 126.9729),
+    ("STN-4-SGJ",  "삼각지역",           "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5349, 126.9728),
+    ("STN-4-SYS",  "신용산역",           "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5299, 126.9635),
+    ("STN-4-IC",   "이촌역",             "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5224, 126.9620),
+    ("STN-4-DJ",   "동작역",             "서울 4호선", "#00a2d1", "#33b5de", "4", 37.5117, 126.9795),
+    ("STN-4-IS",   "이수역",             "서울 4호선", "#00a2d1", "#33b5de", "4", 37.4872, 126.9820),
+    ("STN-4-SD",   "사당역",             "서울 4호선", "#00a2d1", "#33b5de", "4", 37.4766, 126.9815),
+    ("STN-4-NTR",  "남태령역",           "서울 4호선", "#00a2d1", "#33b5de", "4", 37.4646, 126.9851),
 ]
 
 USER_SEED = [
@@ -165,18 +129,11 @@ USER_SEED = [
         "station_id": None,
     },
     {
-        "id": "USR-DRIVER-DEMO",
-        "name": "박기관",
-        "email": "driver@gyoum.kr",
-        "role": Role.DRIVER,
-        "station_id": None,
-    },
-    {
-        "id": "USR-ADMIN-DEMO",
-        "name": "관리자",
-        "email": "admin@gyoum.kr",
-        "role": Role.ADMIN,
-        "station_id": None,
+        "id": "USR-STAFF-DEMO",
+        "name": "김민수",
+        "email": "staff@gyoum.kr",
+        "role": Role.STAFF,
+        "station_id": "STN-4-HSD",
     },
 ]
 
@@ -184,7 +141,7 @@ USER_SEED = [
 def _build_staff_seed() -> list[dict[str, object]]:
     """모든 시드 역에 1명씩 데모 staff 자동 생성."""
     staff: list[dict[str, object]] = []
-    for station_id, station_name, _line, _line_color in STATION_SEED:
+    for station_id, station_name, _line, _line_color, *_ in STATION_SEED:
         suffix = station_id.removeprefix("STN-")
         staff.append(
             {
@@ -236,8 +193,17 @@ class AppService:
             if session.scalar(select(Station.id).limit(1)) is None:
                 session.add_all(
                     [
-                        Station(id=station_id, name=name, line=line, line_color=line_color)
-                        for station_id, name, line, line_color in STATION_SEED
+                        Station(
+                            id=station_id,
+                            name=name,
+                            line=line,
+                            line_color=line_color,
+                            line_color_soft=line_color_soft,
+                            line_label=line_label,
+                            latitude=latitude,
+                            longitude=longitude,
+                        )
+                        for station_id, name, line, line_color, line_color_soft, line_label, latitude, longitude in STATION_SEED
                     ]
                 )
                 session.flush()
@@ -262,6 +228,24 @@ class AppService:
             session.commit()
         finally:
             session.close()
+
+    def get_station_by_id(self, db: Session, station_id: str) -> Station:
+        station = db.get(Station, station_id)
+        if not station:
+            raise HTTPException(status_code=404, detail="Station not found")
+        return station
+
+    def get_station_neighbors(self, db: Session, station_id: str) -> tuple[Station | None, Station | None]:
+        seed_ids = [row[0] for row in STATION_SEED]
+        try:
+            idx = seed_ids.index(station_id)
+        except ValueError:
+            return None, None
+        prev_id = seed_ids[idx - 1] if idx > 0 else None
+        next_id = seed_ids[idx + 1] if idx < len(seed_ids) - 1 else None
+        prev = db.get(Station, prev_id) if prev_id else None
+        nxt = db.get(Station, next_id) if next_id else None
+        return prev, nxt
 
     def list_stations(self, db: Session, query: str | None) -> list[Station]:
         stmt = select(Station).order_by(Station.name)

@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     )
     session_cookie_name: str = "gyoum_session"
     cookie_secure: bool = False
+    subway_arrival_api_key: str = ""
+    accessibility_api_key: str = ""
 
     # 외부 API 자격 증명 — 코드 하드코딩 금지. .env 또는 환경 변수로만 주입.
     # 서울 열린데이터 광장: http://swopenapi.seoul.go.kr/api/subway

@@ -1,76 +1,81 @@
-"""실시간 도착 / 역사 편의시설 외부 API 프록시 라우터."""
+import time
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Query
 
-from app.config import Settings
-from app.dependencies import get_current_user, get_settings
-from app.models import User
+from app.dependencies import get_settings
+from app.external.accessibility import fetch_facilities
+from app.external.subway_arrival import fetch_arrival_cards
 from app.schemas import ApiResponse
-from app.services.transit_service import (
-    ArrivalTrain,
-    StationArrivals,
-    StationFacilities,
-    StationFacility,
-    fetch_station_arrivals,
-    fetch_station_facilities,
-)
 
 router = APIRouter(prefix="/transit", tags=["transit"])
 
 
-def _serialize_arrivals(payload: StationArrivals) -> dict:
-    return {
-        "stationName": payload.station_name,
-        "fetchedAt": payload.fetched_at,
-        "trains": [_serialize_train(train) for train in payload.trains],
-    }
-
-
-def _serialize_train(train: ArrivalTrain) -> dict:
-    return {
-        "trainNumber": train.train_number,
-        "destination": train.destination,
-        "etaMessage": train.eta_message,
-        "direction": train.direction,
-        "line": train.line,
-    }
-
-
-def _serialize_facilities(payload: StationFacilities) -> dict:
-    return {
-        "stationName": payload.station_name,
-        "fetchedAt": payload.fetched_at,
-        "facilities": [_serialize_facility(item) for item in payload.facilities],
-    }
-
-
-def _serialize_facility(item: StationFacility) -> dict:
-    return {
-        "facilityType": item.facility_type,
-        "locationNote": item.location_note,
-        "operationalStatus": item.operational_status,
-    }
-
-
-@router.get("/arrivals", response_model=ApiResponse)
-async def get_station_arrivals(
-    station_name: str,
-    _: User = Depends(get_current_user),
-    settings: Settings = Depends(get_settings),
+@router.get("/arrivals")
+async def get_arrivals(
+    station_name: str = Query(..., min_length=1),
+    settings=Depends(get_settings),
 ):
-    if not station_name.strip():
-        raise HTTPException(status_code=422, detail="station_name is required")
-    payload = await fetch_station_arrivals(settings, station_name)
-    return ApiResponse(data=_serialize_arrivals(payload))
+    cards = await fetch_arrival_cards(
+        station_name, settings.subway_arrival_api_key, ""
+    )
+    trains = []
+    for card in cards:
+        for entry in [card.first_train, card.second_train]:
+            if entry is not None:
+                trains.append(
+                    {
+                        "trainNumber": None,
+                        "destination": entry.destination,
+                        "etaMessage": "곧 도착" if entry.minutes == 0 else f"{entry.minutes}분",
+                        "direction": card.display_direction,
+                        "line": None,
+                    }
+                )
+    return ApiResponse(
+        data={
+            "stationName": station_name,
+            "fetchedAt": int(time.time() * 1000),
+            "trains": trains,
+        }
+    )
 
 
-@router.get("/facilities", response_model=ApiResponse)
-async def get_station_facilities(
-    station_name: str,
-    _: User = Depends(get_current_user),
-    settings: Settings = Depends(get_settings),
+@router.get("/facilities")
+async def get_facilities(
+    station_name: str = Query(..., min_length=1),
+    settings=Depends(get_settings),
 ):
-    if not station_name.strip():
-        raise HTTPException(status_code=422, detail="station_name is required")
-    payload = await fetch_station_facilities(settings, station_name)
-    return ApiResponse(data=_serialize_facilities(payload))
+    summary = await fetch_facilities(station_name, settings.accessibility_api_key)
+
+    def status(has: bool) -> str:
+        return "operational" if has else "unknown"
+
+    facilities = [
+        {
+            "facilityType": "elevator",
+            "locationNote": None,
+            "operationalStatus": status(summary.elevator),
+        },
+        {
+            "facilityType": "accessible_toilet",
+            "locationNote": None,
+            "operationalStatus": status(summary.accessible_toilet),
+        },
+        {
+            "facilityType": "wheelchair_lift",
+            "locationNote": None,
+            "operationalStatus": status(summary.wheelchair_lift),
+        },
+        {
+            "facilityType": "escalator",
+            "locationNote": None,
+            "operationalStatus": status(summary.escalator),
+        },
+    ]
+    return ApiResponse(
+        data={
+            "stationName": station_name,
+            "fetchedAt": int(time.time() * 1000),
+            "facilities": facilities,
+        }
+    )
