@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     # 서울 열린데이터 광장: http://swopenapi.seoul.go.kr/api/subway
     # 키가 비어 있거나 호출이 실패하면 transit_service가 fallback 데모 데이터를 반환한다.
     seoul_open_api_key: str | None = None
+    subway_arrival_api_key: str | None = None
     seoul_open_api_base_url: str = "http://swopenapi.seoul.go.kr/api/subway"
     # 실시간 도착 정보 캐시 TTL(초).
     transit_arrivals_cache_ttl: int = 20
