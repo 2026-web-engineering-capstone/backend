@@ -206,13 +206,14 @@ async def fetch_station_arrivals(
 
     api_key = _get_arrivals_api_key(settings)
     if not api_key:
-        result = StationArrivals(
-            station_name=normalized,
-            fetched_at=time.time(),
-            trains=[],
+        logger.debug(
+            "realtimeStationArrival api key not configured; "
+            "set GYOUM_SEOUL_OPEN_API_KEY or GYOUM_SUBWAY_ARRIVAL_API_KEY"
         )
-        _arrivals_cache.set(cache_key, result)
-        return result
+        raise HTTPException(
+            status_code=503,
+            detail="실시간 도착 정보 API 키가 설정되지 않았어요.",
+        )
 
     url = (
         f"{settings.seoul_open_api_base_url.rstrip('/')}/"
@@ -264,6 +265,11 @@ async def fetch_station_arrivals(
                 api_message,
             )
             if api_code == "INFO-200":
+                logger.debug(
+                    "realtimeStationArrival INFO-200 (no data) for station=%s message=%s",
+                    normalized,
+                    api_message,
+                )
                 result = StationArrivals(
                     station_name=normalized,
                     fetched_at=time.time(),
@@ -281,6 +287,13 @@ async def fetch_station_arrivals(
 
     items = payload.get("realtimeArrivalList") if isinstance(payload, dict) else None
     if not isinstance(items, list):
+        logger.debug(
+            "realtimeStationArrival response missing realtimeArrivalList for station=%s; "
+            "payload type=%s keys=%s",
+            normalized,
+            type(payload).__name__,
+            list(payload.keys()) if isinstance(payload, dict) else "N/A",
+        )
         items = []
     trains = [_parse_seoul_arrival_train(item) for item in items if isinstance(item, dict)]
     result = StationArrivals(
