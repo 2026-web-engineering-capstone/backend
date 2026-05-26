@@ -14,7 +14,7 @@ class Station(Base):
     __tablename__ = "stations"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
-    name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(255), index=True)
     line: Mapped[str] = mapped_column(String(128))
     line_color: Mapped[str] = mapped_column(String(16))
 

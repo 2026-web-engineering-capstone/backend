@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 
 from fastapi import HTTPException
-from sqlalchemy import Select, select
+from sqlalchemy import Select, select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload, selectinload
 
@@ -35,6 +36,13 @@ from app.schemas import (
     SupportRequestListItem,
     UploadSupportRequestCurrentLocationRequest,
 )
+from app.station_catalog import (
+    load_arrival_station_catalog,
+    normalize_line_name,
+    normalize_station_name,
+)
+
+logger = logging.getLogger(__name__)
 
 CANCEL_REASON_ALIASES: dict[str, tuple[CancelReason, str]] = {
     "change_of_plans": (CancelReason.CHANGE_OF_PLANS, "일정 변경"),
@@ -156,6 +164,39 @@ STATION_SEED = [
     ("STN-ODO", "오이도역", *_LINE_SEOUL_4),
 ]
 
+
+def _build_station_seed() -> list[tuple[str, str, str, str]]:
+    seed = list(STATION_SEED)
+    seen: set[tuple[str, str]] = {
+        (normalize_station_name(name), normalize_line_name(line))
+        for _station_id, name, line, _line_color in seed
+    }
+
+    for item in load_arrival_station_catalog():
+        key = (normalize_station_name(item["name"]), normalize_line_name(item["line"]))
+        if key in seen:
+            continue
+        seed.append(
+            (
+                f"STN-{item['subway_id']}-{item['station_id']}",
+                item["name"],
+                item["line"],
+                item["line_color"],
+            )
+        )
+        seen.add(key)
+
+    logger.debug(
+        "station seed: %d total (%d hardcoded, %d from catalog)",
+        len(seed),
+        len(STATION_SEED),
+        len(seed) - len(STATION_SEED),
+    )
+    return seed
+
+
+ALL_STATION_SEED = _build_station_seed()
+
 USER_SEED = [
     {
         "id": "USR-PASSENGER-DEMO",
@@ -170,7 +211,7 @@ USER_SEED = [
 def _build_staff_seed() -> list[dict[str, object]]:
     """모든 시드 역에 1명씩 데모 staff 자동 생성."""
     staff: list[dict[str, object]] = []
-    for station_id, station_name, _line, _line_color in STATION_SEED:
+    for station_id, station_name, _line, _line_color in ALL_STATION_SEED:
         suffix = station_id.removeprefix("STN-")
         staff.append(
             {
@@ -212,6 +253,49 @@ CHECKLIST_TEMPLATES: dict[SupportType, list[tuple[str, str]]] = {
 }
 
 
+def _sqlite_station_name_has_unique_index(session: Session) -> bool:
+    indexes = session.execute(text("PRAGMA index_list('stations')")).all()
+    for index in indexes:
+        index_name = index[1]
+        is_unique = bool(index[2])
+        if not is_unique:
+            continue
+        columns = session.execute(
+            text(f'PRAGMA index_info("{index_name}")')
+        ).all()
+        if [col[2] for col in columns] == ["name"]:
+            return True
+    return False
+
+
+def _allow_duplicate_station_names(session: Session) -> None:
+    bind = session.get_bind()
+    if bind.dialect.name != "sqlite":
+        return
+    if not _sqlite_station_name_has_unique_index(session):
+        return
+
+    logger.debug("migrating SQLite stations table: removing UNIQUE constraint on name")
+    session.execute(text("PRAGMA foreign_keys=OFF"))
+    session.execute(text(
+        "CREATE TABLE stations_new ("
+        "id VARCHAR(64) NOT NULL, "
+        "name VARCHAR(255) NOT NULL, "
+        "line VARCHAR(128) NOT NULL, "
+        "line_color VARCHAR(16) NOT NULL, "
+        "PRIMARY KEY (id))"
+    ))
+    session.execute(text(
+        "INSERT INTO stations_new (id, name, line, line_color) "
+        "SELECT id, name, line, line_color FROM stations"
+    ))
+    session.execute(text("DROP TABLE stations"))
+    session.execute(text("ALTER TABLE stations_new RENAME TO stations"))
+    session.execute(text("CREATE INDEX ix_stations_name ON stations (name)"))
+    session.execute(text("PRAGMA foreign_keys=ON"))
+    session.commit()
+
+
 @dataclass
 class AppService:
     db_factory: Callable[[], Session]
@@ -219,19 +303,38 @@ class AppService:
     def seed(self) -> None:
         session = self.db_factory()
         try:
-            if session.scalar(select(Station.id).limit(1)) is None:
-                session.add_all(
-                    [
-                        Station(id=station_id, name=name, line=line, line_color=line_color)
-                        for station_id, name, line, line_color in STATION_SEED
-                    ]
-                )
+            _allow_duplicate_station_names(session)
+
+            existing_station_ids = set(session.scalars(select(Station.id)))
+            missing_stations = [
+                Station(id=station_id, name=name, line=line, line_color=line_color)
+                for station_id, name, line, line_color in ALL_STATION_SEED
+                if station_id not in existing_station_ids
+            ]
+            if missing_stations:
+                logger.debug("seeding %d new stations into DB", len(missing_stations))
+                session.add_all(missing_stations)
                 session.flush()
+
+            station_seed_by_id = {
+                station_id: (name, line, line_color)
+                for station_id, name, line, line_color in ALL_STATION_SEED
+            }
+            for station in session.scalars(
+                select(Station).where(Station.id.in_(station_seed_by_id.keys()))
+            ):
+                name, line, line_color = station_seed_by_id[station.id]
+                if station.name != name:
+                    station.name = name
+                if station.line != line:
+                    station.line = line
+                if station.line_color != line_color:
+                    station.line_color = line_color
+
             if session.scalar(select(User.id).limit(1)) is None:
                 session.add_all([User(**item) for item in USER_SEED])
                 session.add_all([User(**item) for item in STAFF_SEED])
             else:
-                # 기존 DB에 staff가 누락된 역은 자동 추가(다수 역 커버용).
                 existing_staff_station_ids = {
                     row
                     for row in session.scalars(
