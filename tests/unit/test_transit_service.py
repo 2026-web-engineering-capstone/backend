@@ -1,4 +1,8 @@
-from app.services.transit_service import _parse_seoul_arrival_train
+from app.services.transit_service import (
+    _build_api_facilities,
+    _build_static_facilities,
+    _parse_seoul_arrival_train,
+)
 
 
 def test_parse_seoul_arrival_train_maps_subway_id_to_line():
@@ -39,3 +43,33 @@ def test_parse_seoul_arrival_train_keeps_unknown_line_name_fallback():
     assert train.line == "테스트선"
     assert train.line_id == "9999"
     assert train.destination_label == "테스트행"
+
+
+def test_static_facilities_only_include_accessible_facilities():
+    payload = _build_static_facilities("서울")
+    facility_types = [item.facility_type for item in payload.facilities]
+
+    assert facility_types == ["엘리베이터", "장애인 화장실", "휠체어 리프트"]
+    assert "에스컬레이터" not in facility_types
+    assert "수유실" not in facility_types
+
+
+def test_api_facilities_include_weak_person_slope_and_counts():
+    payload = _build_api_facilities(
+        "서울",
+        [
+            {
+                "pwdbs_slwy_estnc": "Y",
+                "pwdbs_tolt_estnc": "Y",
+                "whlch_liftt_cnt": 2,
+            }
+        ],
+        [{"elevt_cnt": 18, "esclt_cnt": 23, "nrsrm_estnc": "Y"}],
+    )
+
+    assert [(item.facility_type, item.location_note) for item in payload.facilities] == [
+        ("엘리베이터", "18대"),
+        ("장애인 경사로", "설치됨"),
+        ("장애인 화장실", "설치됨"),
+        ("휠체어 리프트", "2대"),
+    ]

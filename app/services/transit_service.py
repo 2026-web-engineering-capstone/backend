@@ -13,9 +13,11 @@ HTTPException으로 상위에 전달한다 — 우회하지 않고 사용자에�
 from __future__ import annotations
 
 import logging
+import csv
 import re
 import time
 from dataclasses import dataclass
+from pathlib import Path
 
 import httpx
 from fastapi import HTTPException
@@ -23,6 +25,10 @@ from fastapi import HTTPException
 from app.config import Settings
 
 logger = logging.getLogger(__name__)
+
+_DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+_SEOUL_METRO_FACILITIES_CSV = _DATA_DIR / "seoul_metro_facilities_20260212.csv"
+_seoul_metro_facilities_cache: dict[str, list[tuple[str, str | None, str]]] | None = None
 
 
 @dataclass(frozen=True)
@@ -300,6 +306,108 @@ def _facility(
     return facility_type, location_note, operational_status
 
 
+_ACCESSIBLE_FACILITY_TYPES = {
+    "엘리베이터",
+    "장애인 경사로",
+    "장애인경사로",
+    "휠체어 경사로",
+    "휠체어경사로",
+    "교통약자 경사로",
+    "교통약자경사로",
+    "장애인 화장실",
+    "장애인화장실",
+    "휠체어 리프트",
+    "휠체어리프트",
+    "교통약자 개찰구",
+    "accessible_gate",
+    "accessible_toilet",
+    "elevator",
+    "wheelchair_lift",
+}
+
+_ACCESSIBLE_FACILITY_TYPE_NORMALIZED = {
+    item.replace(" ", "") for item in _ACCESSIBLE_FACILITY_TYPES
+}
+
+
+def _is_accessible_facility(facility_type: str) -> bool:
+    normalized = facility_type.replace(" ", "")
+    return facility_type in _ACCESSIBLE_FACILITY_TYPES or normalized in _ACCESSIBLE_FACILITY_TYPE_NORMALIZED
+
+
+def _as_items(payload: object) -> list[dict]:
+    if not isinstance(payload, dict):
+        return []
+    raw_items = (
+        payload.get("response", {})
+        .get("body", {})
+        .get("items", {})
+        .get("item", [])
+    )
+    if isinstance(raw_items, dict):
+        return [raw_items]
+    if isinstance(raw_items, list):
+        return [item for item in raw_items if isinstance(item, dict)]
+    return []
+
+
+def _yes(value: object) -> bool:
+    return str(value or "").strip().upper() == "Y"
+
+
+def _count(value: object) -> int:
+    try:
+        return int(str(value or "0").strip())
+    except ValueError:
+        return 0
+
+
+def _append_facility(
+    facilities: list[StationFacility],
+    station_name: str,
+    facility_type: str,
+    location_note: str | None,
+) -> None:
+    if any(item.facility_type == facility_type for item in facilities):
+        return
+    facilities.append(
+        StationFacility(
+            station_name=station_name,
+            facility_type=facility_type,
+            location_note=location_note,
+            operational_status="operational",
+        )
+    )
+
+
+def _build_api_facilities(
+    normalized_station: str,
+    weak_person_items: list[dict],
+    station_items: list[dict],
+) -> StationFacilities:
+    facilities: list[StationFacility] = []
+
+    for item in station_items:
+        elevator_count = _count(item.get("elevt_cnt"))
+        if elevator_count > 0:
+            _append_facility(facilities, normalized_station, "엘리베이터", f"{elevator_count}대")
+
+    for item in weak_person_items:
+        if _yes(item.get("pwdbs_slwy_estnc")):
+            _append_facility(facilities, normalized_station, "장애인 경사로", "설치됨")
+        if _yes(item.get("pwdbs_tolt_estnc")):
+            _append_facility(facilities, normalized_station, "장애인 화장실", "설치됨")
+        lift_count = _count(item.get("whlch_liftt_cnt"))
+        if lift_count > 0:
+            _append_facility(facilities, normalized_station, "휠체어 리프트", f"{lift_count}대")
+
+    return StationFacilities(
+        station_name=normalized_station,
+        fetched_at=time.time(),
+        facilities=facilities,
+    )
+
+
 # 4호선 정적 시설 시드 자동 보충에 사용하는 정규화 역명 묶음.
 _SEOUL_LINE_4_STATIONS: tuple[str, ...] = (
     "당고개", "상계", "노원", "창동", "쌍문", "수유", "미아",
@@ -404,6 +512,7 @@ def _build_static_facilities(normalized_station: str) -> StationFacilities:
             operational_status=operational_status,
         )
         for facility_type, location_note, operational_status in items
+        if _is_accessible_facility(facility_type)
     ]
     return StationFacilities(
         station_name=normalized_station,
@@ -422,14 +531,41 @@ def _to_int(value: object) -> int:
 async def fetch_station_facilities(
     settings: Settings, station_name: str
 ) -> StationFacilities:
-    """역사 편의시설 정보 — 정적 dict 룩업.
+    """역사 교통약자 시설 정보.
 
-    현재 무료 공공 API가 안정적이지 않아 코드 내 시드를 사용한다. 라우터에서
-    `await`로 호출하므로 비동기 시그니처는 그대로 유지한다. 매칭되는 역이 없으면
-    빈 목록을 200으로 돌려준다(프런트는 '공개된 편의시설 정보가 없습니다.' 안내).
-
-    `settings` 인자는 향후 외부 API 전환 시 시그니처 호환을 위해 유지한다.
+    한국철도공사 편의시설 API가 조회되는 역은 실제 API를 우선 사용하고,
+    API 키가 없거나 조회 결과가 없는 도시철도 역은 기존 정적 시드로 보충한다.
     """
-    _ = settings
     normalized = _normalize_station_name(station_name)
+
+    if settings.accessibility_api_key:
+        base_url = settings.accessibility_api_base_url.rstrip("/")
+        common_params = {
+            "serviceKey": settings.accessibility_api_key,
+            "pageNo": 1,
+            "numOfRows": 10,
+            "returnType": "JSON",
+            "cond[stn_nm::EQ]": normalized,
+        }
+        try:
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                weak_response, station_response = await client.get(
+                    f"{base_url}/weekPersonFacilities",
+                    params=common_params,
+                ), await client.get(
+                    f"{base_url}/stationFacilities",
+                    params=common_params,
+                )
+            weak_response.raise_for_status()
+            station_response.raise_for_status()
+            api_result = _build_api_facilities(
+                normalized,
+                _as_items(weak_response.json()),
+                _as_items(station_response.json()),
+            )
+            if api_result.facilities:
+                return api_result
+        except (httpx.HTTPError, ValueError) as error:
+            logger.warning("station facilities api fallback: %s", error)
+
     return _build_static_facilities(normalized)
