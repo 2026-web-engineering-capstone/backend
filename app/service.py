@@ -980,6 +980,9 @@ class AppService:
             if actor.station_id == support_request.destination_station_id and support_request.status in {
                 SupportRequestStatus.BOARDED,
                 SupportRequestStatus.AWAITING_DROPOFF,
+                SupportRequestStatus.COMPLETED,
+                SupportRequestStatus.CANCELLED,
+                SupportRequestStatus.UNAVAILABLE,
             }:
                 return
             raise HTTPException(status_code=403, detail="Forbidden")
