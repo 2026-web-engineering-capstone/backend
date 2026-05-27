@@ -17,6 +17,8 @@ class ArrivalStationCatalogItem(TypedDict):
     name: str
     line: str
     line_color: str
+    latitude: float | None
+    longitude: float | None
 
 
 @lru_cache(maxsize=1)
@@ -51,6 +53,8 @@ def load_arrival_station_catalog() -> tuple[ArrivalStationCatalogItem, ...]:
         line_color = str(row.get("line_color") or "").strip()
         if not subway_id or not station_id or not name or not line:
             continue
+        raw_lat = row.get("latitude")
+        raw_lng = row.get("longitude")
         items.append(
             {
                 "subway_id": subway_id,
@@ -58,6 +62,8 @@ def load_arrival_station_catalog() -> tuple[ArrivalStationCatalogItem, ...]:
                 "name": name,
                 "line": line,
                 "line_color": line_color or "#7CA8D5",
+                "latitude": float(raw_lat) if raw_lat is not None else None,
+                "longitude": float(raw_lng) if raw_lng is not None else None,
             }
         )
 

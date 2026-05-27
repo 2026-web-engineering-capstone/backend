@@ -4,4871 +4,6263 @@
     "station_id": "1001000100",
     "name": "소요산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.948898,
+    "longitude": 127.061129
   },
   {
     "subway_id": "1001",
     "station_id": "1001000101",
     "name": "동두천역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.927613,
+    "longitude": 127.054928
   },
   {
     "subway_id": "1001",
     "station_id": "1001000102",
     "name": "보산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.914145,
+    "longitude": 127.057179
   },
   {
     "subway_id": "1001",
     "station_id": "1001000103",
     "name": "동두천중앙역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.901781,
+    "longitude": 127.056423
   },
   {
     "subway_id": "1001",
     "station_id": "1001000104",
     "name": "지행역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.892343,
+    "longitude": 127.055793
   },
   {
     "subway_id": "1001",
     "station_id": "1001000105",
     "name": "덕정역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.843188,
+    "longitude": 127.061559
   },
   {
     "subway_id": "1001",
     "station_id": "1001000106",
     "name": "덕계역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.818753,
+    "longitude": 127.056692
   },
   {
     "subway_id": "1001",
     "station_id": "1001000107",
     "name": "양주역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.774142,
+    "longitude": 127.044721
   },
   {
     "subway_id": "1001",
     "station_id": "1001000108",
     "name": "녹양역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.759385,
+    "longitude": 127.042279
   },
   {
     "subway_id": "1001",
     "station_id": "1001000109",
     "name": "가능역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.748396,
+    "longitude": 127.044288
   },
   {
     "subway_id": "1001",
     "station_id": "1001000110",
     "name": "의정부역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.738362,
+    "longitude": 127.045957
   },
   {
     "subway_id": "1001",
     "station_id": "1001000111",
     "name": "회룡역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.723806,
+    "longitude": 127.047295
   },
   {
     "subway_id": "1001",
     "station_id": "1001000112",
     "name": "망월사역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.710219,
+    "longitude": 127.047418
   },
   {
     "subway_id": "1001",
     "station_id": "1001000113",
     "name": "도봉산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.689512,
+    "longitude": 127.046063
   },
   {
     "subway_id": "1001",
     "station_id": "1001000114",
     "name": "도봉역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.679212,
+    "longitude": 127.045535
   },
   {
     "subway_id": "1001",
     "station_id": "1001000115",
     "name": "방학역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.667438,
+    "longitude": 127.044322
   },
   {
     "subway_id": "1001",
     "station_id": "1001000116",
     "name": "창동역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.653339,
+    "longitude": 127.047645
   },
   {
     "subway_id": "1001",
     "station_id": "1001000117",
     "name": "녹천역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.644633,
+    "longitude": 127.051383
   },
   {
     "subway_id": "1001",
     "station_id": "1001000118",
     "name": "월계역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.633278,
+    "longitude": 127.058857
   },
   {
     "subway_id": "1001",
     "station_id": "1001000119",
     "name": "광운대역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.623837,
+    "longitude": 127.061695
   },
   {
     "subway_id": "1001",
     "station_id": "1001000120",
     "name": "석계역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.615006,
+    "longitude": 127.065688
   },
   {
     "subway_id": "1001",
     "station_id": "1001000121",
     "name": "신이문역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.601782,
+    "longitude": 127.067398
   },
   {
     "subway_id": "1001",
     "station_id": "1001000122",
     "name": "외대앞역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.596273,
+    "longitude": 127.063693
   },
   {
     "subway_id": "1001",
     "station_id": "1001000123",
     "name": "회기역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.589796,
+    "longitude": 127.058048
   },
   {
     "subway_id": "1001",
     "station_id": "1001000124",
     "name": "청량리역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.580039,
+    "longitude": 127.044727
   },
   {
     "subway_id": "1001",
     "station_id": "1001000125",
     "name": "제기동역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.578175,
+    "longitude": 127.034949
   },
   {
     "subway_id": "1001",
     "station_id": "1001000126",
     "name": "신설동역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.57603,
+    "longitude": 127.024457
   },
   {
     "subway_id": "1001",
     "station_id": "1001000127",
     "name": "동묘앞역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.573217,
+    "longitude": 127.016364
   },
   {
     "subway_id": "1001",
     "station_id": "1001000128",
     "name": "동대문역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.571668,
+    "longitude": 127.010632
   },
   {
     "subway_id": "1001",
     "station_id": "1001000129",
     "name": "종로5가역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.570976,
+    "longitude": 127.001539
   },
   {
     "subway_id": "1001",
     "station_id": "1001000130",
     "name": "종로3가역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.570421,
+    "longitude": 126.992153
   },
   {
     "subway_id": "1001",
     "station_id": "1001000131",
     "name": "종각역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.570229,
+    "longitude": 126.983152
   },
   {
     "subway_id": "1001",
     "station_id": "1001000132",
     "name": "시청역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.565344,
+    "longitude": 126.977199
   },
   {
     "subway_id": "1001",
     "station_id": "1001000133",
     "name": "서울역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.55598,
+    "longitude": 126.972091
   },
   {
     "subway_id": "1001",
     "station_id": "1001000134",
     "name": "남영역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.540566,
+    "longitude": 126.971332
   },
   {
     "subway_id": "1001",
     "station_id": "1001000135",
     "name": "용산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.529774,
+    "longitude": 126.96463
   },
   {
     "subway_id": "1001",
     "station_id": "1001000136",
     "name": "노량진역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.514055,
+    "longitude": 126.94211
   },
   {
     "subway_id": "1001",
     "station_id": "1001000137",
     "name": "대방역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.513354,
+    "longitude": 126.926497
   },
   {
     "subway_id": "1001",
     "station_id": "1001000138",
     "name": "신길역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.516787,
+    "longitude": 126.918367
   },
   {
     "subway_id": "1001",
     "station_id": "1001000139",
     "name": "영등포역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.515673,
+    "longitude": 126.90755
   },
   {
     "subway_id": "1001",
     "station_id": "1001000140",
     "name": "신도림역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.508908,
+    "longitude": 126.891313
   },
   {
     "subway_id": "1001",
     "station_id": "1001000141",
     "name": "구로역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.503342,
+    "longitude": 126.882309
   },
   {
     "subway_id": "1001",
     "station_id": "1001000142",
     "name": "구일역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.496255,
+    "longitude": 126.869691
   },
   {
     "subway_id": "1001",
     "station_id": "1001000143",
     "name": "개봉역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.494642,
+    "longitude": 126.858716
   },
   {
     "subway_id": "1001",
     "station_id": "1001000144",
     "name": "오류동역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.494397,
+    "longitude": 126.844807
   },
   {
     "subway_id": "1001",
     "station_id": "1001000145",
     "name": "온수역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.4924,
+    "longitude": 126.823829
   },
   {
     "subway_id": "1001",
     "station_id": "1001000146",
     "name": "역곡역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.485314,
+    "longitude": 126.812059
   },
   {
     "subway_id": "1001",
     "station_id": "1001000147",
     "name": "소사역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.4828,
+    "longitude": 126.795644
   },
   {
     "subway_id": "1001",
     "station_id": "1001000148",
     "name": "부천역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.483989,
+    "longitude": 126.783082
   },
   {
     "subway_id": "1001",
     "station_id": "1001000149",
     "name": "중동역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.486682,
+    "longitude": 126.764535
   },
   {
     "subway_id": "1001",
     "station_id": "1001000150",
     "name": "송내역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.487642,
+    "longitude": 126.753162
   },
   {
     "subway_id": "1001",
     "station_id": "1001000151",
     "name": "부개역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.488477,
+    "longitude": 126.74073
   },
   {
     "subway_id": "1001",
     "station_id": "1001000152",
     "name": "부평역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.489449,
+    "longitude": 126.724331
   },
   {
     "subway_id": "1001",
     "station_id": "1001000153",
     "name": "백운역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.483342,
+    "longitude": 126.707294
   },
   {
     "subway_id": "1001",
     "station_id": "1001000154",
     "name": "동암역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.470696,
+    "longitude": 126.70289
   },
   {
     "subway_id": "1001",
     "station_id": "1001000155",
     "name": "간석역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.464707,
+    "longitude": 126.693518
   },
   {
     "subway_id": "1001",
     "station_id": "1001000156",
     "name": "주안역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.465053,
+    "longitude": 126.67997
   },
   {
     "subway_id": "1001",
     "station_id": "1001000157",
     "name": "도화역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.466118,
+    "longitude": 126.668576
   },
   {
     "subway_id": "1001",
     "station_id": "1001000158",
     "name": "제물포역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.466821,
+    "longitude": 126.657495
   },
   {
     "subway_id": "1001",
     "station_id": "1001000159",
     "name": "도원역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.468773,
+    "longitude": 126.642533
   },
   {
     "subway_id": "1001",
     "station_id": "1001000160",
     "name": "동인천역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.475403,
+    "longitude": 126.632616
   },
   {
     "subway_id": "1001",
     "station_id": "1001000161",
     "name": "인천역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.476168,
+    "longitude": 126.616821
   },
   {
     "subway_id": "1001",
     "station_id": "1001001001",
     "name": "청산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 38.027,
+    "longitude": 127.064
   },
   {
     "subway_id": "1001",
     "station_id": "1001001002",
     "name": "전곡역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.973,
+    "longitude": 127.06
   },
   {
     "subway_id": "1001",
     "station_id": "1001001003",
     "name": "연천역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 38.001,
+    "longitude": 127.06
   },
   {
     "subway_id": "1001",
     "station_id": "1001075410",
     "name": "광명역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.416736,
+    "longitude": 126.884962
   },
   {
     "subway_id": "1001",
     "station_id": "1001080142",
     "name": "가산디지털단지역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.481531,
+    "longitude": 126.882615
   },
   {
     "subway_id": "1001",
     "station_id": "1001080143",
     "name": "독산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.465976,
+    "longitude": 126.889476
   },
   {
     "subway_id": "1001",
     "station_id": "1001080144",
     "name": "금천구청역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.456194,
+    "longitude": 126.893609
   },
   {
     "subway_id": "1001",
     "station_id": "1001080145",
     "name": "석수역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.435093,
+    "longitude": 126.902321
   },
   {
     "subway_id": "1001",
     "station_id": "1001080146",
     "name": "관악역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.419568,
+    "longitude": 126.9085
   },
   {
     "subway_id": "1001",
     "station_id": "1001080147",
     "name": "안양역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.401684,
+    "longitude": 126.92273
   },
   {
     "subway_id": "1001",
     "station_id": "1001080148",
     "name": "명학역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.38446,
+    "longitude": 126.935593
   },
   {
     "subway_id": "1001",
     "station_id": "1001080149",
     "name": "금정역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.372337,
+    "longitude": 126.943271
   },
   {
     "subway_id": "1001",
     "station_id": "1001080150",
     "name": "군포역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.354192,
+    "longitude": 126.948518
   },
   {
     "subway_id": "1001",
     "station_id": "1001080151",
     "name": "당정역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.34369,
+    "longitude": 126.948371
   },
   {
     "subway_id": "1001",
     "station_id": "1001080152",
     "name": "의왕역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.320342,
+    "longitude": 126.947977
   },
   {
     "subway_id": "1001",
     "station_id": "1001080153",
     "name": "성균관대역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.300329,
+    "longitude": 126.971022
   },
   {
     "subway_id": "1001",
     "station_id": "1001080154",
     "name": "화서역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.284002,
+    "longitude": 126.989612
   },
   {
     "subway_id": "1001",
     "station_id": "1001080155",
     "name": "수원역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.265682,
+    "longitude": 127.00005
   },
   {
     "subway_id": "1001",
     "station_id": "1001080156",
     "name": "세류역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.243873,
+    "longitude": 127.0138
   },
   {
     "subway_id": "1001",
     "station_id": "1001080157",
     "name": "병점역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.206753,
+    "longitude": 127.0332
   },
   {
     "subway_id": "1001",
     "station_id": "1001080158",
     "name": "세마역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.187135,
+    "longitude": 127.043427
   },
   {
     "subway_id": "1001",
     "station_id": "1001080159",
     "name": "오산대역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.16935,
+    "longitude": 127.063076
   },
   {
     "subway_id": "1001",
     "station_id": "1001080160",
     "name": "오산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.144717,
+    "longitude": 127.06663
   },
   {
     "subway_id": "1001",
     "station_id": "1001080161",
     "name": "진위역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.110079,
+    "longitude": 127.062356
   },
   {
     "subway_id": "1001",
     "station_id": "1001080162",
     "name": "송탄역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.075713,
+    "longitude": 127.05428
   },
   {
     "subway_id": "1001",
     "station_id": "1001080163",
     "name": "서정리역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.056564,
+    "longitude": 127.052882
   },
   {
     "subway_id": "1001",
     "station_id": "1001080164",
     "name": "지제역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.0189,
+    "longitude": 127.070512
   },
   {
     "subway_id": "1001",
     "station_id": "1001080165",
     "name": "평택역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.990849,
+    "longitude": 127.085273
   },
   {
     "subway_id": "1001",
     "station_id": "1001080166",
     "name": "성환역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.915953,
+    "longitude": 127.126837
   },
   {
     "subway_id": "1001",
     "station_id": "1001080167",
     "name": "직산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.870933,
+    "longitude": 127.143824
   },
   {
     "subway_id": "1001",
     "station_id": "1001080168",
     "name": "두정역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.833599,
+    "longitude": 127.149081
   },
   {
     "subway_id": "1001",
     "station_id": "1001080169",
     "name": "천안역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.810523,
+    "longitude": 127.14649
   },
   {
     "subway_id": "1001",
     "station_id": "1001080170",
     "name": "봉명역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.80142,
+    "longitude": 127.136038
   },
   {
     "subway_id": "1001",
     "station_id": "1001080171",
     "name": "쌍용(나사렛대)역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.793726,
+    "longitude": 127.121378
   },
   {
     "subway_id": "1001",
     "station_id": "1001080172",
     "name": "아산역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.792117,
+    "longitude": 127.104077
   },
   {
     "subway_id": "1001",
     "station_id": "1001080173",
     "name": "탕정역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.787,
+    "longitude": 127.006
   },
   {
     "subway_id": "1001",
     "station_id": "1001080174",
     "name": "배방역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.777697,
+    "longitude": 127.052788
   },
   {
     "subway_id": "1001",
     "station_id": "1001080175",
     "name": "온양온천역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.780545,
+    "longitude": 127.003181
   },
   {
     "subway_id": "1001",
     "station_id": "1001080176",
     "name": "신창역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 36.769642,
+    "longitude": 126.951393
   },
   {
     "subway_id": "1001",
     "station_id": "1001801571",
     "name": "서동탄역",
     "line": "1호선",
-    "line_color": "#0052A4"
+    "line_color": "#0052A4",
+    "latitude": 37.195735,
+    "longitude": 127.051857
   },
   {
     "subway_id": "1002",
     "station_id": "1002000201",
     "name": "시청역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.563683,
+    "longitude": 126.975597
   },
   {
     "subway_id": "1002",
     "station_id": "1002000202",
     "name": "을지로입구역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.566037,
+    "longitude": 126.982193
   },
   {
     "subway_id": "1002",
     "station_id": "1002000203",
     "name": "을지로3가역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.566291,
+    "longitude": 126.990986
   },
   {
     "subway_id": "1002",
     "station_id": "1002000204",
     "name": "을지로4가역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.566641,
+    "longitude": 126.997632
   },
   {
     "subway_id": "1002",
     "station_id": "1002000205",
     "name": "동대문역사문화공원역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.568007,
+    "longitude": 127.010594
   },
   {
     "subway_id": "1002",
     "station_id": "1002000206",
     "name": "신당역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.565673,
+    "longitude": 127.019478
   },
   {
     "subway_id": "1002",
     "station_id": "1002000207",
     "name": "상왕십리역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.564438,
+    "longitude": 127.029275
   },
   {
     "subway_id": "1002",
     "station_id": "1002000208",
     "name": "왕십리역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.561268,
+    "longitude": 127.037101
   },
   {
     "subway_id": "1002",
     "station_id": "1002000209",
     "name": "한양대역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.555716,
+    "longitude": 127.04364
   },
   {
     "subway_id": "1002",
     "station_id": "1002000210",
     "name": "뚝섬역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.547242,
+    "longitude": 127.047387
   },
   {
     "subway_id": "1002",
     "station_id": "1002000211",
     "name": "성수역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.544589,
+    "longitude": 127.056067
   },
   {
     "subway_id": "1002",
     "station_id": "1002000212",
     "name": "건대입구역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.540408,
+    "longitude": 127.069203
   },
   {
     "subway_id": "1002",
     "station_id": "1002000213",
     "name": "구의역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.537175,
+    "longitude": 127.086181
   },
   {
     "subway_id": "1002",
     "station_id": "1002000214",
     "name": "강변역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.535118,
+    "longitude": 127.094741
   },
   {
     "subway_id": "1002",
     "station_id": "1002000215",
     "name": "잠실나루역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.520712,
+    "longitude": 127.103809
   },
   {
     "subway_id": "1002",
     "station_id": "1002000216",
     "name": "잠실역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.513313,
+    "longitude": 127.100229
   },
   {
     "subway_id": "1002",
     "station_id": "1002000217",
     "name": "잠실새내역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.511626,
+    "longitude": 127.086314
   },
   {
     "subway_id": "1002",
     "station_id": "1002000218",
     "name": "종합운동장역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.511145,
+    "longitude": 127.073849
   },
   {
     "subway_id": "1002",
     "station_id": "1002000219",
     "name": "삼성역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.508823,
+    "longitude": 127.063025
   },
   {
     "subway_id": "1002",
     "station_id": "1002000220",
     "name": "선릉역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.504497,
+    "longitude": 127.048962
   },
   {
     "subway_id": "1002",
     "station_id": "1002000221",
     "name": "역삼역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.500674,
+    "longitude": 127.036469
   },
   {
     "subway_id": "1002",
     "station_id": "1002000222",
     "name": "강남역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.498085,
+    "longitude": 127.028
   },
   {
     "subway_id": "1002",
     "station_id": "1002000223",
     "name": "교대역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.4939,
+    "longitude": 127.014384
   },
   {
     "subway_id": "1002",
     "station_id": "1002000224",
     "name": "서초역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.49185,
+    "longitude": 127.007662
   },
   {
     "subway_id": "1002",
     "station_id": "1002000225",
     "name": "방배역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.481456,
+    "longitude": 126.997553
   },
   {
     "subway_id": "1002",
     "station_id": "1002000226",
     "name": "사당역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.47656,
+    "longitude": 126.981559
   },
   {
     "subway_id": "1002",
     "station_id": "1002000227",
     "name": "낙성대역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.477093,
+    "longitude": 126.963524
   },
   {
     "subway_id": "1002",
     "station_id": "1002000228",
     "name": "서울대입구역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.481285,
+    "longitude": 126.952713
   },
   {
     "subway_id": "1002",
     "station_id": "1002000229",
     "name": "봉천역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.482473,
+    "longitude": 126.941687
   },
   {
     "subway_id": "1002",
     "station_id": "1002000230",
     "name": "신림역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.484268,
+    "longitude": 126.929745
   },
   {
     "subway_id": "1002",
     "station_id": "1002000231",
     "name": "신대방역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.487652,
+    "longitude": 126.91351
   },
   {
     "subway_id": "1002",
     "station_id": "1002000232",
     "name": "구로디지털단지역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.485261,
+    "longitude": 126.901473
   },
   {
     "subway_id": "1002",
     "station_id": "1002000233",
     "name": "대림역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.49331,
+    "longitude": 126.894931
   },
   {
     "subway_id": "1002",
     "station_id": "1002000234",
     "name": "신도림역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.50822,
+    "longitude": 126.891612
   },
   {
     "subway_id": "1002",
     "station_id": "1002000235",
     "name": "문래역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.517976,
+    "longitude": 126.894779
   },
   {
     "subway_id": "1002",
     "station_id": "1002000236",
     "name": "영등포구청역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.525831,
+    "longitude": 126.896677
   },
   {
     "subway_id": "1002",
     "station_id": "1002000237",
     "name": "당산역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.534784,
+    "longitude": 126.902612
   },
   {
     "subway_id": "1002",
     "station_id": "1002000238",
     "name": "합정역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.549912,
+    "longitude": 126.914456
   },
   {
     "subway_id": "1002",
     "station_id": "1002000239",
     "name": "홍대입구역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.556871,
+    "longitude": 126.923779
   },
   {
     "subway_id": "1002",
     "station_id": "1002000240",
     "name": "신촌역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.555199,
+    "longitude": 126.936981
   },
   {
     "subway_id": "1002",
     "station_id": "1002000241",
     "name": "이대역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.556815,
+    "longitude": 126.946432
   },
   {
     "subway_id": "1002",
     "station_id": "1002000242",
     "name": "아현역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.557406,
+    "longitude": 126.956146
   },
   {
     "subway_id": "1002",
     "station_id": "1002000243",
     "name": "충정로역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.559762,
+    "longitude": 126.964493
   },
   {
     "subway_id": "1002",
     "station_id": "1002002111",
     "name": "용답역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.562125,
+    "longitude": 127.050892
   },
   {
     "subway_id": "1002",
     "station_id": "1002002112",
     "name": "신답역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.569839,
+    "longitude": 127.04708
   },
   {
     "subway_id": "1002",
     "station_id": "1002002113",
     "name": "용두역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.574062,
+    "longitude": 127.038276
   },
   {
     "subway_id": "1002",
     "station_id": "1002002114",
     "name": "신설동역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.574805,
+    "longitude": 127.024918
   },
   {
     "subway_id": "1002",
     "station_id": "1002002341",
     "name": "도림천역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.514508,
+    "longitude": 126.882649
   },
   {
     "subway_id": "1002",
     "station_id": "1002002342",
     "name": "양천구청역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.512389,
+    "longitude": 126.865722
   },
   {
     "subway_id": "1002",
     "station_id": "1002002343",
     "name": "신정네거리역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.520223,
+    "longitude": 126.85289
   },
   {
     "subway_id": "1002",
     "station_id": "1002002344",
     "name": "까치산역",
     "line": "2호선",
-    "line_color": "#00A84D"
+    "line_color": "#00A84D",
+    "latitude": 37.531406,
+    "longitude": 126.846948
   },
   {
     "subway_id": "1003",
     "station_id": "1003000309",
     "name": "대화역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.676157,
+    "longitude": 126.747501
   },
   {
     "subway_id": "1003",
     "station_id": "1003000310",
     "name": "주엽역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.670149,
+    "longitude": 126.761264
   },
   {
     "subway_id": "1003",
     "station_id": "1003000311",
     "name": "정발산역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.659481,
+    "longitude": 126.773406
   },
   {
     "subway_id": "1003",
     "station_id": "1003000312",
     "name": "마두역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.652241,
+    "longitude": 126.777612
   },
   {
     "subway_id": "1003",
     "station_id": "1003000313",
     "name": "백석역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.642962,
+    "longitude": 126.788132
   },
   {
     "subway_id": "1003",
     "station_id": "1003000314",
     "name": "대곡역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.631696,
+    "longitude": 126.81093
   },
   {
     "subway_id": "1003",
     "station_id": "1003000315",
     "name": "화정역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.634644,
+    "longitude": 126.832688
   },
   {
     "subway_id": "1003",
     "station_id": "1003000316",
     "name": "원당역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.65311,
+    "longitude": 126.842918
   },
   {
     "subway_id": "1003",
     "station_id": "1003000317",
     "name": "원흥역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.650692,
+    "longitude": 126.873025
   },
   {
     "subway_id": "1003",
     "station_id": "1003000318",
     "name": "삼송역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.653075,
+    "longitude": 126.895672
   },
   {
     "subway_id": "1003",
     "station_id": "1003000319",
     "name": "지축역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.648149,
+    "longitude": 126.913854
   },
   {
     "subway_id": "1003",
     "station_id": "1003000320",
     "name": "구파발역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.636436,
+    "longitude": 126.918853
   },
   {
     "subway_id": "1003",
     "station_id": "1003000321",
     "name": "연신내역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.619203,
+    "longitude": 126.921101
   },
   {
     "subway_id": "1003",
     "station_id": "1003000322",
     "name": "불광역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.610048,
+    "longitude": 126.930316
   },
   {
     "subway_id": "1003",
     "station_id": "1003000323",
     "name": "녹번역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.600807,
+    "longitude": 126.935828
   },
   {
     "subway_id": "1003",
     "station_id": "1003000324",
     "name": "홍제역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.588795,
+    "longitude": 126.944158
   },
   {
     "subway_id": "1003",
     "station_id": "1003000325",
     "name": "무악재역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.582563,
+    "longitude": 126.950231
   },
   {
     "subway_id": "1003",
     "station_id": "1003000326",
     "name": "독립문역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.574468,
+    "longitude": 126.957916
   },
   {
     "subway_id": "1003",
     "station_id": "1003000327",
     "name": "경복궁역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.575806,
+    "longitude": 126.973691
   },
   {
     "subway_id": "1003",
     "station_id": "1003000328",
     "name": "안국역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.5765,
+    "longitude": 126.985424
   },
   {
     "subway_id": "1003",
     "station_id": "1003000329",
     "name": "종로3가역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.570421,
+    "longitude": 126.992153
   },
   {
     "subway_id": "1003",
     "station_id": "1003000330",
     "name": "을지로3가역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.566431,
+    "longitude": 126.992615
   },
   {
     "subway_id": "1003",
     "station_id": "1003000331",
     "name": "충무로역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.561397,
+    "longitude": 126.994151
   },
   {
     "subway_id": "1003",
     "station_id": "1003000332",
     "name": "동대입구역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.559054,
+    "longitude": 127.005315
   },
   {
     "subway_id": "1003",
     "station_id": "1003000333",
     "name": "약수역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.554505,
+    "longitude": 127.010892
   },
   {
     "subway_id": "1003",
     "station_id": "1003000334",
     "name": "금호역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.548263,
+    "longitude": 127.015829
   },
   {
     "subway_id": "1003",
     "station_id": "1003000335",
     "name": "옥수역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.541566,
+    "longitude": 127.017394
   },
   {
     "subway_id": "1003",
     "station_id": "1003000336",
     "name": "압구정역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.526492,
+    "longitude": 127.028509
   },
   {
     "subway_id": "1003",
     "station_id": "1003000337",
     "name": "신사역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.516435,
+    "longitude": 127.020311
   },
   {
     "subway_id": "1003",
     "station_id": "1003000338",
     "name": "잠원역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.51289,
+    "longitude": 127.011419
   },
   {
     "subway_id": "1003",
     "station_id": "1003000339",
     "name": "고속터미널역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.504547,
+    "longitude": 127.005121
   },
   {
     "subway_id": "1003",
     "station_id": "1003000340",
     "name": "교대역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.492743,
+    "longitude": 127.013868
   },
   {
     "subway_id": "1003",
     "station_id": "1003000341",
     "name": "남부터미널역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.4852,
+    "longitude": 127.0162
   },
   {
     "subway_id": "1003",
     "station_id": "1003000342",
     "name": "양재역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.484576,
+    "longitude": 127.034164
   },
   {
     "subway_id": "1003",
     "station_id": "1003000343",
     "name": "매봉역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.486939,
+    "longitude": 127.046711
   },
   {
     "subway_id": "1003",
     "station_id": "1003000344",
     "name": "도곡역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.490976,
+    "longitude": 127.055498
   },
   {
     "subway_id": "1003",
     "station_id": "1003000345",
     "name": "대치역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.494497,
+    "longitude": 127.063203
   },
   {
     "subway_id": "1003",
     "station_id": "1003000346",
     "name": "학여울역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.496885,
+    "longitude": 127.071167
   },
   {
     "subway_id": "1003",
     "station_id": "1003000347",
     "name": "대청역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.493708,
+    "longitude": 127.079527
   },
   {
     "subway_id": "1003",
     "station_id": "1003000348",
     "name": "일원역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.483989,
+    "longitude": 127.08413
   },
   {
     "subway_id": "1003",
     "station_id": "1003000349",
     "name": "수서역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.48756,
+    "longitude": 127.102411
   },
   {
     "subway_id": "1003",
     "station_id": "1003000350",
     "name": "가락시장역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.492249,
+    "longitude": 127.117642
   },
   {
     "subway_id": "1003",
     "station_id": "1003000351",
     "name": "경찰병원역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.496005,
+    "longitude": 127.124482
   },
   {
     "subway_id": "1003",
     "station_id": "1003000352",
     "name": "오금역",
     "line": "3호선",
-    "line_color": "#EF7C1C"
+    "line_color": "#EF7C1C",
+    "latitude": 37.502322,
+    "longitude": 127.128483
   },
   {
     "subway_id": "1004",
     "station_id": "1004000409",
     "name": "불암산역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.677,
+    "longitude": 127.084
   },
   {
     "subway_id": "1004",
     "station_id": "1004000410",
     "name": "상계역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.6586,
+    "longitude": 127.0719
   },
   {
     "subway_id": "1004",
     "station_id": "1004000411",
     "name": "노원역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.6543,
+    "longitude": 127.0617
   },
   {
     "subway_id": "1004",
     "station_id": "1004000412",
     "name": "창동역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.6531,
+    "longitude": 127.0476
   },
   {
     "subway_id": "1004",
     "station_id": "1004000413",
     "name": "쌍문역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.6483,
+    "longitude": 127.0344
   },
   {
     "subway_id": "1004",
     "station_id": "1004000414",
     "name": "수유역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.6379,
+    "longitude": 127.0254
   },
   {
     "subway_id": "1004",
     "station_id": "1004000415",
     "name": "미아역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.6266,
+    "longitude": 127.0258
   },
   {
     "subway_id": "1004",
     "station_id": "1004000416",
     "name": "미아사거리역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.6133,
+    "longitude": 127.0301
   },
   {
     "subway_id": "1004",
     "station_id": "1004000417",
     "name": "길음역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.6035,
+    "longitude": 127.0254
   },
   {
     "subway_id": "1004",
     "station_id": "1004000418",
     "name": "성신여대입구역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5928,
+    "longitude": 127.0166
   },
   {
     "subway_id": "1004",
     "station_id": "1004000419",
     "name": "한성대입구역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5884,
+    "longitude": 127.006
   },
   {
     "subway_id": "1004",
     "station_id": "1004000420",
     "name": "혜화역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5824,
+    "longitude": 127.0019
   },
   {
     "subway_id": "1004",
     "station_id": "1004000421",
     "name": "동대문역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5712,
+    "longitude": 127.0094
   },
   {
     "subway_id": "1004",
     "station_id": "1004000422",
     "name": "동대문역사문화공원역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5651,
+    "longitude": 127.0079
   },
   {
     "subway_id": "1004",
     "station_id": "1004000423",
     "name": "충무로역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5613,
+    "longitude": 126.9941
   },
   {
     "subway_id": "1004",
     "station_id": "1004000424",
     "name": "명동역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5605,
+    "longitude": 126.9863
   },
   {
     "subway_id": "1004",
     "station_id": "1004000425",
     "name": "회현역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5588,
+    "longitude": 126.9785
   },
   {
     "subway_id": "1004",
     "station_id": "1004000426",
     "name": "서울역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5547,
+    "longitude": 126.9723
   },
   {
     "subway_id": "1004",
     "station_id": "1004000427",
     "name": "숙대입구역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5448,
+    "longitude": 126.9716
   },
   {
     "subway_id": "1004",
     "station_id": "1004000428",
     "name": "삼각지역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5346,
+    "longitude": 126.9731
   },
   {
     "subway_id": "1004",
     "station_id": "1004000429",
     "name": "신용산역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5292,
+    "longitude": 126.9694
   },
   {
     "subway_id": "1004",
     "station_id": "1004000430",
     "name": "이촌역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5226,
+    "longitude": 126.9747
   },
   {
     "subway_id": "1004",
     "station_id": "1004000431",
     "name": "동작역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.5028,
+    "longitude": 126.9793
   },
   {
     "subway_id": "1004",
     "station_id": "1004000432",
     "name": "총신대입구(이수)역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4866,
+    "longitude": 126.9819
   },
   {
     "subway_id": "1004",
     "station_id": "1004000433",
     "name": "사당역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4767,
+    "longitude": 126.9817
   },
   {
     "subway_id": "1004",
     "station_id": "1004000434",
     "name": "남태령역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4639,
+    "longitude": 126.9886
   },
   {
     "subway_id": "1004",
     "station_id": "1004000435",
     "name": "선바위역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4486,
+    "longitude": 126.9928
   },
   {
     "subway_id": "1004",
     "station_id": "1004000436",
     "name": "경마공원역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4357,
+    "longitude": 127.0033
   },
   {
     "subway_id": "1004",
     "station_id": "1004000437",
     "name": "대공원역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4351,
+    "longitude": 127.0058
   },
   {
     "subway_id": "1004",
     "station_id": "1004000438",
     "name": "과천역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4287,
+    "longitude": 126.9879
   },
   {
     "subway_id": "1004",
     "station_id": "1004000439",
     "name": "정부과천청사역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4258,
+    "longitude": 126.9907
   },
   {
     "subway_id": "1004",
     "station_id": "1004000440",
     "name": "인덕원역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.4017,
+    "longitude": 126.9784
   },
   {
     "subway_id": "1004",
     "station_id": "1004000441",
     "name": "평촌역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3922,
+    "longitude": 126.9665
   },
   {
     "subway_id": "1004",
     "station_id": "1004000442",
     "name": "범계역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3905,
+    "longitude": 126.954
   },
   {
     "subway_id": "1004",
     "station_id": "1004000443",
     "name": "금정역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3722,
+    "longitude": 126.9438
   },
   {
     "subway_id": "1004",
     "station_id": "1004000444",
     "name": "산본역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3593,
+    "longitude": 126.9305
   },
   {
     "subway_id": "1004",
     "station_id": "1004000445",
     "name": "수리산역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3492,
+    "longitude": 126.9217
   },
   {
     "subway_id": "1004",
     "station_id": "1004000446",
     "name": "대야미역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.327,
+    "longitude": 126.9118
   },
   {
     "subway_id": "1004",
     "station_id": "1004000447",
     "name": "반월역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3127,
+    "longitude": 126.8967
   },
   {
     "subway_id": "1004",
     "station_id": "1004000448",
     "name": "상록수역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3024,
+    "longitude": 126.8657
   },
   {
     "subway_id": "1004",
     "station_id": "1004000449",
     "name": "한대앞역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3127,
+    "longitude": 126.8466
   },
   {
     "subway_id": "1004",
     "station_id": "1004000450",
     "name": "중앙역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3144,
+    "longitude": 126.8369
   },
   {
     "subway_id": "1004",
     "station_id": "1004000451",
     "name": "고잔역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3208,
+    "longitude": 126.8285
   },
   {
     "subway_id": "1004",
     "station_id": "1004000452",
     "name": "초지역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.322,
+    "longitude": 126.817
   },
   {
     "subway_id": "1004",
     "station_id": "1004000453",
     "name": "안산역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.326,
+    "longitude": 126.8051
   },
   {
     "subway_id": "1004",
     "station_id": "1004000454",
     "name": "신길온천역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3429,
+    "longitude": 126.8043
   },
   {
     "subway_id": "1004",
     "station_id": "1004000455",
     "name": "정왕역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3499,
+    "longitude": 126.7995
   },
   {
     "subway_id": "1004",
     "station_id": "1004000456",
     "name": "오이도역",
     "line": "4호선",
-    "line_color": "#00A4E3"
+    "line_color": "#00A4E3",
+    "latitude": 37.3601,
+    "longitude": 126.7864
   },
   {
     "subway_id": "1005",
     "station_id": "1005000510",
     "name": "방화역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.577603,
+    "longitude": 126.812819
   },
   {
     "subway_id": "1005",
     "station_id": "1005000511",
     "name": "개화산역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.572537,
+    "longitude": 126.806814
   },
   {
     "subway_id": "1005",
     "station_id": "1005000512",
     "name": "김포공항역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.562098,
+    "longitude": 126.801255
   },
   {
     "subway_id": "1005",
     "station_id": "1005000513",
     "name": "송정역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.561161,
+    "longitude": 126.81243
   },
   {
     "subway_id": "1005",
     "station_id": "1005000514",
     "name": "마곡역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.560229,
+    "longitude": 126.824697
   },
   {
     "subway_id": "1005",
     "station_id": "1005000515",
     "name": "발산역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.55868,
+    "longitude": 126.837739
   },
   {
     "subway_id": "1005",
     "station_id": "1005000516",
     "name": "우장산역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.548817,
+    "longitude": 126.836325
   },
   {
     "subway_id": "1005",
     "station_id": "1005000517",
     "name": "화곡역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.541651,
+    "longitude": 126.840455
   },
   {
     "subway_id": "1005",
     "station_id": "1005000518",
     "name": "까치산역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.532231,
+    "longitude": 126.846444
   },
   {
     "subway_id": "1005",
     "station_id": "1005000519",
     "name": "신정(은행정)역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.525028,
+    "longitude": 126.856097
   },
   {
     "subway_id": "1005",
     "station_id": "1005000520",
     "name": "목동역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.526133,
+    "longitude": 126.864625
   },
   {
     "subway_id": "1005",
     "station_id": "1005000521",
     "name": "오목교(목동운동장앞)역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.524534,
+    "longitude": 126.875307
   },
   {
     "subway_id": "1005",
     "station_id": "1005000522",
     "name": "양평역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.52558,
+    "longitude": 126.886419
   },
   {
     "subway_id": "1005",
     "station_id": "1005000523",
     "name": "영등포구청역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.524229,
+    "longitude": 126.895322
   },
   {
     "subway_id": "1005",
     "station_id": "1005000524",
     "name": "영등포시장역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.522709,
+    "longitude": 126.90518
   },
   {
     "subway_id": "1005",
     "station_id": "1005000525",
     "name": "신길역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.517664,
+    "longitude": 126.914914
   },
   {
     "subway_id": "1005",
     "station_id": "1005000526",
     "name": "여의도역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.521775,
+    "longitude": 126.924398
   },
   {
     "subway_id": "1005",
     "station_id": "1005000527",
     "name": "여의나루역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.527147,
+    "longitude": 126.932986
   },
   {
     "subway_id": "1005",
     "station_id": "1005000528",
     "name": "마포역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.539555,
+    "longitude": 126.945865
   },
   {
     "subway_id": "1005",
     "station_id": "1005000529",
     "name": "공덕역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.544542,
+    "longitude": 126.951451
   },
   {
     "subway_id": "1005",
     "station_id": "1005000530",
     "name": "애오개역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.553413,
+    "longitude": 126.956669
   },
   {
     "subway_id": "1005",
     "station_id": "1005000531",
     "name": "충정로역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.560429,
+    "longitude": 126.96304
   },
   {
     "subway_id": "1005",
     "station_id": "1005000532",
     "name": "서대문역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.565753,
+    "longitude": 126.966636
   },
   {
     "subway_id": "1005",
     "station_id": "1005000533",
     "name": "광화문역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.571648,
+    "longitude": 126.976423
   },
   {
     "subway_id": "1005",
     "station_id": "1005000534",
     "name": "종로3가역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.57259,
+    "longitude": 126.990419
   },
   {
     "subway_id": "1005",
     "station_id": "1005000535",
     "name": "을지로4가역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.567563,
+    "longitude": 126.998044
   },
   {
     "subway_id": "1005",
     "station_id": "1005000536",
     "name": "동대문역사문화공원역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.564835,
+    "longitude": 127.005012
   },
   {
     "subway_id": "1005",
     "station_id": "1005000537",
     "name": "청구역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.56021,
+    "longitude": 127.013944
   },
   {
     "subway_id": "1005",
     "station_id": "1005000538",
     "name": "신금호역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.554475,
+    "longitude": 127.020493
   },
   {
     "subway_id": "1005",
     "station_id": "1005000539",
     "name": "행당역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.557364,
+    "longitude": 127.029512
   },
   {
     "subway_id": "1005",
     "station_id": "1005000540",
     "name": "왕십리역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.56204,
+    "longitude": 127.037332
   },
   {
     "subway_id": "1005",
     "station_id": "1005000541",
     "name": "마장역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.566139,
+    "longitude": 127.042985
   },
   {
     "subway_id": "1005",
     "station_id": "1005000542",
     "name": "답십리역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.566975,
+    "longitude": 127.052561
   },
   {
     "subway_id": "1005",
     "station_id": "1005000543",
     "name": "장한평역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.561603,
+    "longitude": 127.063704
   },
   {
     "subway_id": "1005",
     "station_id": "1005000544",
     "name": "군자(능동)역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.55715,
+    "longitude": 127.079513
   },
   {
     "subway_id": "1005",
     "station_id": "1005000545",
     "name": "아차산(어린이대공원후문)역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.552248,
+    "longitude": 127.089566
   },
   {
     "subway_id": "1005",
     "station_id": "1005000546",
     "name": "광나루(장신대)역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.545299,
+    "longitude": 127.103521
   },
   {
     "subway_id": "1005",
     "station_id": "1005000547",
     "name": "천호(풍납토성)역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.538511,
+    "longitude": 127.123928
   },
   {
     "subway_id": "1005",
     "station_id": "1005000548",
     "name": "강동역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.535882,
+    "longitude": 127.132396
   },
   {
     "subway_id": "1005",
     "station_id": "1005000549",
     "name": "길동역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.537826,
+    "longitude": 127.140021
   },
   {
     "subway_id": "1005",
     "station_id": "1005000550",
     "name": "굽은다리(강동구민회관앞)역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.545518,
+    "longitude": 127.142883
   },
   {
     "subway_id": "1005",
     "station_id": "1005000551",
     "name": "명일역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.551398,
+    "longitude": 127.144044
   },
   {
     "subway_id": "1005",
     "station_id": "1005000552",
     "name": "고덕역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.555047,
+    "longitude": 127.154164
   },
   {
     "subway_id": "1005",
     "station_id": "1005000553",
     "name": "상일동역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.556678,
+    "longitude": 127.165906
   },
   {
     "subway_id": "1005",
     "station_id": "1005000554",
     "name": "강일역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.558,
+    "longitude": 127.175
   },
   {
     "subway_id": "1005",
     "station_id": "1005000555",
     "name": "미사역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.562991,
+    "longitude": 127.192491
   },
   {
     "subway_id": "1005",
     "station_id": "1005000556",
     "name": "하남풍산역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.55229,
+    "longitude": 127.204007
   },
   {
     "subway_id": "1005",
     "station_id": "1005000557",
     "name": "하남시청역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.548,
+    "longitude": 127.19
   },
   {
     "subway_id": "1005",
     "station_id": "1005000558",
     "name": "하남검단산역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.539,
+    "longitude": 127.21
   },
   {
     "subway_id": "1005",
     "station_id": "1005080549",
     "name": "둔촌동역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.527657,
+    "longitude": 127.136215
   },
   {
     "subway_id": "1005",
     "station_id": "1005080550",
     "name": "올림픽공원(한국체대)역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.516339,
+    "longitude": 127.130964
   },
   {
     "subway_id": "1005",
     "station_id": "1005080551",
     "name": "방이역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.508751,
+    "longitude": 127.126096
   },
   {
     "subway_id": "1005",
     "station_id": "1005080552",
     "name": "오금역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.502139,
+    "longitude": 127.127953
   },
   {
     "subway_id": "1005",
     "station_id": "1005080553",
     "name": "개롱역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.497968,
+    "longitude": 127.13508
   },
   {
     "subway_id": "1005",
     "station_id": "1005080554",
     "name": "거여역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.49333,
+    "longitude": 127.143774
   },
   {
     "subway_id": "1005",
     "station_id": "1005080555",
     "name": "마천역",
     "line": "5호선",
-    "line_color": "#996CAC"
+    "line_color": "#996CAC",
+    "latitude": 37.495038,
+    "longitude": 127.15286
   },
   {
     "subway_id": "1006",
     "station_id": "1006000610",
     "name": "응암순환(상선)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.599,
+    "longitude": 126.92
   },
   {
     "subway_id": "1006",
     "station_id": "1006000611",
     "name": "역촌역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.606227,
+    "longitude": 126.922845
   },
   {
     "subway_id": "1006",
     "station_id": "1006000612",
     "name": "불광역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.610048,
+    "longitude": 126.930316
   },
   {
     "subway_id": "1006",
     "station_id": "1006000613",
     "name": "독바위역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.618414,
+    "longitude": 126.933054
   },
   {
     "subway_id": "1006",
     "station_id": "1006000614",
     "name": "연신내역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.618514,
+    "longitude": 126.920454
   },
   {
     "subway_id": "1006",
     "station_id": "1006000615",
     "name": "구산역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.611247,
+    "longitude": 126.917258
   },
   {
     "subway_id": "1006",
     "station_id": "1006000616",
     "name": "새절(신사)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.59086,
+    "longitude": 126.913581
   },
   {
     "subway_id": "1006",
     "station_id": "1006000617",
     "name": "증산(명지대앞)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.583746,
+    "longitude": 126.909495
   },
   {
     "subway_id": "1006",
     "station_id": "1006000618",
     "name": "디지털미디어시티역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.576013,
+    "longitude": 126.901277
   },
   {
     "subway_id": "1006",
     "station_id": "1006000619",
     "name": "월드컵경기장(성산)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.569636,
+    "longitude": 126.899098
   },
   {
     "subway_id": "1006",
     "station_id": "1006000620",
     "name": "마포구청역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.563487,
+    "longitude": 126.903426
   },
   {
     "subway_id": "1006",
     "station_id": "1006000621",
     "name": "망원역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.556083,
+    "longitude": 126.910094
   },
   {
     "subway_id": "1006",
     "station_id": "1006000622",
     "name": "합정역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.548784,
+    "longitude": 126.914213
   },
   {
     "subway_id": "1006",
     "station_id": "1006000623",
     "name": "상수역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.547766,
+    "longitude": 126.92243
   },
   {
     "subway_id": "1006",
     "station_id": "1006000624",
     "name": "광흥창역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.547487,
+    "longitude": 126.932031
   },
   {
     "subway_id": "1006",
     "station_id": "1006000625",
     "name": "대흥(서강대앞)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.547648,
+    "longitude": 126.942473
   },
   {
     "subway_id": "1006",
     "station_id": "1006000626",
     "name": "공덕역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.543529,
+    "longitude": 126.951895
   },
   {
     "subway_id": "1006",
     "station_id": "1006000627",
     "name": "효창공원앞역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.539309,
+    "longitude": 126.961398
   },
   {
     "subway_id": "1006",
     "station_id": "1006000628",
     "name": "삼각지역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.535607,
+    "longitude": 126.974054
   },
   {
     "subway_id": "1006",
     "station_id": "1006000629",
     "name": "녹사평역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.534723,
+    "longitude": 126.98655
   },
   {
     "subway_id": "1006",
     "station_id": "1006000630",
     "name": "이태원역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.534525,
+    "longitude": 126.994334
   },
   {
     "subway_id": "1006",
     "station_id": "1006000631",
     "name": "한강진역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.539791,
+    "longitude": 127.001765
   },
   {
     "subway_id": "1006",
     "station_id": "1006000632",
     "name": "버티고개역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.547828,
+    "longitude": 127.006731
   },
   {
     "subway_id": "1006",
     "station_id": "1006000633",
     "name": "약수역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.553925,
+    "longitude": 127.010154
   },
   {
     "subway_id": "1006",
     "station_id": "1006000634",
     "name": "청구역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.560917,
+    "longitude": 127.014166
   },
   {
     "subway_id": "1006",
     "station_id": "1006000635",
     "name": "신당역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.565673,
+    "longitude": 127.019478
   },
   {
     "subway_id": "1006",
     "station_id": "1006000636",
     "name": "동묘앞역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.572172,
+    "longitude": 127.015726
   },
   {
     "subway_id": "1006",
     "station_id": "1006000637",
     "name": "창신역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.579416,
+    "longitude": 127.015297
   },
   {
     "subway_id": "1006",
     "station_id": "1006000638",
     "name": "보문역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.585542,
+    "longitude": 127.020004
   },
   {
     "subway_id": "1006",
     "station_id": "1006000639",
     "name": "안암(고대병원앞)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.586307,
+    "longitude": 127.029233
   },
   {
     "subway_id": "1006",
     "station_id": "1006000640",
     "name": "고려대역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.590443,
+    "longitude": 127.036309
   },
   {
     "subway_id": "1006",
     "station_id": "1006000641",
     "name": "월곡(동덕여대)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.601804,
+    "longitude": 127.041461
   },
   {
     "subway_id": "1006",
     "station_id": "1006000642",
     "name": "상월곡(한국과학기술연구원)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.606559,
+    "longitude": 127.048829
   },
   {
     "subway_id": "1006",
     "station_id": "1006000643",
     "name": "돌곶이역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.610545,
+    "longitude": 127.056438
   },
   {
     "subway_id": "1006",
     "station_id": "1006000644",
     "name": "석계역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.615149,
+    "longitude": 127.066703
   },
   {
     "subway_id": "1006",
     "station_id": "1006000645",
     "name": "태릉입구역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.61735,
+    "longitude": 127.074752
   },
   {
     "subway_id": "1006",
     "station_id": "1006000646",
     "name": "화랑대(서울여대입구)역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.619842,
+    "longitude": 127.083544
   },
   {
     "subway_id": "1006",
     "station_id": "1006000647",
     "name": "봉화산역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.617353,
+    "longitude": 127.091361
   },
   {
     "subway_id": "1006",
     "station_id": "1006000648",
     "name": "신내역",
     "line": "6호선",
-    "line_color": "#CD7C2F"
+    "line_color": "#CD7C2F",
+    "latitude": 37.612491,
+    "longitude": 127.104271
   },
   {
     "subway_id": "1007",
     "station_id": "1007000709",
     "name": "장암역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.699957,
+    "longitude": 127.052818
   },
   {
     "subway_id": "1007",
     "station_id": "1007000710",
     "name": "도봉산역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.68963,
+    "longitude": 127.046426
   },
   {
     "subway_id": "1007",
     "station_id": "1007000711",
     "name": "수락산역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.677881,
+    "longitude": 127.055351
   },
   {
     "subway_id": "1007",
     "station_id": "1007000712",
     "name": "마들역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.665202,
+    "longitude": 127.057713
   },
   {
     "subway_id": "1007",
     "station_id": "1007000713",
     "name": "노원역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.654511,
+    "longitude": 127.060556
   },
   {
     "subway_id": "1007",
     "station_id": "1007000714",
     "name": "중계역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.645092,
+    "longitude": 127.06411
   },
   {
     "subway_id": "1007",
     "station_id": "1007000715",
     "name": "하계역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.636477,
+    "longitude": 127.067991
   },
   {
     "subway_id": "1007",
     "station_id": "1007000716",
     "name": "공릉(서울산업대입구)역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.625543,
+    "longitude": 127.073034
   },
   {
     "subway_id": "1007",
     "station_id": "1007000717",
     "name": "태릉입구역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.61846,
+    "longitude": 127.075405
   },
   {
     "subway_id": "1007",
     "station_id": "1007000718",
     "name": "먹골역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.610619,
+    "longitude": 127.077762
   },
   {
     "subway_id": "1007",
     "station_id": "1007000719",
     "name": "중화역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.602553,
+    "longitude": 127.079312
   },
   {
     "subway_id": "1007",
     "station_id": "1007000720",
     "name": "상봉역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.595585,
+    "longitude": 127.085754
   },
   {
     "subway_id": "1007",
     "station_id": "1007000721",
     "name": "면목역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.588715,
+    "longitude": 127.087504
   },
   {
     "subway_id": "1007",
     "station_id": "1007000722",
     "name": "사가정역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.58094,
+    "longitude": 127.088505
   },
   {
     "subway_id": "1007",
     "station_id": "1007000723",
     "name": "용마산역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.573716,
+    "longitude": 127.086762
   },
   {
     "subway_id": "1007",
     "station_id": "1007000724",
     "name": "중곡역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.565922,
+    "longitude": 127.084312
   },
   {
     "subway_id": "1007",
     "station_id": "1007000725",
     "name": "군자(능동)역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.55715,
+    "longitude": 127.079513
   },
   {
     "subway_id": "1007",
     "station_id": "1007000726",
     "name": "어린이대공원(세종대)역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.547963,
+    "longitude": 127.074655
   },
   {
     "subway_id": "1007",
     "station_id": "1007000727",
     "name": "건대입구역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.540869,
+    "longitude": 127.071104
   },
   {
     "subway_id": "1007",
     "station_id": "1007000728",
     "name": "뚝섬유원지역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.531558,
+    "longitude": 127.066796
   },
   {
     "subway_id": "1007",
     "station_id": "1007000729",
     "name": "청담역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.519456,
+    "longitude": 127.053718
   },
   {
     "subway_id": "1007",
     "station_id": "1007000730",
     "name": "강남구청역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.517215,
+    "longitude": 127.04131
   },
   {
     "subway_id": "1007",
     "station_id": "1007000731",
     "name": "학동역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.514346,
+    "longitude": 127.031902
   },
   {
     "subway_id": "1007",
     "station_id": "1007000732",
     "name": "논현역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.511202,
+    "longitude": 127.021653
   },
   {
     "subway_id": "1007",
     "station_id": "1007000733",
     "name": "반포역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.508161,
+    "longitude": 127.011586
   },
   {
     "subway_id": "1007",
     "station_id": "1007000734",
     "name": "고속터미널역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.503387,
+    "longitude": 127.005008
   },
   {
     "subway_id": "1007",
     "station_id": "1007000735",
     "name": "내방역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.487659,
+    "longitude": 126.9936
   },
   {
     "subway_id": "1007",
     "station_id": "1007000736",
     "name": "총신대입구(이수)역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.485289,
+    "longitude": 126.981674
   },
   {
     "subway_id": "1007",
     "station_id": "1007000737",
     "name": "남성역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.484794,
+    "longitude": 126.97091
   },
   {
     "subway_id": "1007",
     "station_id": "1007000738",
     "name": "숭실대입구(살피재)역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.496317,
+    "longitude": 126.953622
   },
   {
     "subway_id": "1007",
     "station_id": "1007000739",
     "name": "상도(중앙대앞)역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.502871,
+    "longitude": 126.947918
   },
   {
     "subway_id": "1007",
     "station_id": "1007000740",
     "name": "장승배기역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.504899,
+    "longitude": 126.939072
   },
   {
     "subway_id": "1007",
     "station_id": "1007000741",
     "name": "신대방삼거리역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.499757,
+    "longitude": 126.927587
   },
   {
     "subway_id": "1007",
     "station_id": "1007000742",
     "name": "보라매역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.499922,
+    "longitude": 126.920611
   },
   {
     "subway_id": "1007",
     "station_id": "1007000743",
     "name": "신풍역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.500123,
+    "longitude": 126.909754
   },
   {
     "subway_id": "1007",
     "station_id": "1007000744",
     "name": "대림역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.492843,
+    "longitude": 126.896723
   },
   {
     "subway_id": "1007",
     "station_id": "1007000745",
     "name": "남구로역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.486257,
+    "longitude": 126.887415
   },
   {
     "subway_id": "1007",
     "station_id": "1007000746",
     "name": "가산디지털단지역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.480396,
+    "longitude": 126.882662
   },
   {
     "subway_id": "1007",
     "station_id": "1007000747",
     "name": "철산역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.476193,
+    "longitude": 126.868211
   },
   {
     "subway_id": "1007",
     "station_id": "1007000748",
     "name": "광명사거리역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.479298,
+    "longitude": 126.854874
   },
   {
     "subway_id": "1007",
     "station_id": "1007000749",
     "name": "천왕역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.486856,
+    "longitude": 126.838604
   },
   {
     "subway_id": "1007",
     "station_id": "1007000750",
     "name": "온수역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.491968,
+    "longitude": 126.823848
   },
   {
     "subway_id": "1007",
     "station_id": "1007000751",
     "name": "까치울역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.506227,
+    "longitude": 126.811337
   },
   {
     "subway_id": "1007",
     "station_id": "1007000752",
     "name": "부천종합운동장역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.505426,
+    "longitude": 126.797234
   },
   {
     "subway_id": "1007",
     "station_id": "1007000753",
     "name": "춘의역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.503699,
+    "longitude": 126.786997
   },
   {
     "subway_id": "1007",
     "station_id": "1007000754",
     "name": "신중동역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.502953,
+    "longitude": 126.776897
   },
   {
     "subway_id": "1007",
     "station_id": "1007000755",
     "name": "부천시청역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.504657,
+    "longitude": 126.764013
   },
   {
     "subway_id": "1007",
     "station_id": "1007000756",
     "name": "상동역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.505789,
+    "longitude": 126.753192
   },
   {
     "subway_id": "1007",
     "station_id": "1007000757",
     "name": "삼산체육관역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.506502,
+    "longitude": 126.741423
   },
   {
     "subway_id": "1007",
     "station_id": "1007000758",
     "name": "굴포천역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.507046,
+    "longitude": 126.731346
   },
   {
     "subway_id": "1007",
     "station_id": "1007000759",
     "name": "부평구청역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.507434,
+    "longitude": 126.721442
   },
   {
     "subway_id": "1007",
     "station_id": "1007000760",
     "name": "산곡역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.522,
+    "longitude": 126.671
   },
   {
     "subway_id": "1007",
     "station_id": "1007000761",
     "name": "석남역",
     "line": "7호선",
-    "line_color": "#747F00"
+    "line_color": "#747F00",
+    "latitude": 37.507473,
+    "longitude": 126.676301
   },
   {
     "subway_id": "1008",
     "station_id": "1008000804",
     "name": "별내역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.642068,
+    "longitude": 127.126969
   },
   {
     "subway_id": "1008",
     "station_id": "1008000805",
     "name": "다산역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.607,
+    "longitude": 127.112
   },
   {
     "subway_id": "1008",
     "station_id": "1008000806",
     "name": "동구릉역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.615,
+    "longitude": 127.124
   },
   {
     "subway_id": "1008",
     "station_id": "1008000807",
     "name": "구리역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.603271,
+    "longitude": 127.143351
   },
   {
     "subway_id": "1008",
     "station_id": "1008000808",
     "name": "장자호수공원역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.63,
+    "longitude": 127.135
   },
   {
     "subway_id": "1008",
     "station_id": "1008000809",
     "name": "암사역사공원역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.553,
+    "longitude": 127.13
   },
   {
     "subway_id": "1008",
     "station_id": "1008000810",
     "name": "암사역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.550159,
+    "longitude": 127.127542
   },
   {
     "subway_id": "1008",
     "station_id": "1008000811",
     "name": "천호(풍납토성)역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.537935,
+    "longitude": 127.123203
   },
   {
     "subway_id": "1008",
     "station_id": "1008000812",
     "name": "강동구청역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.530211,
+    "longitude": 127.120444
   },
   {
     "subway_id": "1008",
     "station_id": "1008000813",
     "name": "몽촌토성(평화의문)역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.517806,
+    "longitude": 127.112863
   },
   {
     "subway_id": "1008",
     "station_id": "1008000814",
     "name": "잠실역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.514312,
+    "longitude": 127.103271
   },
   {
     "subway_id": "1008",
     "station_id": "1008000815",
     "name": "석촌역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.505414,
+    "longitude": 127.107004
   },
   {
     "subway_id": "1008",
     "station_id": "1008000816",
     "name": "송파역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.499715,
+    "longitude": 127.112194
   },
   {
     "subway_id": "1008",
     "station_id": "1008000817",
     "name": "가락시장역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.493099,
+    "longitude": 127.118263
   },
   {
     "subway_id": "1008",
     "station_id": "1008000818",
     "name": "문정역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.486031,
+    "longitude": 127.122485
   },
   {
     "subway_id": "1008",
     "station_id": "1008000819",
     "name": "장지역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.478632,
+    "longitude": 127.126177
   },
   {
     "subway_id": "1008",
     "station_id": "1008000820",
     "name": "복정역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.470742,
+    "longitude": 127.126724
   },
   {
     "subway_id": "1008",
     "station_id": "1008000821",
     "name": "남위례역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.48,
+    "longitude": 127.042
   },
   {
     "subway_id": "1008",
     "station_id": "1008000822",
     "name": "산성역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.456882,
+    "longitude": 127.149943
   },
   {
     "subway_id": "1008",
     "station_id": "1008000823",
     "name": "남한산성입구(성남법원,검찰청)역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.451669,
+    "longitude": 127.159883
   },
   {
     "subway_id": "1008",
     "station_id": "1008000824",
     "name": "단대오거리역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.445023,
+    "longitude": 127.156772
   },
   {
     "subway_id": "1008",
     "station_id": "1008000825",
     "name": "신흥역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.440923,
+    "longitude": 127.147538
   },
   {
     "subway_id": "1008",
     "station_id": "1008000826",
     "name": "수진역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.437378,
+    "longitude": 127.140535
   },
   {
     "subway_id": "1008",
     "station_id": "1008000827",
     "name": "모란역",
     "line": "8호선",
-    "line_color": "#E6186C"
+    "line_color": "#E6186C",
+    "latitude": 37.434038,
+    "longitude": 127.12997
   },
   {
     "subway_id": "1009",
     "station_id": "1009000901",
     "name": "개화역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.578345,
+    "longitude": 126.796891
   },
   {
     "subway_id": "1009",
     "station_id": "1009000902",
     "name": "김포공항역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.561966,
+    "longitude": 126.801916
   },
   {
     "subway_id": "1009",
     "station_id": "1009000903",
     "name": "공항시장역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.563688,
+    "longitude": 126.810609
   },
   {
     "subway_id": "1009",
     "station_id": "1009000904",
     "name": "신방화역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.567487,
+    "longitude": 126.817236
   },
   {
     "subway_id": "1009",
     "station_id": "1009000905",
     "name": "마곡나루역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.566713,
+    "longitude": 126.827421
   },
   {
     "subway_id": "1009",
     "station_id": "1009000906",
     "name": "양천향교역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.568081,
+    "longitude": 126.841979
   },
   {
     "subway_id": "1009",
     "station_id": "1009000907",
     "name": "가양역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.561433,
+    "longitude": 126.85442
   },
   {
     "subway_id": "1009",
     "station_id": "1009000908",
     "name": "증미역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.558132,
+    "longitude": 126.860638
   },
   {
     "subway_id": "1009",
     "station_id": "1009000909",
     "name": "등촌역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.550728,
+    "longitude": 126.865572
   },
   {
     "subway_id": "1009",
     "station_id": "1009000910",
     "name": "염창역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.546983,
+    "longitude": 126.874872
   },
   {
     "subway_id": "1009",
     "station_id": "1009000911",
     "name": "신목동역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.544288,
+    "longitude": 126.883096
   },
   {
     "subway_id": "1009",
     "station_id": "1009000912",
     "name": "선유도역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.538157,
+    "longitude": 126.893334
   },
   {
     "subway_id": "1009",
     "station_id": "1009000913",
     "name": "당산역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.533789,
+    "longitude": 126.902165
   },
   {
     "subway_id": "1009",
     "station_id": "1009000914",
     "name": "국회의사당역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.528147,
+    "longitude": 126.917839
   },
   {
     "subway_id": "1009",
     "station_id": "1009000915",
     "name": "여의도역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.52117,
+    "longitude": 126.924661
   },
   {
     "subway_id": "1009",
     "station_id": "1009000916",
     "name": "샛강역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.517374,
+    "longitude": 126.928375
   },
   {
     "subway_id": "1009",
     "station_id": "1009000917",
     "name": "노량진역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.513586,
+    "longitude": 126.940893
   },
   {
     "subway_id": "1009",
     "station_id": "1009000918",
     "name": "노들역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.512672,
+    "longitude": 126.953096
   },
   {
     "subway_id": "1009",
     "station_id": "1009000919",
     "name": "흑석역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.509165,
+    "longitude": 126.963463
   },
   {
     "subway_id": "1009",
     "station_id": "1009000920",
     "name": "동작역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.502743,
+    "longitude": 126.978544
   },
   {
     "subway_id": "1009",
     "station_id": "1009000921",
     "name": "구반포역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.50144,
+    "longitude": 126.987465
   },
   {
     "subway_id": "1009",
     "station_id": "1009000922",
     "name": "신반포역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.503509,
+    "longitude": 126.996082
   },
   {
     "subway_id": "1009",
     "station_id": "1009000923",
     "name": "고속터미널역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.505981,
+    "longitude": 127.004212
   },
   {
     "subway_id": "1009",
     "station_id": "1009000924",
     "name": "사평역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.504233,
+    "longitude": 127.015272
   },
   {
     "subway_id": "1009",
     "station_id": "1009000925",
     "name": "신논현역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.504811,
+    "longitude": 127.025492
   },
   {
     "subway_id": "1009",
     "station_id": "1009000926",
     "name": "언주역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.507335,
+    "longitude": 127.033971
   },
   {
     "subway_id": "1009",
     "station_id": "1009000927",
     "name": "선정릉역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.510933,
+    "longitude": 127.043627
   },
   {
     "subway_id": "1009",
     "station_id": "1009000928",
     "name": "삼성중앙역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.512961,
+    "longitude": 127.053044
   },
   {
     "subway_id": "1009",
     "station_id": "1009000929",
     "name": "봉은사역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.514255,
+    "longitude": 127.060234
   },
   {
     "subway_id": "1009",
     "station_id": "1009000930",
     "name": "종합운동장역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.51141,
+    "longitude": 127.076324
   },
   {
     "subway_id": "1009",
     "station_id": "1009000931",
     "name": "삼전역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.504551,
+    "longitude": 127.087365
   },
   {
     "subway_id": "1009",
     "station_id": "1009000932",
     "name": "석촌고분역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.502464,
+    "longitude": 127.096509
   },
   {
     "subway_id": "1009",
     "station_id": "1009000933",
     "name": "석촌역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.504975,
+    "longitude": 127.106764
   },
   {
     "subway_id": "1009",
     "station_id": "1009000934",
     "name": "송파나루역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.511017,
+    "longitude": 127.112663
   },
   {
     "subway_id": "1009",
     "station_id": "1009000935",
     "name": "한성백제역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.516538,
+    "longitude": 127.116449
   },
   {
     "subway_id": "1009",
     "station_id": "1009000936",
     "name": "올림픽공원역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.516116,
+    "longitude": 127.130253
   },
   {
     "subway_id": "1009",
     "station_id": "1009000937",
     "name": "둔촌오륜역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.519408,
+    "longitude": 127.138652
   },
   {
     "subway_id": "1009",
     "station_id": "1009000938",
     "name": "중앙보훈병원역",
     "line": "9호선",
-    "line_color": "#BDB092"
+    "line_color": "#BDB092",
+    "latitude": 37.528403,
+    "longitude": 127.148412
   },
   {
     "subway_id": "1032",
     "station_id": "1032000346",
     "name": "운정중앙역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.714,
+    "longitude": 126.747
   },
   {
     "subway_id": "1032",
     "station_id": "1032000347",
     "name": "킨텍스역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.67,
+    "longitude": 126.754
   },
   {
     "subway_id": "1032",
     "station_id": "1032000348",
     "name": "대곡역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.631696,
+    "longitude": 126.81093
   },
   {
     "subway_id": "1032",
     "station_id": "1032000350",
     "name": "연신내역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.619203,
+    "longitude": 126.921101
   },
   {
     "subway_id": "1032",
     "station_id": "1032000351",
     "name": "서울역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.55598,
+    "longitude": 126.972091
   },
   {
     "subway_id": "1032",
     "station_id": "1032000353",
     "name": "수서역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.48756,
+    "longitude": 127.102411
   },
   {
     "subway_id": "1032",
     "station_id": "1032000354",
     "name": "성남역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.419,
+    "longitude": 127.126
   },
   {
     "subway_id": "1032",
     "station_id": "1032000355",
     "name": "구성역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.298977,
+    "longitude": 127.105696
   },
   {
     "subway_id": "1032",
     "station_id": "1032000356",
     "name": "동탄역",
     "line": "GTX-A",
-    "line_color": "#9A6292"
+    "line_color": "#9A6292",
+    "latitude": 37.207,
+    "longitude": 127.059
   },
   {
     "subway_id": "1063",
     "station_id": "1063075110",
     "name": "용산역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.529608,
+    "longitude": 126.964756
   },
   {
     "subway_id": "1063",
     "station_id": "1063075111",
     "name": "이촌역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.522413,
+    "longitude": 126.973543
   },
   {
     "subway_id": "1063",
     "station_id": "1063075112",
     "name": "서빙고역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.519568,
+    "longitude": 126.988412
   },
   {
     "subway_id": "1063",
     "station_id": "1063075113",
     "name": "한남역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.529429,
+    "longitude": 127.009209
   },
   {
     "subway_id": "1063",
     "station_id": "1063075114",
     "name": "옥수역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.540514,
+    "longitude": 127.018747
   },
   {
     "subway_id": "1063",
     "station_id": "1063075115",
     "name": "응봉역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.549953,
+    "longitude": 127.034484
   },
   {
     "subway_id": "1063",
     "station_id": "1063075116",
     "name": "왕십리역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.562057,
+    "longitude": 127.038333
   },
   {
     "subway_id": "1063",
     "station_id": "1063075117",
     "name": "청량리역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.580279,
+    "longitude": 127.047866
   },
   {
     "subway_id": "1063",
     "station_id": "1063075118",
     "name": "회기역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.58953,
+    "longitude": 127.057826
   },
   {
     "subway_id": "1063",
     "station_id": "1063075119",
     "name": "중랑역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.594843,
+    "longitude": 127.07568
   },
   {
     "subway_id": "1063",
     "station_id": "1063075120",
     "name": "상봉역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.596714,
+    "longitude": 127.085149
   },
   {
     "subway_id": "1063",
     "station_id": "1063075121",
     "name": "망우역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.599296,
+    "longitude": 127.092367
   },
   {
     "subway_id": "1063",
     "station_id": "1063075122",
     "name": "양원역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.606606,
+    "longitude": 127.107946
   },
   {
     "subway_id": "1063",
     "station_id": "1063075123",
     "name": "구리역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.603271,
+    "longitude": 127.143351
   },
   {
     "subway_id": "1063",
     "station_id": "1063075124",
     "name": "도농역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.608773,
+    "longitude": 127.161179
   },
   {
     "subway_id": "1063",
     "station_id": "1063075125",
     "name": "양정역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.604026,
+    "longitude": 127.194671
   },
   {
     "subway_id": "1063",
     "station_id": "1063075126",
     "name": "덕소역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.58689,
+    "longitude": 127.208843
   },
   {
     "subway_id": "1063",
     "station_id": "1063075127",
     "name": "도심역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.579639,
+    "longitude": 127.222684
   },
   {
     "subway_id": "1063",
     "station_id": "1063075128",
     "name": "팔당역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.547359,
+    "longitude": 127.243966
   },
   {
     "subway_id": "1063",
     "station_id": "1063075129",
     "name": "운길산역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.554643,
+    "longitude": 127.310232
   },
   {
     "subway_id": "1063",
     "station_id": "1063075130",
     "name": "양수역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.545963,
+    "longitude": 127.329138
   },
   {
     "subway_id": "1063",
     "station_id": "1063075131",
     "name": "신원역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.525586,
+    "longitude": 127.373092
   },
   {
     "subway_id": "1063",
     "station_id": "1063075132",
     "name": "국수역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.516187,
+    "longitude": 127.39931
   },
   {
     "subway_id": "1063",
     "station_id": "1063075133",
     "name": "아신역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.513919,
+    "longitude": 127.443211
   },
   {
     "subway_id": "1063",
     "station_id": "1063075134",
     "name": "오빈역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.506167,
+    "longitude": 127.473661
   },
   {
     "subway_id": "1063",
     "station_id": "1063075135",
     "name": "양평역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.492684,
+    "longitude": 127.492248
   },
   {
     "subway_id": "1063",
     "station_id": "1063075136",
     "name": "원덕역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.468782,
+    "longitude": 127.546559
   },
   {
     "subway_id": "1063",
     "station_id": "1063075137",
     "name": "용문역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.481802,
+    "longitude": 127.593795
   },
   {
     "subway_id": "1063",
     "station_id": "1063075138",
     "name": "지평역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.476906,
+    "longitude": 127.628907
   },
   {
     "subway_id": "1063",
     "station_id": "1063075312",
     "name": "공덕역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.542474,
+    "longitude": 126.95272
   },
   {
     "subway_id": "1063",
     "station_id": "1063075313",
     "name": "서강대역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.552138,
+    "longitude": 126.935508
   },
   {
     "subway_id": "1063",
     "station_id": "1063075314",
     "name": "홍대입구역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.557449,
+    "longitude": 126.927119
   },
   {
     "subway_id": "1063",
     "station_id": "1063075315",
     "name": "가좌역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.568743,
+    "longitude": 126.914815
   },
   {
     "subway_id": "1063",
     "station_id": "1063075316",
     "name": "디지털미디어시티역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.577403,
+    "longitude": 126.900691
   },
   {
     "subway_id": "1063",
     "station_id": "1063075317",
     "name": "수색역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.580863,
+    "longitude": 126.895659
   },
   {
     "subway_id": "1063",
     "station_id": "1063075318",
     "name": "한국항공대역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.599,
+    "longitude": 126.861
   },
   {
     "subway_id": "1063",
     "station_id": "1063075319",
     "name": "강매역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.61229,
+    "longitude": 126.844499
   },
   {
     "subway_id": "1063",
     "station_id": "1063075320",
     "name": "행신역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.612122,
+    "longitude": 126.834288
   },
   {
     "subway_id": "1063",
     "station_id": "1063075321",
     "name": "능곡역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.619025,
+    "longitude": 126.820422
   },
   {
     "subway_id": "1063",
     "station_id": "1063075322",
     "name": "대곡역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.631852,
+    "longitude": 126.809905
   },
   {
     "subway_id": "1063",
     "station_id": "1063075323",
     "name": "곡산역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.645758,
+    "longitude": 126.801807
   },
   {
     "subway_id": "1063",
     "station_id": "1063075324",
     "name": "백마역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.658017,
+    "longitude": 126.794616
   },
   {
     "subway_id": "1063",
     "station_id": "1063075325",
     "name": "풍산역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.672338,
+    "longitude": 126.786275
   },
   {
     "subway_id": "1063",
     "station_id": "1063075326",
     "name": "일산역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.682013,
+    "longitude": 126.770023
   },
   {
     "subway_id": "1063",
     "station_id": "1063075327",
     "name": "탄현역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.693989,
+    "longitude": 126.761078
   },
   {
     "subway_id": "1063",
     "station_id": "1063075328",
     "name": "야당역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.712611,
+    "longitude": 126.761454
   },
   {
     "subway_id": "1063",
     "station_id": "1063075329",
     "name": "운정역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.725604,
+    "longitude": 126.767161
   },
   {
     "subway_id": "1063",
     "station_id": "1063075330",
     "name": "금릉역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.751339,
+    "longitude": 126.76541
   },
   {
     "subway_id": "1063",
     "station_id": "1063075331",
     "name": "금촌역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.766227,
+    "longitude": 126.774633
   },
   {
     "subway_id": "1063",
     "station_id": "1063075333",
     "name": "월롱역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.796215,
+    "longitude": 126.792586
   },
   {
     "subway_id": "1063",
     "station_id": "1063075334",
     "name": "파주역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.815366,
+    "longitude": 126.792691
   },
   {
     "subway_id": "1063",
     "station_id": "1063075335",
     "name": "문산역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.854627,
+    "longitude": 126.787395
   },
   {
     "subway_id": "1063",
     "station_id": "1063075336",
     "name": "운천역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.74,
+    "longitude": 126.773
   },
   {
     "subway_id": "1063",
     "station_id": "1063075337",
     "name": "임진강역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.888275,
+    "longitude": 126.747078
   },
   {
     "subway_id": "1063",
     "station_id": "1063075826",
     "name": "효창공원앞역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.538606,
+    "longitude": 126.962824
   },
   {
     "subway_id": "1063",
     "station_id": "1063080312",
     "name": "신촌(경의중앙선)역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.559674,
+    "longitude": 126.942088
   },
   {
     "subway_id": "1063",
     "station_id": "1063080313",
     "name": "서울역",
     "line": "경의중앙선",
-    "line_color": "#77C4A3"
+    "line_color": "#77C4A3",
+    "latitude": 37.556935,
+    "longitude": 126.971317
   },
   {
     "subway_id": "1065",
     "station_id": "1065006501",
     "name": "서울역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.553331,
+    "longitude": 126.969747
   },
   {
     "subway_id": "1065",
     "station_id": "1065006502",
     "name": "공덕역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.542315,
+    "longitude": 126.952602
   },
   {
     "subway_id": "1065",
     "station_id": "1065006503",
     "name": "홍대입구역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.557305,
+    "longitude": 126.92701
   },
   {
     "subway_id": "1065",
     "station_id": "1065006504",
     "name": "디지털미디어시티역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.57752,
+    "longitude": 126.897883
   },
   {
     "subway_id": "1065",
     "station_id": "1065006505",
     "name": "김포공항역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.56183,
+    "longitude": 126.802473
   },
   {
     "subway_id": "1065",
     "station_id": "1065006506",
     "name": "계양역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.57177,
+    "longitude": 126.736276
   },
   {
     "subway_id": "1065",
     "station_id": "1065006507",
     "name": "검암역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.569253,
+    "longitude": 126.673643
   },
   {
     "subway_id": "1065",
     "station_id": "1065006508",
     "name": "운서역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.492809,
+    "longitude": 126.49373
   },
   {
     "subway_id": "1065",
     "station_id": "1065006509",
     "name": "공항화물청사역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.459063,
+    "longitude": 126.477514
   },
   {
     "subway_id": "1065",
     "station_id": "1065006510",
     "name": "인천공항1터미널역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.447529,
+    "longitude": 126.452583
   },
   {
     "subway_id": "1065",
     "station_id": "1065006511",
     "name": "인천공항2터미널역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.4688,
+    "longitude": 126.433641
   },
   {
     "subway_id": "1065",
     "station_id": "1065065042",
     "name": "마곡나루역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.566713,
+    "longitude": 126.827421
   },
   {
     "subway_id": "1065",
     "station_id": "1065065071",
     "name": "청라국제도시역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.556465,
+    "longitude": 126.624658
   },
   {
     "subway_id": "1065",
     "station_id": "1065065072",
     "name": "영종역",
     "line": "공항철도",
-    "line_color": "#0090D2"
+    "line_color": "#0090D2",
+    "latitude": 37.512029,
+    "longitude": 126.524976
   },
   {
     "subway_id": "1067",
     "station_id": "1067080116",
     "name": "청량리역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.580039,
+    "longitude": 127.044727
   },
   {
     "subway_id": "1067",
     "station_id": "1067080117",
     "name": "회기역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.589796,
+    "longitude": 127.058048
   },
   {
     "subway_id": "1067",
     "station_id": "1067080118",
     "name": "중랑역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.595083,
+    "longitude": 127.07679
   },
   {
     "subway_id": "1067",
     "station_id": "1067080119",
     "name": "광운대역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.623837,
+    "longitude": 127.061695
   },
   {
     "subway_id": "1067",
     "station_id": "1067080120",
     "name": "상봉역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.595585,
+    "longitude": 127.085754
   },
   {
     "subway_id": "1067",
     "station_id": "1067080121",
     "name": "망우역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.600017,
+    "longitude": 127.091739
   },
   {
     "subway_id": "1067",
     "station_id": "1067080122",
     "name": "신내역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.612491,
+    "longitude": 127.104271
   },
   {
     "subway_id": "1067",
     "station_id": "1067080123",
     "name": "갈매역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.634069,
+    "longitude": 127.114761
   },
   {
     "subway_id": "1067",
     "station_id": "1067080124",
     "name": "별내역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.642068,
+    "longitude": 127.126969
   },
   {
     "subway_id": "1067",
     "station_id": "1067080125",
     "name": "퇴계원역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.648266,
+    "longitude": 127.143537
   },
   {
     "subway_id": "1067",
     "station_id": "1067080126",
     "name": "사릉역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.651125,
+    "longitude": 127.176926
   },
   {
     "subway_id": "1067",
     "station_id": "1067080127",
     "name": "금곡역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.637355,
+    "longitude": 127.207534
   },
   {
     "subway_id": "1067",
     "station_id": "1067080128",
     "name": "평내호평역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.653214,
+    "longitude": 127.244439
   },
   {
     "subway_id": "1067",
     "station_id": "1067080129",
     "name": "천마산역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.659228,
+    "longitude": 127.285063
   },
   {
     "subway_id": "1067",
     "station_id": "1067080130",
     "name": "마석역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.652792,
+    "longitude": 127.311687
   },
   {
     "subway_id": "1067",
     "station_id": "1067080131",
     "name": "대성리역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.68399,
+    "longitude": 127.379706
   },
   {
     "subway_id": "1067",
     "station_id": "1067080132",
     "name": "청평역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.735516,
+    "longitude": 127.426623
   },
   {
     "subway_id": "1067",
     "station_id": "1067080133",
     "name": "상천역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.770178,
+    "longitude": 127.454516
   },
   {
     "subway_id": "1067",
     "station_id": "1067080134",
     "name": "가평역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.81452,
+    "longitude": 127.510739
   },
   {
     "subway_id": "1067",
     "station_id": "1067080135",
     "name": "굴봉산역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.832066,
+    "longitude": 127.55777
   },
   {
     "subway_id": "1067",
     "station_id": "1067080136",
     "name": "백양리역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.830792,
+    "longitude": 127.589325
   },
   {
     "subway_id": "1067",
     "station_id": "1067080137",
     "name": "강촌역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.805722,
+    "longitude": 127.634152
   },
   {
     "subway_id": "1067",
     "station_id": "1067080138",
     "name": "김유정역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.818449,
+    "longitude": 127.714324
   },
   {
     "subway_id": "1067",
     "station_id": "1067080139",
     "name": "남춘천역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.864047,
+    "longitude": 127.723851
   },
   {
     "subway_id": "1067",
     "station_id": "1067080140",
     "name": "춘천역",
     "line": "경춘선",
-    "line_color": "#0C8E72"
+    "line_color": "#0C8E72",
+    "latitude": 37.884513,
+    "longitude": 127.716699
   },
   {
     "subway_id": "1075",
     "station_id": "1075075209",
     "name": "청량리역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.580895,
+    "longitude": 127.047848
   },
   {
     "subway_id": "1075",
     "station_id": "1075075210",
     "name": "왕십리역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.560641,
+    "longitude": 127.038785
   },
   {
     "subway_id": "1075",
     "station_id": "1075075211",
     "name": "서울숲역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.543646,
+    "longitude": 127.044746
   },
   {
     "subway_id": "1075",
     "station_id": "1075075212",
     "name": "압구정로데오역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.527519,
+    "longitude": 127.040601
   },
   {
     "subway_id": "1075",
     "station_id": "1075075213",
     "name": "강남구청역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.517215,
+    "longitude": 127.04131
   },
   {
     "subway_id": "1075",
     "station_id": "1075075214",
     "name": "선정릉역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.510933,
+    "longitude": 127.043627
   },
   {
     "subway_id": "1075",
     "station_id": "1075075215",
     "name": "선릉역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.505168,
+    "longitude": 127.048709
   },
   {
     "subway_id": "1075",
     "station_id": "1075075216",
     "name": "한티역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.496286,
+    "longitude": 127.05291
   },
   {
     "subway_id": "1075",
     "station_id": "1075075217",
     "name": "도곡역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.490976,
+    "longitude": 127.055498
   },
   {
     "subway_id": "1075",
     "station_id": "1075075218",
     "name": "구룡역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.487027,
+    "longitude": 127.059493
   },
   {
     "subway_id": "1075",
     "station_id": "1075075219",
     "name": "개포동역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.489139,
+    "longitude": 127.066121
   },
   {
     "subway_id": "1075",
     "station_id": "1075075220",
     "name": "대모산입구역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.49155,
+    "longitude": 127.07307
   },
   {
     "subway_id": "1075",
     "station_id": "1075075221",
     "name": "수서역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.487373,
+    "longitude": 127.101646
   },
   {
     "subway_id": "1075",
     "station_id": "1075075222",
     "name": "복정역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.469041,
+    "longitude": 127.126576
   },
   {
     "subway_id": "1075",
     "station_id": "1075075223",
     "name": "가천대역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.448563,
+    "longitude": 127.126696
   },
   {
     "subway_id": "1075",
     "station_id": "1075075224",
     "name": "태평역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.439789,
+    "longitude": 127.127748
   },
   {
     "subway_id": "1075",
     "station_id": "1075075225",
     "name": "모란역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.432057,
+    "longitude": 127.129131
   },
   {
     "subway_id": "1075",
     "station_id": "1075075226",
     "name": "야탑역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.411374,
+    "longitude": 127.128743
   },
   {
     "subway_id": "1075",
     "station_id": "1075075227",
     "name": "이매역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.396208,
+    "longitude": 127.128288
   },
   {
     "subway_id": "1075",
     "station_id": "1075075228",
     "name": "서현역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.385015,
+    "longitude": 127.123431
   },
   {
     "subway_id": "1075",
     "station_id": "1075075229",
     "name": "수내역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.378469,
+    "longitude": 127.114289
   },
   {
     "subway_id": "1075",
     "station_id": "1075075230",
     "name": "정자역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.366174,
+    "longitude": 127.108097
   },
   {
     "subway_id": "1075",
     "station_id": "1075075231",
     "name": "미금역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.350073,
+    "longitude": 127.109009
   },
   {
     "subway_id": "1075",
     "station_id": "1075075232",
     "name": "오리역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.339831,
+    "longitude": 127.108949
   },
   {
     "subway_id": "1075",
     "station_id": "1075075233",
     "name": "죽전역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.324377,
+    "longitude": 127.107505
   },
   {
     "subway_id": "1075",
     "station_id": "1075075234",
     "name": "보정역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.312775,
+    "longitude": 127.108337
   },
   {
     "subway_id": "1075",
     "station_id": "1075075235",
     "name": "구성역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.298977,
+    "longitude": 127.105696
   },
   {
     "subway_id": "1075",
     "station_id": "1075075236",
     "name": "신갈역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.286148,
+    "longitude": 127.111285
   },
   {
     "subway_id": "1075",
     "station_id": "1075075237",
     "name": "기흥역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.275497,
+    "longitude": 127.115955
   },
   {
     "subway_id": "1075",
     "station_id": "1075075238",
     "name": "상갈역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.261812,
+    "longitude": 127.108737
   },
   {
     "subway_id": "1075",
     "station_id": "1075075239",
     "name": "청명역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.25954,
+    "longitude": 127.078969
   },
   {
     "subway_id": "1075",
     "station_id": "1075075240",
     "name": "영통역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.251504,
+    "longitude": 127.071332
   },
   {
     "subway_id": "1075",
     "station_id": "1075075241",
     "name": "망포역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.245838,
+    "longitude": 127.056855
   },
   {
     "subway_id": "1075",
     "station_id": "1075075242",
     "name": "매탄권선역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.252506,
+    "longitude": 127.040809
   },
   {
     "subway_id": "1075",
     "station_id": "1075075243",
     "name": "수원시청역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.261923,
+    "longitude": 127.030857
   },
   {
     "subway_id": "1075",
     "station_id": "1075075244",
     "name": "매교역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.265515,
+    "longitude": 127.015901
   },
   {
     "subway_id": "1075",
     "station_id": "1075075245",
     "name": "수원역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.26579,
+    "longitude": 127.000095
   },
   {
     "subway_id": "1075",
     "station_id": "1075075246",
     "name": "고색역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.249772,
+    "longitude": 126.980573
   },
   {
     "subway_id": "1075",
     "station_id": "1075075247",
     "name": "오목천역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.24336,
+    "longitude": 126.963903
   },
   {
     "subway_id": "1075",
     "station_id": "1075075248",
     "name": "어천역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.250088,
+    "longitude": 126.9088
   },
   {
     "subway_id": "1075",
     "station_id": "1075075249",
     "name": "야목역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.261423,
+    "longitude": 126.883773
   },
   {
     "subway_id": "1075",
     "station_id": "1075075250",
     "name": "사리역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.290641,
+    "longitude": 126.857104
   },
   {
     "subway_id": "1075",
     "station_id": "1075075251",
     "name": "한대앞역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.310207,
+    "longitude": 126.853246
   },
   {
     "subway_id": "1075",
     "station_id": "1075075252",
     "name": "중앙역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.31604,
+    "longitude": 126.837959
   },
   {
     "subway_id": "1075",
     "station_id": "1075075253",
     "name": "고잔역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.316825,
+    "longitude": 126.82247
   },
   {
     "subway_id": "1075",
     "station_id": "1075075254",
     "name": "초지역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.320896,
+    "longitude": 126.805461
   },
   {
     "subway_id": "1075",
     "station_id": "1075075255",
     "name": "안산역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.327401,
+    "longitude": 126.788019
   },
   {
     "subway_id": "1075",
     "station_id": "1075075256",
     "name": "신길온천역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.337892,
+    "longitude": 126.766558
   },
   {
     "subway_id": "1075",
     "station_id": "1075075257",
     "name": "정왕역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.352013,
+    "longitude": 126.742261
   },
   {
     "subway_id": "1075",
     "station_id": "1075075258",
     "name": "오이도역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.362929,
+    "longitude": 126.738923
   },
   {
     "subway_id": "1075",
     "station_id": "1075075259",
     "name": "달월역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.380027,
+    "longitude": 126.745403
   },
   {
     "subway_id": "1075",
     "station_id": "1075075260",
     "name": "월곶역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.391821,
+    "longitude": 126.742708
   },
   {
     "subway_id": "1075",
     "station_id": "1075075261",
     "name": "소래포구역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.40094,
+    "longitude": 126.733492
   },
   {
     "subway_id": "1075",
     "station_id": "1075075262",
     "name": "인천논현역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.400659,
+    "longitude": 126.722452
   },
   {
     "subway_id": "1075",
     "station_id": "1075075263",
     "name": "호구포역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.401642,
+    "longitude": 126.708683
   },
   {
     "subway_id": "1075",
     "station_id": "1075075264",
     "name": "남동인더스파크역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.4,
+    "longitude": 126.726
   },
   {
     "subway_id": "1075",
     "station_id": "1075075265",
     "name": "원인재역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.413212,
+    "longitude": 126.686458
   },
   {
     "subway_id": "1075",
     "station_id": "1075075266",
     "name": "연수역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.417927,
+    "longitude": 126.678747
   },
   {
     "subway_id": "1075",
     "station_id": "1075075267",
     "name": "송도역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.429962,
+    "longitude": 126.654676
   },
   {
     "subway_id": "1075",
     "station_id": "1075075268",
     "name": "인하대역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.448339,
+    "longitude": 126.649763
   },
   {
     "subway_id": "1075",
     "station_id": "1075075269",
     "name": "숭의역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.4608,
+    "longitude": 126.638411
   },
   {
     "subway_id": "1075",
     "station_id": "1075075270",
     "name": "신포역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.468455,
+    "longitude": 126.624534
   },
   {
     "subway_id": "1075",
     "station_id": "1075075271",
     "name": "인천역",
     "line": "수인분당선",
-    "line_color": "#F5A200"
+    "line_color": "#F5A200",
+    "latitude": 37.476469,
+    "longitude": 126.617398
   },
   {
     "subway_id": "1077",
     "station_id": "1077000684",
     "name": "신사역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.516435,
+    "longitude": 127.020311
   },
   {
     "subway_id": "1077",
     "station_id": "1077000685",
     "name": "논현역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.511202,
+    "longitude": 127.021653
   },
   {
     "subway_id": "1077",
     "station_id": "1077000686",
     "name": "신논현역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.504811,
+    "longitude": 127.025492
   },
   {
     "subway_id": "1077",
     "station_id": "1077000687",
     "name": "강남역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.496777,
+    "longitude": 127.028185
   },
   {
     "subway_id": "1077",
     "station_id": "1077000688",
     "name": "양재역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.483466,
+    "longitude": 127.035154
   },
   {
     "subway_id": "1077",
     "station_id": "1077000689",
     "name": "양재시민의숲역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.470133,
+    "longitude": 127.038471
   },
   {
     "subway_id": "1077",
     "station_id": "1077006810",
     "name": "청계산입구역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.448355,
+    "longitude": 127.05472
   },
   {
     "subway_id": "1077",
     "station_id": "1077006811",
     "name": "판교역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.394777,
+    "longitude": 127.111197
   },
   {
     "subway_id": "1077",
     "station_id": "1077006812",
     "name": "정자역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.367327,
+    "longitude": 127.108519
   },
   {
     "subway_id": "1077",
     "station_id": "1077006813",
     "name": "미금역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.350074,
+    "longitude": 127.108801
   },
   {
     "subway_id": "1077",
     "station_id": "1077006814",
     "name": "동천역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.337843,
+    "longitude": 127.10287
   },
   {
     "subway_id": "1077",
     "station_id": "1077006815",
     "name": "수지구청역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.322493,
+    "longitude": 127.094659
   },
   {
     "subway_id": "1077",
     "station_id": "1077006816",
     "name": "성복역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.313532,
+    "longitude": 127.080384
   },
   {
     "subway_id": "1077",
     "station_id": "1077006817",
     "name": "상현역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.297829,
+    "longitude": 127.069364
   },
   {
     "subway_id": "1077",
     "station_id": "1077006818",
     "name": "광교중앙역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.288384,
+    "longitude": 127.051726
   },
   {
     "subway_id": "1077",
     "station_id": "1077006819",
     "name": "광교역",
     "line": "신분당선",
-    "line_color": "#D31145"
+    "line_color": "#D31145",
+    "latitude": 37.302112,
+    "longitude": 127.044269
   },
   {
     "subway_id": "1081",
     "station_id": "1081037409",
     "name": "판교역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.394776,
+    "longitude": 127.111983
   },
   {
     "subway_id": "1081",
     "station_id": "1081037410",
     "name": "성남역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.419,
+    "longitude": 127.126
   },
   {
     "subway_id": "1081",
     "station_id": "1081037411",
     "name": "이매역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.394714,
+    "longitude": 127.127319
   },
   {
     "subway_id": "1081",
     "station_id": "1081037412",
     "name": "삼동역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.408688,
+    "longitude": 127.203382
   },
   {
     "subway_id": "1081",
     "station_id": "1081037413",
     "name": "경기광주역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.398944,
+    "longitude": 127.253283
   },
   {
     "subway_id": "1081",
     "station_id": "1081037414",
     "name": "초월역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.373379,
+    "longitude": 127.299905
   },
   {
     "subway_id": "1081",
     "station_id": "1081037415",
     "name": "곤지암역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.35054,
+    "longitude": 127.346251
   },
   {
     "subway_id": "1081",
     "station_id": "1081037416",
     "name": "신둔도예촌역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.315612,
+    "longitude": 127.405241
   },
   {
     "subway_id": "1081",
     "station_id": "1081037417",
     "name": "이천역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.264226,
+    "longitude": 127.442168
   },
   {
     "subway_id": "1081",
     "station_id": "1081037418",
     "name": "부발역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.260392,
+    "longitude": 127.490322
   },
   {
     "subway_id": "1081",
     "station_id": "1081037419",
     "name": "세종왕릉역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.192,
+    "longitude": 127.255
   },
   {
     "subway_id": "1081",
     "station_id": "1081037420",
     "name": "여주역",
     "line": "경강선",
-    "line_color": "#0054A6"
+    "line_color": "#0054A6",
+    "latitude": 37.28286,
+    "longitude": 127.628529
   },
   {
     "subway_id": "1092",
     "station_id": "1092004701",
     "name": "북한산우이역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.662887,
+    "longitude": 127.012757
   },
   {
     "subway_id": "1092",
     "station_id": "1092004702",
     "name": "솔밭공원역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.655978,
+    "longitude": 127.013268
   },
   {
     "subway_id": "1092",
     "station_id": "1092004703",
     "name": "4.19 민주묘지역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.647,
+    "longitude": 127.016
   },
   {
     "subway_id": "1092",
     "station_id": "1092004704",
     "name": "가오리역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.641544,
+    "longitude": 127.016769
   },
   {
     "subway_id": "1092",
     "station_id": "1092004705",
     "name": "화계역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.634087,
+    "longitude": 127.01751
   },
   {
     "subway_id": "1092",
     "station_id": "1092004706",
     "name": "삼양역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.626919,
+    "longitude": 127.018157
   },
   {
     "subway_id": "1092",
     "station_id": "1092004707",
     "name": "삼양사거리역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.621318,
+    "longitude": 127.020489
   },
   {
     "subway_id": "1092",
     "station_id": "1092004708",
     "name": "솔샘역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.62026,
+    "longitude": 127.013552
   },
   {
     "subway_id": "1092",
     "station_id": "1092004709",
     "name": "북한산보국문역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.612137,
+    "longitude": 127.008263
   },
   {
     "subway_id": "1092",
     "station_id": "1092004710",
     "name": "정릉역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.602615,
+    "longitude": 127.01354
   },
   {
     "subway_id": "1092",
     "station_id": "1092004711",
     "name": "성신여대입구역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.59297,
+    "longitude": 127.017125
   },
   {
     "subway_id": "1092",
     "station_id": "1092004712",
     "name": "보문역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.585542,
+    "longitude": 127.020004
   },
   {
     "subway_id": "1092",
     "station_id": "1092004713",
     "name": "신설동역",
     "line": "우이신설선",
-    "line_color": "#B7C450"
+    "line_color": "#B7C450",
+    "latitude": 37.57603,
+    "longitude": 127.024457
   },
   {
     "subway_id": "1093",
     "station_id": "1093004001",
     "name": "일산역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.682013,
+    "longitude": 126.770023
   },
   {
     "subway_id": "1093",
     "station_id": "1093004002",
     "name": "풍산역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.672338,
+    "longitude": 126.786275
   },
   {
     "subway_id": "1093",
     "station_id": "1093004003",
     "name": "백마역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.658017,
+    "longitude": 126.794616
   },
   {
     "subway_id": "1093",
     "station_id": "1093004004",
     "name": "곡산역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.645758,
+    "longitude": 126.801807
   },
   {
     "subway_id": "1093",
     "station_id": "1093004005",
     "name": "대곡역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.631696,
+    "longitude": 126.81093
   },
   {
     "subway_id": "1093",
     "station_id": "1093004006",
     "name": "능곡역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.619025,
+    "longitude": 126.820422
   },
   {
     "subway_id": "1093",
     "station_id": "1093004007",
     "name": "김포공항역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.562098,
+    "longitude": 126.801255
   },
   {
     "subway_id": "1093",
     "station_id": "1093004008",
     "name": "원종역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.516,
+    "longitude": 126.81
   },
   {
     "subway_id": "1093",
     "station_id": "1093004009",
     "name": "부천종합운동장역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.505426,
+    "longitude": 126.797234
   },
   {
     "subway_id": "1093",
     "station_id": "1093004010",
     "name": "소사역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.482907,
+    "longitude": 126.795061
   },
   {
     "subway_id": "1093",
     "station_id": "1093004011",
     "name": "소새울역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.46851,
+    "longitude": 126.797284
   },
   {
     "subway_id": "1093",
     "station_id": "1093004012",
     "name": "시흥대야역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.4501,
+    "longitude": 126.792994
   },
   {
     "subway_id": "1093",
     "station_id": "1093004013",
     "name": "신천역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.439244,
+    "longitude": 126.786786
   },
   {
     "subway_id": "1093",
     "station_id": "1093004014",
     "name": "신현역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.409567,
+    "longitude": 126.787837
   },
   {
     "subway_id": "1093",
     "station_id": "1093004016",
     "name": "시흥시청역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.381562,
+    "longitude": 126.805946
   },
   {
     "subway_id": "1093",
     "station_id": "1093004017",
     "name": "시흥능곡역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.369947,
+    "longitude": 126.808721
   },
   {
     "subway_id": "1093",
     "station_id": "1093004018",
     "name": "달미역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.348788,
+    "longitude": 126.809416
   },
   {
     "subway_id": "1093",
     "station_id": "1093004019",
     "name": "선부역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.334408,
+    "longitude": 126.80999
   },
   {
     "subway_id": "1093",
     "station_id": "1093004020",
     "name": "초지역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.319743,
+    "longitude": 126.807842
   },
   {
     "subway_id": "1093",
     "station_id": "1093004021",
     "name": "시우역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.505,
+    "longitude": 126.777
   },
   {
     "subway_id": "1093",
     "station_id": "1093004022",
     "name": "원시역",
     "line": "서해선",
-    "line_color": "#8FC31F"
+    "line_color": "#8FC31F",
+    "latitude": 37.302624,
+    "longitude": 126.786794
   },
   {
     "subway_id": "1094",
     "station_id": "1094000401",
     "name": "샛강역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.517374,
+    "longitude": 126.928375
   },
   {
     "subway_id": "1094",
     "station_id": "1094000402",
     "name": "대방역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.513354,
+    "longitude": 126.926497
   },
   {
     "subway_id": "1094",
     "station_id": "1094000403",
     "name": "서울지방병무청역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.492,
+    "longitude": 126.93
   },
   {
     "subway_id": "1094",
     "station_id": "1094000404",
     "name": "보라매역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.499922,
+    "longitude": 126.920611
   },
   {
     "subway_id": "1094",
     "station_id": "1094000405",
     "name": "보라매공원역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.488,
+    "longitude": 126.92
   },
   {
     "subway_id": "1094",
     "station_id": "1094000406",
     "name": "보라매병원역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.484,
+    "longitude": 126.917
   },
   {
     "subway_id": "1094",
     "station_id": "1094000407",
     "name": "당곡역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.477,
+    "longitude": 126.914
   },
   {
     "subway_id": "1094",
     "station_id": "1094000408",
     "name": "신림역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.484268,
+    "longitude": 126.929745
   },
   {
     "subway_id": "1094",
     "station_id": "1094000409",
     "name": "서원역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.472,
+    "longitude": 126.914
   },
   {
     "subway_id": "1094",
     "station_id": "1094000410",
     "name": "서울대벤처타운역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.464,
+    "longitude": 126.912
   },
   {
     "subway_id": "1094",
     "station_id": "1094000411",
     "name": "관악산역",
     "line": "신림선",
-    "line_color": "#6789CA"
+    "line_color": "#6789CA",
+    "latitude": 37.453,
+    "longitude": 126.908
   }
 ]

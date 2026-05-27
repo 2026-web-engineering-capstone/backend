@@ -66,6 +66,20 @@ class StationResponse(BaseModel):
     name: str
     line: str
     line_color: str
+    latitude: float | None = None
+    longitude: float | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class NearestStationResponse(BaseModel):
+    id: str
+    name: str
+    line: str
+    line_color: str
+    latitude: float
+    longitude: float
+    distance_km: float
 
     model_config = ConfigDict(from_attributes=True)
 

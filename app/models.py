@@ -17,6 +17,8 @@ class Station(Base):
     name: Mapped[str] = mapped_column(String(255), index=True)
     line: Mapped[str] = mapped_column(String(128))
     line_color: Mapped[str] = mapped_column(String(16))
+    latitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    longitude: Mapped[float | None] = mapped_column(Float, nullable=True)
 
 
 class User(Base):

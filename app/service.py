@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -97,101 +98,25 @@ ALLOWED_TRANSITIONS: dict[SupportRequestStatus, set[SupportRequestStatus]] = {
     SupportRequestStatus.UNAVAILABLE: set(),
 }
 
-_LINE_INCHEON_1 = ("인천1호선", "#3681cb")
-_LINE_SEOUL_4 = ("서울4호선", "#00a4e3")
-
-STATION_SEED = [
-    # 인천 1호선 (송도 ~ 계양 일부 11개)
-    ("STN-GY", "계양역", *_LINE_INCHEON_1),
-    ("STN-GH", "귤현역", *_LINE_INCHEON_1),
-    ("STN-BC", "박촌역", *_LINE_INCHEON_1),
-    ("STN-IH", "임학역", *_LINE_INCHEON_1),
-    ("STN-JJ", "작전역", *_LINE_INCHEON_1),
-    ("STN-GS", "갈산역", *_LINE_INCHEON_1),
-    ("STN-JI", "지식정보단지역", *_LINE_INCHEON_1),
-    ("STN-ICU", "인천대입구역", *_LINE_INCHEON_1),
-    ("STN-CP", "센트럴파크역", *_LINE_INCHEON_1),
-    ("STN-IBD", "국제업무지구역", *_LINE_INCHEON_1),
-    ("STN-SD", "송도달빛축제공원역", *_LINE_INCHEON_1),
-    # 서울 4호선 전체 (당고개 ~ 오이도 48개)
-    ("STN-DGG", "당고개역", *_LINE_SEOUL_4),
-    ("STN-SGE", "상계역", *_LINE_SEOUL_4),
-    ("STN-NWN", "노원역", *_LINE_SEOUL_4),
-    ("STN-CDG", "창동역", *_LINE_SEOUL_4),
-    ("STN-SMM", "쌍문역", *_LINE_SEOUL_4),
-    ("STN-SYU", "수유역", *_LINE_SEOUL_4),
-    ("STN-MIA", "미아역", *_LINE_SEOUL_4),
-    ("STN-MSG", "미아사거리역", *_LINE_SEOUL_4),
-    ("STN-GIM", "길음역", *_LINE_SEOUL_4),
-    ("STN-SSW", "성신여대입구역", *_LINE_SEOUL_4),
-    ("STN-HSU", "한성대입구역", *_LINE_SEOUL_4),
-    ("STN-HYE", "혜화역", *_LINE_SEOUL_4),
-    ("STN-DDM", "동대문역", *_LINE_SEOUL_4),
-    ("STN-DDH", "동대문역사문화공원역", *_LINE_SEOUL_4),
-    ("STN-CMR", "충무로역", *_LINE_SEOUL_4),
-    ("STN-MDG", "명동역", *_LINE_SEOUL_4),
-    ("STN-HOH", "회현역", *_LINE_SEOUL_4),
-    ("STN-SLY", "서울역", *_LINE_SEOUL_4),
-    ("STN-SUK", "숙대입구역", *_LINE_SEOUL_4),
-    ("STN-SGJ", "삼각지역", *_LINE_SEOUL_4),
-    ("STN-SYS", "신용산역", *_LINE_SEOUL_4),
-    ("STN-ICN", "이촌역", *_LINE_SEOUL_4),
-    ("STN-DJK", "동작역", *_LINE_SEOUL_4),
-    ("STN-CSD", "총신대입구역", *_LINE_SEOUL_4),
-    ("STN-SDG", "사당역", *_LINE_SEOUL_4),
-    ("STN-NTR", "남태령역", *_LINE_SEOUL_4),
-    ("STN-SBW", "선바위역", *_LINE_SEOUL_4),
-    ("STN-GMP", "경마공원역", *_LINE_SEOUL_4),
-    ("STN-DGW", "대공원역", *_LINE_SEOUL_4),
-    ("STN-GCN", "과천역", *_LINE_SEOUL_4),
-    ("STN-GCH", "정부과천청사역", *_LINE_SEOUL_4),
-    ("STN-IDW", "인덕원역", *_LINE_SEOUL_4),
-    ("STN-PCN", "평촌역", *_LINE_SEOUL_4),
-    ("STN-BGE", "범계역", *_LINE_SEOUL_4),
-    ("STN-GMJ", "금정역", *_LINE_SEOUL_4),
-    ("STN-SBN", "산본역", *_LINE_SEOUL_4),
-    ("STN-SRS", "수리산역", *_LINE_SEOUL_4),
-    ("STN-DYM", "대야미역", *_LINE_SEOUL_4),
-    ("STN-BWL", "반월역", *_LINE_SEOUL_4),
-    ("STN-SNS", "상록수역", *_LINE_SEOUL_4),
-    ("STN-HDA", "한대앞역", *_LINE_SEOUL_4),
-    ("STN-JAN", "중앙역", *_LINE_SEOUL_4),
-    ("STN-GJN", "고잔역", *_LINE_SEOUL_4),
-    ("STN-CZI", "초지역", *_LINE_SEOUL_4),
-    ("STN-ANS", "안산역", *_LINE_SEOUL_4),
-    ("STN-SGO", "신길온천역", *_LINE_SEOUL_4),
-    ("STN-JWG", "정왕역", *_LINE_SEOUL_4),
-    ("STN-ODO", "오이도역", *_LINE_SEOUL_4),
-]
-
-
-def _build_station_seed() -> list[tuple[str, str, str, str]]:
-    seed = list(STATION_SEED)
-    seen: set[tuple[str, str]] = {
-        (normalize_station_name(name), normalize_line_name(line))
-        for _station_id, name, line, _line_color in seed
-    }
+def _build_station_seed() -> list[tuple[str, str, str, str, float | None, float | None]]:
+    seen: set[tuple[str, str]] = set()
+    seed: list[tuple[str, str, str, str, float | None, float | None]] = []
 
     for item in load_arrival_station_catalog():
         key = (normalize_station_name(item["name"]), normalize_line_name(item["line"]))
         if key in seen:
             continue
-        seed.append(
-            (
-                f"STN-{item['subway_id']}-{item['station_id']}",
-                item["name"],
-                item["line"],
-                item["line_color"],
-            )
-        )
+        seed.append((
+            f"STN-{item['subway_id']}-{item['station_id']}",
+            item["name"],
+            item["line"],
+            item["line_color"],
+            item.get("latitude"),
+            item.get("longitude"),
+        ))
         seen.add(key)
 
-    logger.debug(
-        "station seed: %d total (%d hardcoded, %d from catalog)",
-        len(seed),
-        len(STATION_SEED),
-        len(seed) - len(STATION_SEED),
-    )
+    logger.debug("station seed: %d total from catalog", len(seed))
     return seed
 
 
@@ -211,7 +136,7 @@ USER_SEED = [
 def _build_staff_seed() -> list[dict[str, object]]:
     """모든 시드 역에 1명씩 데모 staff 자동 생성."""
     staff: list[dict[str, object]] = []
-    for station_id, station_name, _line, _line_color in ALL_STATION_SEED:
+    for station_id, station_name, _line, _line_color, _lat, _lng in ALL_STATION_SEED:
         suffix = station_id.removeprefix("STN-")
         staff.append(
             {
@@ -283,11 +208,13 @@ def _allow_duplicate_station_names(session: Session) -> None:
         "name VARCHAR(255) NOT NULL, "
         "line VARCHAR(128) NOT NULL, "
         "line_color VARCHAR(16) NOT NULL, "
+        "latitude REAL, "
+        "longitude REAL, "
         "PRIMARY KEY (id))"
     ))
     session.execute(text(
-        "INSERT INTO stations_new (id, name, line, line_color) "
-        "SELECT id, name, line, line_color FROM stations"
+        "INSERT INTO stations_new (id, name, line, line_color, latitude, longitude) "
+        "SELECT id, name, line, line_color, NULL, NULL FROM stations"
     ))
     session.execute(text("DROP TABLE stations"))
     session.execute(text("ALTER TABLE stations_new RENAME TO stations"))
@@ -307,8 +234,11 @@ class AppService:
 
             existing_station_ids = set(session.scalars(select(Station.id)))
             missing_stations = [
-                Station(id=station_id, name=name, line=line, line_color=line_color)
-                for station_id, name, line, line_color in ALL_STATION_SEED
+                Station(
+                    id=station_id, name=name, line=line,
+                    line_color=line_color, latitude=lat, longitude=lng,
+                )
+                for station_id, name, line, line_color, lat, lng in ALL_STATION_SEED
                 if station_id not in existing_station_ids
             ]
             if missing_stations:
@@ -317,19 +247,23 @@ class AppService:
                 session.flush()
 
             station_seed_by_id = {
-                station_id: (name, line, line_color)
-                for station_id, name, line, line_color in ALL_STATION_SEED
+                station_id: (name, line, line_color, lat, lng)
+                for station_id, name, line, line_color, lat, lng in ALL_STATION_SEED
             }
             for station in session.scalars(
                 select(Station).where(Station.id.in_(station_seed_by_id.keys()))
             ):
-                name, line, line_color = station_seed_by_id[station.id]
+                name, line, line_color, lat, lng = station_seed_by_id[station.id]
                 if station.name != name:
                     station.name = name
                 if station.line != line:
                     station.line = line
                 if station.line_color != line_color:
                     station.line_color = line_color
+                if station.latitude != lat:
+                    station.latitude = lat
+                if station.longitude != lng:
+                    station.longitude = lng
 
             if session.scalar(select(User.id).limit(1)) is None:
                 session.add_all([User(**item) for item in USER_SEED])
@@ -357,6 +291,46 @@ class AppService:
         if query:
             stmt = stmt.where(Station.name.contains(query))
         return list(db.scalars(stmt))
+
+    def find_nearest_stations(
+        self, db: Session, lat: float, lng: float, limit: int = 5,
+    ) -> list[tuple[Station, float]]:
+        stations = list(db.scalars(
+            select(Station).where(
+                Station.latitude.is_not(None),
+                Station.longitude.is_not(None),
+            )
+        ))
+        if not stations:
+            logger.error(
+                "find_nearest_stations: 좌표가 있는 역이 0개입니다. "
+                "DB 시드 또는 catalog 좌표 보강을 확인하세요."
+            )
+            raise HTTPException(
+                status_code=500,
+                detail="역 좌표 데이터가 없습니다. 서버 관리자에게 문의하세요.",
+            )
+
+        def _haversine(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+            r = 6371.0
+            dlat = math.radians(lat2 - lat1)
+            dlng = math.radians(lng2 - lng1)
+            a = (
+                math.sin(dlat / 2) ** 2
+                + math.cos(math.radians(lat1))
+                * math.cos(math.radians(lat2))
+                * math.sin(dlng / 2) ** 2
+            )
+            return r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+        ranked = sorted(
+            (
+                (station, _haversine(lat, lng, station.latitude, station.longitude))
+                for station in stations
+            ),
+            key=lambda pair: pair[1],
+        )
+        return ranked[:limit]
 
     def get_demo_user_for_role(
         self,
