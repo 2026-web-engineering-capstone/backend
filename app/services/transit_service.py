@@ -5,9 +5,9 @@
 HTTPException으로 상위에 전달한다 — 우회하지 않고 사용자에게 사유를 그대로
 알린다.
 
-역사 편의시설 정보는 안정적인 무료 공공 API가 없어 코드 내 정적 dict로 제공한다.
-향후 진짜 API가 확정되면 `fetch_station_facilities`의 본문만 외부 호출로 교체하면
-라우터·프런트 인터페이스를 그대로 유지할 수 있다.
+역사 편의시설 정보는 서울 열린데이터광장 교통약자 API, 한국철도공사
+교통약자 편의시설 API, 공식 파일데이터 CSV를 순서대로 병합한다.
+코드 내 임의 정적 편의시설 시드는 사용하지 않는다.
 """
 
 from __future__ import annotations
@@ -28,7 +28,12 @@ logger = logging.getLogger(__name__)
 
 _DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 _SEOUL_METRO_FACILITIES_CSV = _DATA_DIR / "seoul_metro_facilities_20260212.csv"
+_KORAIL_LIFT_FACILITIES_CSV = _DATA_DIR / "korail_station_lift_facilities_20230101.csv"
+_AIRPORT_RAILROAD_RESTROOMS_CSV = (
+    _DATA_DIR / "airport_railroad_accessible_restrooms_20250630.csv"
+)
 _seoul_metro_facilities_cache: dict[str, list[tuple[str, str | None, str]]] | None = None
+_official_csv_facilities_cache: dict[str, list[tuple[str, str | None, str]]] | None = None
 
 
 @dataclass(frozen=True)
@@ -89,6 +94,19 @@ class _TTLCache:
 
 
 _arrivals_cache = _TTLCache()
+_seoul_facilities_cache = _TTLCache()
+
+_SEOUL_ACCESSIBLE_SERVICES: tuple[tuple[str, str], ...] = (
+    ("getWksnElvtr", "엘리베이터"),
+    ("getWksnRstrm", "장애인 화장실"),
+    ("getWksnEsctr", "에스컬레이터"),
+    ("getWksnWhcllift", "휠체어 리프트"),
+    ("getWksnMvnwlk", "무빙워크"),
+    ("getWksnWhclCharge", "휠체어 급속충전기"),
+    ("getWksnSlng", "수어영상전화기"),
+    ("getWksnSafePlfm", "이동식 안전발판"),
+    ("getWksnHelper", "교통약자 도우미"),
+)
 
 _SUBWAY_ID_TO_LINE: dict[str, str] = {
     "1001": "1호선",
@@ -133,6 +151,13 @@ def _normalize_station_name(name: str) -> str:
     if stripped.endswith("역"):
         return stripped[:-1]
     return stripped
+
+
+def _normalize_facility_station_name(name: object) -> str:
+    stripped = str(name or "").strip()
+    if stripped.endswith("역사"):
+        stripped = stripped[:-2]
+    return _normalize_station_name(stripped)
 
 
 def _get_arrivals_api_key(settings: Settings) -> str | None:
@@ -298,43 +323,6 @@ async def fetch_station_arrivals(
     return result
 
 
-def _facility(
-    facility_type: str,
-    location_note: str | None,
-    operational_status: str = "operational",
-) -> tuple[str, str | None, str]:
-    return facility_type, location_note, operational_status
-
-
-_ACCESSIBLE_FACILITY_TYPES = {
-    "엘리베이터",
-    "장애인 경사로",
-    "장애인경사로",
-    "휠체어 경사로",
-    "휠체어경사로",
-    "교통약자 경사로",
-    "교통약자경사로",
-    "장애인 화장실",
-    "장애인화장실",
-    "휠체어 리프트",
-    "휠체어리프트",
-    "교통약자 개찰구",
-    "accessible_gate",
-    "accessible_toilet",
-    "elevator",
-    "wheelchair_lift",
-}
-
-_ACCESSIBLE_FACILITY_TYPE_NORMALIZED = {
-    item.replace(" ", "") for item in _ACCESSIBLE_FACILITY_TYPES
-}
-
-
-def _is_accessible_facility(facility_type: str) -> bool:
-    normalized = facility_type.replace(" ", "")
-    return facility_type in _ACCESSIBLE_FACILITY_TYPES or normalized in _ACCESSIBLE_FACILITY_TYPE_NORMALIZED
-
-
 def _as_items(payload: object) -> list[dict]:
     if not isinstance(payload, dict):
         return []
@@ -408,102 +396,313 @@ def _build_api_facilities(
     )
 
 
-# 4호선 정적 시설 시드 자동 보충에 사용하는 정규화 역명 묶음.
-_SEOUL_LINE_4_STATIONS: tuple[str, ...] = (
-    "당고개", "상계", "노원", "창동", "쌍문", "수유", "미아",
-    "미아사거리", "길음", "성신여대입구", "한성대입구", "혜화",
-    "동대문", "동대문역사문화공원", "충무로", "명동", "회현",
-    "서울", "숙대입구", "삼각지", "신용산", "이촌", "동작",
-    "총신대입구", "사당", "남태령", "선바위", "경마공원", "대공원",
-    "과천", "정부과천청사", "인덕원", "평촌", "범계", "금정",
-    "산본", "수리산", "대야미", "반월", "상록수", "한대앞",
-    "중앙", "고잔", "초지", "안산", "신길온천", "정왕", "오이도",
-)
-
-# 시연용 정적 편의시설 시드. 키는 normalized station name (역 접미사 제거).
-# facility_type 한글 라벨은 프론트 FACILITY_LABELS 키와 일치해야 한다.
-_STATIC_FACILITIES_SEED: dict[str, list[tuple[str, str | None, str]]] = {}
+def _collect_unique_values(items: list[dict], *keys: str, limit: int = 3) -> list[str]:
+    values: list[str] = []
+    for item in items:
+        for key in keys:
+            value = str(item.get(key) or "").strip()
+            if value and value not in values:
+                values.append(value)
+                break
+        if len(values) >= limit:
+            break
+    return values
 
 
-# 서울 4호선 모든 역에 기본 시설(엘리베이터·에스컬레이터·장애인 화장실)을 보충.
-# 환승역 등 특수한 역은 아래에서 override한다.
-for _name in _SEOUL_LINE_4_STATIONS:
-    _STATIC_FACILITIES_SEED.setdefault(
-        _name,
-        [
-            _facility("엘리베이터", "대합실 ↔ 승강장"),
-            _facility("에스컬레이터", "대합실 ↔ 승강장 (상·하행)"),
-            _facility("장애인 화장실", "지하 대합실"),
-        ],
+def _summarize_seoul_facility_note(
+    facility_type: str,
+    matching_items: list[dict],
+) -> str:
+    positions = _collect_unique_values(
+        matching_items,
+        "dtlPstn",
+        "bgngFlrDtlPstn",
+        "endFlrDtlPstn",
+        "rstrmInfo",
+        "vcntEntrcNo",
+        "stnFlr",
+        "mngNo",
+    )
+    note_parts: list[str] = []
+    if facility_type == "교통약자 도우미":
+        note_parts.append("운영")
+    elif facility_type == "이동식 안전발판":
+        note_parts.append("설치됨")
+    else:
+        unit = "개소" if facility_type == "장애인 화장실" else "대"
+        if facility_type == "휠체어 급속충전기":
+            unit = "개"
+        note_parts.append(f"{len(matching_items)}{unit}")
+
+    if positions:
+        suffix = " 외" if len(matching_items) > len(positions) else ""
+        note_parts.append(f"{', '.join(positions)}{suffix}")
+
+    phones = _collect_unique_values(matching_items, "trffcWksnHlprTelno", limit=2)
+    if phones:
+        note_parts.append(", ".join(phones))
+
+    return " · ".join(note_parts)
+
+
+def _build_seoul_accessible_facilities(
+    normalized_station: str,
+    items_by_facility_type: dict[str, list[dict]],
+) -> StationFacilities:
+    facilities: list[StationFacility] = []
+    for _service_name, facility_type in _SEOUL_ACCESSIBLE_SERVICES:
+        items = items_by_facility_type.get(facility_type, [])
+        matching_items = [
+            item for item in items
+            if _normalize_station_name(item.get("stnNm", "")) == normalized_station
+        ]
+        if not matching_items:
+            continue
+        facilities.append(
+            StationFacility(
+                station_name=normalized_station,
+                facility_type=facility_type,
+                location_note=_summarize_seoul_facility_note(
+                    facility_type,
+                    matching_items,
+                ),
+                operational_status="operational",
+            )
+        )
+    return StationFacilities(
+        station_name=normalized_station,
+        fetched_at=time.time(),
+        facilities=facilities,
     )
 
-# 4호선 주요 환승역·거점역 시설 override.
-_STATIC_FACILITIES_SEED["서울"] = [
-    _facility("엘리베이터", "1·14번 출구 측 (지상 ↔ 대합실 ↔ 승강장)"),
-    _facility("에스컬레이터", "대합실 ↔ 승강장 (상·하행)"),
-    _facility("장애인 화장실", "지하 1층 대합실 동·서측"),
-    _facility("휠체어 리프트", "10번 출구 계단"),
-    _facility("수유실", "고객안내실 옆"),
-]
-_STATIC_FACILITIES_SEED["사당"] = [
-    _facility("엘리베이터", "2·6·14번 출구 측"),
-    _facility("에스컬레이터", "2호선 환승 통로 (상·하행)"),
-    _facility("장애인 화장실", "지하 2층 대합실"),
-    _facility("휠체어 리프트", "12번 출구 계단"),
-    _facility("수유실", "고객센터 옆"),
-]
-_STATIC_FACILITIES_SEED["동대문"] = [
-    _facility("엘리베이터", "1번 출구 측"),
-    _facility("에스컬레이터", "대합실 ↔ 승강장"),
-    _facility("장애인 화장실", "대합실 중앙"),
-    _facility("수유실", "고객센터 옆"),
-]
-_STATIC_FACILITIES_SEED["동대문역사문화공원"] = [
-    _facility("엘리베이터", "10·14번 출구 측"),
-    _facility("에스컬레이터", "2·5호선 환승 통로 (상·하행)"),
-    _facility("장애인 화장실", "대합실 중앙"),
-    _facility("휠체어 리프트", "8번 출구 계단", "out_of_service"),
-    _facility("수유실", "고객센터 옆"),
-]
-_STATIC_FACILITIES_SEED["충무로"] = [
-    _facility("엘리베이터", "1·6번 출구 측"),
-    _facility("에스컬레이터", "3호선 환승 통로"),
-    _facility("장애인 화장실", "대합실 남측"),
-    _facility("수유실", "고객센터 옆"),
-]
-_STATIC_FACILITIES_SEED["삼각지"] = [
-    _facility("엘리베이터", "1·14번 출구 측"),
-    _facility("에스컬레이터", "6호선 환승 통로"),
-    _facility("장애인 화장실", "대합실 동측"),
-]
-_STATIC_FACILITIES_SEED["금정"] = [
-    _facility("엘리베이터", "1·4번 출구 측"),
-    _facility("에스컬레이터", "1호선 환승 통로 (상·하행)"),
-    _facility("장애인 화장실", "지하 2층 대합실"),
-    _facility("휠체어 리프트", "5번 출구 계단"),
-]
-_STATIC_FACILITIES_SEED["노원"] = [
-    _facility("엘리베이터", "1·9번 출구 측"),
-    _facility("에스컬레이터", "7호선 환승 통로 (상·하행)"),
-    _facility("장애인 화장실", "대합실 중앙"),
-    _facility("수유실", "고객센터 옆"),
-]
-_STATIC_FACILITIES_SEED["수유"] = [
-    _facility("엘리베이터", "2·6번 출구 측"),
-    _facility("에스컬레이터", "대합실 ↔ 승강장 상행"),
-    _facility("장애인 화장실", "대합실 동측"),
-    _facility("수유실", "고객센터 옆"),
-]
-_STATIC_FACILITIES_SEED["오이도"] = [
-    _facility("엘리베이터", "1번 출구 측"),
-    _facility("에스컬레이터", "대합실 ↔ 승강장"),
-    _facility("장애인 화장실", "대합실 서측"),
-    _facility("휠체어 리프트", "2번 출구 계단", "unknown"),
-]
+
+def _merge_facility_payloads(
+    normalized_station: str,
+    *payloads: StationFacilities,
+) -> StationFacilities:
+    facilities: list[StationFacility] = []
+    for payload in payloads:
+        for item in payload.facilities:
+            _append_facility(
+                facilities,
+                normalized_station,
+                item.facility_type,
+                item.location_note,
+            )
+    return StationFacilities(
+        station_name=normalized_station,
+        fetched_at=time.time(),
+        facilities=facilities,
+    )
 
 
-def _build_static_facilities(normalized_station: str) -> StationFacilities:
-    items = _STATIC_FACILITIES_SEED.get(normalized_station, [])
+def _as_seoul_open_data_items(payload: object, service_name: str) -> list[dict]:
+    if not isinstance(payload, dict):
+        return []
+    rows = payload.get(service_name, {}).get("row")
+    if isinstance(rows, dict):
+        return [rows]
+    if isinstance(rows, list):
+        return [item for item in rows if isinstance(item, dict)]
+
+    raw_items = (
+        payload.get("response", {})
+        .get("body", {})
+        .get("items", {})
+        .get("item", [])
+    )
+    if isinstance(raw_items, dict):
+        return [raw_items]
+    if isinstance(raw_items, list):
+        return [item for item in raw_items if isinstance(item, dict)]
+    return []
+
+
+async def _fetch_seoul_accessible_items(settings: Settings) -> dict[str, list[dict]]:
+    cache_key = "all"
+    cached = _seoul_facilities_cache.get(cache_key, 60 * 60)
+    if isinstance(cached, dict):
+        return cached
+
+    key = settings.seoul_open_api_key or settings.subway_arrival_api_key
+    if not key:
+        return {}
+
+    base_url = settings.seoul_open_data_base_url.rstrip("/")
+    items_by_facility_type: dict[str, list[dict]] = {}
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        for service_name, facility_type in _SEOUL_ACCESSIBLE_SERVICES:
+            service_items: list[dict] = []
+            start = 1
+            page_size = 1000
+            while True:
+                end = start + page_size - 1
+                try:
+                    response = await client.get(
+                        f"{base_url}/{key}/json/{service_name}/{start}/{end}/",
+                    )
+                    response.raise_for_status()
+                    items = _as_seoul_open_data_items(response.json(), service_name)
+                except (httpx.HTTPError, ValueError) as error:
+                    logger.warning(
+                        "seoul accessible api fallback service=%s: %s",
+                        service_name,
+                        error,
+                    )
+                    break
+                service_items.extend(items)
+                if len(items) < page_size:
+                    break
+                start += page_size
+            items_by_facility_type[facility_type] = service_items
+    _seoul_facilities_cache.set(cache_key, items_by_facility_type)
+    return items_by_facility_type
+
+
+def _append_seed_facility(
+    facilities: list[tuple[str, str | None, str]],
+    facility_type: str,
+    location_note: str | None,
+    operational_status: str = "operational",
+) -> None:
+    for index, (existing_type, existing_note, existing_status) in enumerate(facilities):
+        if existing_type != facility_type:
+            continue
+        if location_note and existing_note and location_note not in existing_note:
+            facilities[index] = (
+                existing_type,
+                f"{existing_note}, {location_note}",
+                existing_status,
+            )
+        return
+    facilities.append((facility_type, location_note, operational_status))
+
+
+def _append_count_facility(
+    facilities_by_station: dict[str, list[tuple[str, str | None, str]]],
+    station_name: str,
+    facility_type: str,
+    count: object,
+) -> None:
+    count_value = _count(count)
+    if count_value <= 0:
+        return
+    unit = "개소" if facility_type == "장애인 화장실" else "대"
+    note = f"{count_value}{unit}"
+    _append_seed_facility(
+        facilities_by_station.setdefault(station_name, []),
+        facility_type,
+        note,
+    )
+
+
+def _read_csv_dicts(path: Path, encoding: str = "cp949") -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding=encoding) as csv_file:
+        return list(csv.DictReader(csv_file))
+
+
+def _load_seoul_metro_facilities() -> dict[str, list[tuple[str, str | None, str]]]:
+    global _seoul_metro_facilities_cache
+    if _seoul_metro_facilities_cache is not None:
+        return _seoul_metro_facilities_cache
+
+    facilities_by_station: dict[str, list[tuple[str, str | None, str]]] = {}
+    for row in _read_csv_dicts(_SEOUL_METRO_FACILITIES_CSV):
+        station_name = _normalize_facility_station_name(row.get("역명"))
+        if not station_name:
+            continue
+
+        if _yes(row.get("엘리베이터여부")):
+            _append_seed_facility(
+                facilities_by_station.setdefault(station_name, []),
+                "엘리베이터",
+                "설치됨",
+            )
+        if _yes(row.get("휠체어리프트여부")):
+            _append_seed_facility(
+                facilities_by_station.setdefault(station_name, []),
+                "휠체어 리프트",
+                "설치됨",
+            )
+
+    _seoul_metro_facilities_cache = facilities_by_station
+    return facilities_by_station
+
+
+def _load_official_csv_facilities() -> dict[str, list[tuple[str, str | None, str]]]:
+    global _official_csv_facilities_cache
+    if _official_csv_facilities_cache is not None:
+        return _official_csv_facilities_cache
+
+    facilities_by_station: dict[str, list[tuple[str, str | None, str]]] = {}
+
+    for row in _read_csv_dicts(_KORAIL_LIFT_FACILITIES_CSV):
+        station_name = _normalize_facility_station_name(row.get("역명"))
+        if not station_name:
+            continue
+        _append_count_facility(
+            facilities_by_station,
+            station_name,
+            "엘리베이터",
+            row.get("엘리베이터"),
+        )
+        _append_count_facility(
+            facilities_by_station,
+            station_name,
+            "에스컬레이터",
+            row.get("에스컬레이터"),
+        )
+        _append_count_facility(
+            facilities_by_station,
+            station_name,
+            "휠체어 리프트",
+            row.get("휠체어리프트"),
+        )
+
+    for row in _read_csv_dicts(_AIRPORT_RAILROAD_RESTROOMS_CSV):
+        station_name = _normalize_facility_station_name(row.get("역명"))
+        if not station_name:
+            continue
+        ground_label = str(row.get("지상구분") or "").strip()
+        floor_label = str(row.get("역층") or "").strip()
+        gate_label = str(row.get("게이트내외") or "").strip()
+        exit_label = str(row.get("출구번호") or "").strip()
+        floor_note = f"{ground_label} {floor_label}층".strip() if floor_label else ground_label
+        gate_note = f"게이트 {gate_label}" if gate_label else ""
+        exit_note = f"{exit_label}번 출구" if exit_label else ""
+        location_parts = [
+            floor_note,
+            gate_note,
+            exit_note,
+            str(row.get("상세위치") or "").strip(),
+        ]
+        note = " · ".join(part for part in location_parts if part)
+        _append_seed_facility(
+            facilities_by_station.setdefault(station_name, []),
+            "장애인 화장실",
+            note or "설치됨",
+        )
+
+    _official_csv_facilities_cache = facilities_by_station
+    return facilities_by_station
+
+
+def _normalize_seoul_metro_csv_line(value: object) -> str:
+    raw = str(value or "").strip()
+    match = re.search(r"(\d+)", raw)
+    if not match:
+        return raw
+    line_number = int(match.group(1))
+    # 서울교통공사 CSV는 25호선=5호선, 28호선=8호선처럼 앞자리에 운영권역을 붙인다.
+    if line_number >= 20:
+        line_number -= 20
+    return f"{line_number}호선"
+
+
+def _build_seoul_metro_csv_facilities(normalized_station: str) -> StationFacilities:
+    items = _load_seoul_metro_facilities().get(normalized_station, [])
     facilities = [
         StationFacility(
             station_name=normalized_station,
@@ -512,7 +711,24 @@ def _build_static_facilities(normalized_station: str) -> StationFacilities:
             operational_status=operational_status,
         )
         for facility_type, location_note, operational_status in items
-        if _is_accessible_facility(facility_type)
+    ]
+    return StationFacilities(
+        station_name=normalized_station,
+        fetched_at=time.time(),
+        facilities=facilities,
+    )
+
+
+def _build_official_csv_facilities(normalized_station: str) -> StationFacilities:
+    items = _load_official_csv_facilities().get(normalized_station, [])
+    facilities = [
+        StationFacility(
+            station_name=normalized_station,
+            facility_type=facility_type,
+            location_note=location_note,
+            operational_status=operational_status,
+        )
+        for facility_type, location_note, operational_status in items
     ]
     return StationFacilities(
         station_name=normalized_station,
@@ -533,11 +749,29 @@ async def fetch_station_facilities(
 ) -> StationFacilities:
     """역사 교통약자 시설 정보.
 
-    한국철도공사 편의시설 API가 조회되는 역은 실제 API를 우선 사용하고,
-    API 키가 없거나 조회 결과가 없는 도시철도 역은 기존 정적 시드로 보충한다.
+    서울/한국철도공사 API를 우선 사용하고, API가 비어 있는 운영기관 역은
+    공식 파일데이터 CSV로 보충한다.
     """
     normalized = _normalize_station_name(station_name)
 
+    seoul_api_result = StationFacilities(
+        station_name=normalized,
+        fetched_at=time.time(),
+        facilities=[],
+    )
+    try:
+        seoul_api_result = _build_seoul_accessible_facilities(
+            normalized,
+            await _fetch_seoul_accessible_items(settings),
+        )
+    except (httpx.HTTPError, ValueError) as error:
+        logger.warning("seoul accessible api fallback: %s", error)
+
+    korail_api_result = StationFacilities(
+        station_name=normalized,
+        fetched_at=time.time(),
+        facilities=[],
+    )
     if settings.accessibility_api_key:
         base_url = settings.accessibility_api_base_url.rstrip("/")
         common_params = {
@@ -558,14 +792,21 @@ async def fetch_station_facilities(
                 )
             weak_response.raise_for_status()
             station_response.raise_for_status()
-            api_result = _build_api_facilities(
+            korail_api_result = _build_api_facilities(
                 normalized,
                 _as_items(weak_response.json()),
                 _as_items(station_response.json()),
             )
-            if api_result.facilities:
-                return api_result
         except (httpx.HTTPError, ValueError) as error:
             logger.warning("station facilities api fallback: %s", error)
 
-    return _build_static_facilities(normalized)
+    csv_result = _build_seoul_metro_csv_facilities(normalized)
+    official_csv_result = _build_official_csv_facilities(normalized)
+
+    return _merge_facility_payloads(
+        normalized,
+        seoul_api_result,
+        korail_api_result,
+        csv_result,
+        official_csv_result,
+    )

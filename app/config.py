@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     # 키가 비어 있거나 제공 범위 밖이면 빈 도착정보를 반환한다.
     seoul_open_api_key: str | None = None
     subway_arrival_api_key: str | None = None
+    seoul_open_data_base_url: str = "http://openapi.seoul.go.kr:8088"
     seoul_open_api_base_url: str = "http://swopenapi.seoul.go.kr/api/subway"
     # 실시간 도착 정보 캐시 TTL(초).
     transit_arrivals_cache_ttl: int = 20
