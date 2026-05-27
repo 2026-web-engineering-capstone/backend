@@ -475,6 +475,9 @@ class AppService:
                         [
                             SupportRequestStatus.BOARDED,
                             SupportRequestStatus.AWAITING_DROPOFF,
+                            SupportRequestStatus.COMPLETED,
+                            SupportRequestStatus.CANCELLED,
+                            SupportRequestStatus.UNAVAILABLE,
                         ]
                     )
                 )

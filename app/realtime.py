@@ -100,4 +100,7 @@ class SupportRequestUpdatesHub:
         return subscription.station_id == destination_station_id and status in {
             SupportRequestStatus.BOARDED.value,
             SupportRequestStatus.AWAITING_DROPOFF.value,
+            SupportRequestStatus.COMPLETED.value,
+            SupportRequestStatus.CANCELLED.value,
+            SupportRequestStatus.UNAVAILABLE.value,
         }
