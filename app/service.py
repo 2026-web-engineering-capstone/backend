@@ -909,6 +909,7 @@ class AppService:
             meeting_point=support_request.meeting_point,
             passenger_name=support_request.passenger.name,
             assigned_staff_name=support_request.assigned_staff.name if support_request.assigned_staff else None,
+            assigned_staff_id=support_request.assigned_staff_user_id,
             train_number=support_request.train_number,
             train_car_number=support_request.train_car_number,
             created_at=support_request.created_at,
@@ -931,7 +932,6 @@ class AppService:
             ),
             completion_note=support_request.completion_note,
             passenger_id=support_request.passenger_user_id,
-            assigned_staff_id=support_request.assigned_staff_user_id,
             current_location=current_location,
             checklist_items=[
                 SupportRequestChecklistItemResponse(
